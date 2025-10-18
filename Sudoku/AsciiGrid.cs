@@ -14,14 +14,14 @@ public class AsciiGrid
     public AsciiGrid(int width, int height, string filler)
     {
         // Set attributes
-        this.sizeX = width;
-        this.sizeY = height;
-        this.fillerCharacter = filler;
+        sizeX = width;
+        sizeY = height;
+        fillerCharacter = filler;
 
         // Initialize default grid
-        this.grid = new string[this.sizeX, this.sizeY];
+        grid = new string[sizeX, sizeY];
         // Fill all cells with whitespace to enforce grid structure
-        this.Reset();
+        Reset();
     }
 
     public AsciiGrid(int width, int height) : this(width, height, "*")
@@ -30,64 +30,64 @@ public class AsciiGrid
 
     public string GetGridCell(int x, int y)
     {
-        return this.grid[x, y];
+        return grid[x, y];
     }
 
     public void SetGridCell(int x, int y, string newValue)
     {
-        if (x >= this.sizeX)
+        if (x >= sizeX)
         {
-            throw new InvalidOperationException($"y value \"{x}\"exceeds ascii grid width \"{this.sizeX}\".");
+            throw new InvalidOperationException($"y value \"{x}\"exceeds ascii grid width \"{sizeX}\".");
         }
 
-        if (y >= this.sizeY)
+        if (y >= sizeY)
         {
-            throw new InvalidOperationException($"y value \"{y}\"exceeds ascii grid height \"{this.sizeY}\".");
+            throw new InvalidOperationException($"y value \"{y}\"exceeds ascii grid height \"{sizeY}\".");
         }
 
-        this.grid[x, y] = newValue;
+        grid[x, y] = newValue;
     }
 
     public void AddFrame(string frameCharacter)
     {
-        for (int y = 0; y < this.sizeY; y++)
+        for (int y = 0; y < sizeY; y++)
         {
             // Set the leftmost column
-            this.grid[0, y] = frameCharacter;
+            grid[0, y] = frameCharacter;
 
             // Set the rightmost column
-            this.grid[this.sizeX - 1, y] = frameCharacter;
+            grid[sizeX - 1, y] = frameCharacter;
         }
 
-        for (int x = 0; x < this.sizeX; x++)
+        for (int x = 0; x < sizeX; x++)
         {
             // Set the top row
-            this.grid[x, 0] = frameCharacter;
+            grid[x, 0] = frameCharacter;
 
             // Set the bottom row
-            this.grid[x, this.sizeY - 1] = frameCharacter;
+            grid[x, sizeY - 1] = frameCharacter;
         }
     }
 
     public void Reset()
     {
-        this.SetAll(" ");
+        SetAll(" ");
     }
 
     public void SetAll(string character)
     {
-        for (int x = 0; x < this.sizeX; x++)
+        for (int x = 0; x < sizeX; x++)
         {
-            for (int y = 0; y < this.sizeY; y++)
+            for (int y = 0; y < sizeY; y++)
             {
-                this.grid[x, y] = character;
+                grid[x, y] = character;
             }
         }
     }
 
     public void SetAll()
     {
-        this.SetAll(this.fillerCharacter);
+        SetAll(fillerCharacter);
     }
 
     public override string ToString()
@@ -97,11 +97,16 @@ public class AsciiGrid
          */
 
         StringBuilder builder = new();
-        for (int y = 0; y < this.sizeY; y++) // for each row
+        for (int y = 0; y < sizeY; y++) // for each row
         {
-            for (int x = 0; x < this.sizeX; x++) // for each column
+            for (int x = 0; x < sizeX; x++) // for each column
             {
-                builder.Append($"{this.grid[x, y]}");
+                builder.Append($"{grid[x, y]}");
+                // Add a space unless it's the end of the row
+                if (x < sizeX -1)
+                {
+                    builder.Append(' ');
+                }
             }
             builder.AppendLine();
         }
