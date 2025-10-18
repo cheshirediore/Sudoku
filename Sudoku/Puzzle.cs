@@ -14,7 +14,7 @@ namespace Sudoku;
 public class Puzzle
 {
 
-    private Cell[,] _grid;
+    private readonly Cell[,] _grid;
 
     public const int SIZE = 9;
 
@@ -36,18 +36,39 @@ public class Puzzle
 
     private void InitializeGrid()
     {
-        for (int x = 0; x < Width; x++)
+        for (int y = 0; y < Height; y++)
         {
-            for (int y = 0; y < Height; y++)
+            for (int x = 0; x < Width; x++)
             {
-                _grid[x, y] = new Cell();
+                SetCell(x, y, new Cell());
             }
         }
     }
 
-    public Cell GetCell(int x, int y)
+    // This is private because other object can update the cell's value, but shouldn't
+    // be replacing the field value with a different instance of the reference type.
+    private void SetCell(int x, int y, Cell newCell)
     {
-        return _grid[x, y];
+        _grid[y, x] = newCell;
+    }
+    
+    private Cell GetCell(int x, int y)
+    {
+        return _grid[y, x];
+    }
+
+    // Public accessors for the cell's value.
+    public void SetCellValue(int x, int y, int newValue)
+    {
+        GetCell(x, y).Value = newValue;
+    }
+    public int GetCellValue(int x, int y)
+    {
+        return GetCell(x, y).Value;
+    }
+    public bool IsCellVisible(int x, int y)
+    {
+        return GetCell(x, y).Visible;
     }
 
     /// <summary>

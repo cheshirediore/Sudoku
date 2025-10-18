@@ -3,6 +3,8 @@ namespace Sudoku;
 /// <summary>
 /// Class <c>Cell</c> models the individual squares in a sudoku puzzle.
 /// Each cell has a value between 1 and 9 (inclusive) that can be either hidden or visible.
+/// 
+/// The Puzzle object acts as a gatekeeper to instances of this class to maintain integrity of the Puzzle's grid.
 /// </summary>
 public class Cell(int x, int y, int cellValue) : IEquatable<Cell>
 {

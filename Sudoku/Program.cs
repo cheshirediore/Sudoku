@@ -15,7 +15,7 @@ for (int x = 0; x < Width; x++)
 {
     for (int y = 0; y < Height; y++)
     {
-        puzzle.GetCell(x, y).Value = i;
+        puzzle.SetCellValue(x, y, i);
         i++;
     }
 }
@@ -60,7 +60,7 @@ for (int x = 0; x < Width; x++)
 {
     for (int y = 0; y < Height; y++)
     {
-        string cellValue = $"{puzzle.GetCell(x, y).Value}";
+        string cellValue = $"{puzzle.GetCellValue(x, y)}";
 
         asciiGrid.SetGridCell(x, y, cellValue);
     }
