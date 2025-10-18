@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text;
 
 /// <summary>
@@ -6,20 +7,20 @@ using System.Text;
 /// </summary>
 public class AsciiGrid
 {
-    public int sizeX;
-    public int sizeY;
+    public int Width;
+    public int Height;
     public string fillerCharacter;
     public string[,] grid;
 
     public AsciiGrid(int width, int height, string filler)
     {
         // Set attributes
-        sizeX = width;
-        sizeY = height;
+        Width = width;
+        Height = height;
         fillerCharacter = filler;
 
         // Initialize default grid
-        grid = new string[sizeX, sizeY];
+        grid = new string[Width, Height];
         // Fill all cells with whitespace to enforce grid structure
         Reset();
     }
@@ -35,14 +36,14 @@ public class AsciiGrid
 
     public void SetGridCell(int x, int y, string newValue)
     {
-        if (x >= sizeX)
+        if (x >= Width)
         {
-            throw new InvalidOperationException($"y value \"{x}\"exceeds ascii grid width \"{sizeX}\".");
+            throw new InvalidOperationException($"y value \"{x}\"exceeds ascii grid width \"{Width}\".");
         }
 
-        if (y >= sizeY)
+        if (y >= Height)
         {
-            throw new InvalidOperationException($"y value \"{y}\"exceeds ascii grid height \"{sizeY}\".");
+            throw new InvalidOperationException($"y value \"{y}\"exceeds ascii grid height \"{Height}\".");
         }
 
         grid[x, y] = newValue;
@@ -50,22 +51,22 @@ public class AsciiGrid
 
     public void AddFrame(string frameCharacter)
     {
-        for (int y = 0; y < sizeY; y++)
+        for (int y = 0; y < Height; y++)
         {
             // Set the leftmost column
             grid[0, y] = frameCharacter;
 
             // Set the rightmost column
-            grid[sizeX - 1, y] = frameCharacter;
+            grid[Width - 1, y] = frameCharacter;
         }
 
-        for (int x = 0; x < sizeX; x++)
+        for (int x = 0; x < Width; x++)
         {
             // Set the top row
             grid[x, 0] = frameCharacter;
 
             // Set the bottom row
-            grid[x, sizeY - 1] = frameCharacter;
+            grid[x, Height - 1] = frameCharacter;
         }
     }
 
@@ -76,9 +77,9 @@ public class AsciiGrid
 
     public void SetAll(string character)
     {
-        for (int x = 0; x < sizeX; x++)
+        for (int x = 0; x < Width; x++)
         {
-            for (int y = 0; y < sizeY; y++)
+            for (int y = 0; y < Height; y++)
             {
                 grid[x, y] = character;
             }
@@ -97,21 +98,45 @@ public class AsciiGrid
          */
 
         StringBuilder builder = new();
-        for (int y = 0; y < sizeY; y++) // for each row
+
+        // Top of the frame
+        builder.AppendLine("+-------+-------+-------+");
+
+        // Althought we normally access the cells column by column,
+        // we print them row by row
+        for (int y = 0; y < Height; y++)
         {
-            for (int x = 0; x < sizeX; x++) // for each column
+            // Add a horizontal separator before the first cell of the 4th and 7th rows
+            if (y == 3 || y == 6)
             {
-                builder.Append($"{grid[x, y]}");
-                // Add a space unless it's the end of the row
-                if (x < sizeX -1)
+                builder.AppendLine("+-------+-------+-------+");
+            }
+
+            // Add the left side of the frame at the start of every row
+            builder.Append('|');
+            for (int x = 0; x < Width; x++)
+            {
+                
+                // Add a vertical separator before the 1st, 4th, and 7th columns
+                if (x == 3 || x == 6)
+                {
+                    builder.Append(" | ");
+                } else
                 {
                     builder.Append(' ');
                 }
+
+                // Add the ascii cell value itself
+                builder.Append(GetGridCell(x, y));
+
             }
-            builder.AppendLine();
+            // Add a vertical separator after the last column to close the frame and move on to the next row
+            builder.AppendLine(" |");
         }
 
-        return builder.ToString();
+        // Bottom of the frame
+        builder.AppendLine("+-------+-------+-------+");
 
+        return builder.ToString();
     }
 }
