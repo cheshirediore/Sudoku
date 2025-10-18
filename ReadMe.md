@@ -4,10 +4,10 @@
 
 Phase 1 focuses on the internal integrity of the sudoku puzzle. Any UI at this point is scaffolding. Puzzles are not generated at this phase; puzzle values must be manually entered. Milestones (unordered) are:
 - Represent a sudoku puzzle.
-    - Sudoku puzzle with standard 9x9 dimensions
-    - Each cell can contain a value in the range 1-9
+    - ~~Sudoku puzzle with standard 9x9 dimensions~~
+    - ~~Each cell can contain a value in the range 1-9~~
     - Columns, Rows, and Blocks can be accessed as a unit
-    - Each cell contains a value, which can be hidden or visible.
+    - ~~Each cell contains a value, which can be hidden or visible.~~
 - Internal validation of a sudoku puzzle. Given a filled puzzle, determine if it is a valid solution.
 
 
