@@ -1,5 +1,9 @@
 using System.Text;
 
+/// <summary>
+/// Class <c>AsciiGrid</c> is a scaffolding class that renders 2D array values to the terminal.
+/// It is used in this project for testing and debugging in lieu of a polished or prototype GUI.
+/// </summary>
 public class AsciiGrid
 {
     public int sizeX;
@@ -20,7 +24,7 @@ public class AsciiGrid
         this.Reset();
     }
 
-    public AsciiGrid (int width, int height) : this(width, height, "*")
+    public AsciiGrid(int width, int height) : this(width, height, "*")
     {
     }
 
