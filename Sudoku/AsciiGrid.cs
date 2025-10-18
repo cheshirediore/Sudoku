@@ -12,6 +12,8 @@ public class AsciiGrid
     public string fillerCharacter;
     public string[,] grid;
 
+    private static string HorizontalSeparator = "+----------+----------+----------+";
+
     public AsciiGrid(int width, int height, string filler)
     {
         // Set attributes
@@ -31,7 +33,7 @@ public class AsciiGrid
 
     public string GetGridCell(int x, int y)
     {
-        return grid[x, y];
+        return grid[y, x];
     }
 
     public void SetGridCell(int x, int y, string newValue)
@@ -100,7 +102,7 @@ public class AsciiGrid
         StringBuilder builder = new();
 
         // Top of the frame
-        builder.AppendLine("+-------+-------+-------+");
+        builder.AppendLine(HorizontalSeparator);
 
         // Althought we normally access the cells column by column,
         // we print them row by row
@@ -109,19 +111,25 @@ public class AsciiGrid
             // Add a horizontal separator before the first cell of the 4th and 7th rows
             if (y == 3 || y == 6)
             {
-                builder.AppendLine("+-------+-------+-------+");
+                builder.AppendLine(HorizontalSeparator);
             }
 
             // Add the left side of the frame at the start of every row
             builder.Append('|');
             for (int x = 0; x < Width; x++)
             {
-                
+
                 // Add a vertical separator before the 1st, 4th, and 7th columns
                 if (x == 3 || x == 6)
                 {
                     builder.Append(" | ");
-                } else
+                }
+                else
+                {
+                    builder.Append(' ');
+                }
+
+                if (GetGridCell(x, y).Length < 2)
                 {
                     builder.Append(' ');
                 }
@@ -135,7 +143,7 @@ public class AsciiGrid
         }
 
         // Bottom of the frame
-        builder.AppendLine("+-------+-------+-------+");
+        builder.AppendLine(HorizontalSeparator);
 
         return builder.ToString();
     }
