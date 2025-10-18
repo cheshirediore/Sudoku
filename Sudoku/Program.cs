@@ -8,7 +8,7 @@ Width = 9;
 Height = 9;
 
 // Create a Sudoku Puzzle
-Puzzle puzzle = new(Width, Height);
+Puzzle puzzle = new();
 
 int i = 0;
 for (int x = 0; x < Width; x++)

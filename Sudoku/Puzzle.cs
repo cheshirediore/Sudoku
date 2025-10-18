@@ -1,3 +1,6 @@
+using System.Dynamic;
+using System.Reflection.Metadata;
+
 namespace Sudoku;
 
 /// <summary>
@@ -11,26 +14,23 @@ namespace Sudoku;
 public class Puzzle
 {
 
-    private int[] _dimensions = new int[2];
     private Cell[,] _grid;
 
-    public int Width
+    public const int SIZE = 9;
+
+    // Although it's always a 9x9 square, using Width and Height can make it more readable in some places
+    public static int Width
     {
-        get => _dimensions[0];
-        set => _dimensions[0] = value;
+        get => SIZE;
     }
-    public int Height
+    public static int Height
     {
-        get => _dimensions[1];
-        set => _dimensions[1] = value;
+        get => SIZE;
     }
 
-
-    public Puzzle(int width, int height)
+    public Puzzle()
     {
-        Width = width;
-        Height = height;
-        _grid = new Cell[Width, Height];
+        _grid = new Cell[Height, Width];
         InitializeGrid();
     }
 
