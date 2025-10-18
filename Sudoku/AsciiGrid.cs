@@ -12,7 +12,7 @@ public class AsciiGrid
     public string fillerCharacter;
     public string[,] grid;
 
-    private static string HorizontalSeparator = "+----------+----------+----------+";
+    private static string HorizontalSeparator = "+-------+-------+-------+";
 
     public AsciiGrid(int width, int height, string filler)
     {
@@ -129,13 +129,13 @@ public class AsciiGrid
                     builder.Append(' ');
                 }
 
-                if (GetGridCell(x, y).Length < 2)
-                {
-                    builder.Append(' ');
-                }
-
                 // Add the ascii cell value itself
-                builder.Append(GetGridCell(x, y));
+                string cellValue = GetGridCell(x, y);
+                if (cellValue == "0")
+                {
+                    cellValue = " ";
+                }
+                builder.Append(cellValue);
 
             }
             // Add a vertical separator after the last column to close the frame and move on to the next row

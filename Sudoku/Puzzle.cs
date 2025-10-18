@@ -1,5 +1,6 @@
 using System.Dynamic;
 using System.Reflection.Metadata;
+using System.Threading.Channels;
 
 namespace Sudoku;
 
@@ -15,8 +16,14 @@ public class Puzzle
 {
 
     private readonly Cell[,] _grid;
+    private bool _isSolved = false;
 
     public const int SIZE = 9;
+    
+    public bool IsSolved
+    {
+        get => _isSolved;
+    }
 
     // Although it's always a 9x9 square, using Width and Height can make it more readable in some places
     public static int Width
@@ -51,24 +58,28 @@ public class Puzzle
     {
         _grid[y, x] = newCell;
     }
-    
+
     private Cell GetCell(int x, int y)
     {
         return _grid[y, x];
     }
 
     // Public accessors for the cell's value.
-    public void SetCellValue(int x, int y, int newValue)
+    public void SetValue(int x, int y, int newValue)
     {
         GetCell(x, y).Value = newValue;
     }
-    public int GetCellValue(int x, int y)
+    public int GetValue(int x, int y)
     {
         return GetCell(x, y).Value;
     }
-    public bool IsCellVisible(int x, int y)
+    public void SetPlayerValue(int x, int y, int newValue)
     {
-        return GetCell(x, y).Visible;
+        GetCell(x, y).PlayerValue = newValue;
+    }
+    public int GetPlayerValue(int x, int y)
+    {
+        return GetCell(x, y).PlayerValue;
     }
 
     /// <summary>
@@ -180,7 +191,7 @@ public class Puzzle
         }
         return row;
     }
-    
+
     public Cell[] GetColumn(int columnIndex)
     {
         // TODO: Handle out of bounds arguments
@@ -190,5 +201,49 @@ public class Puzzle
             column[y] = GetCell(columnIndex, y);
         }
         return column;
+    }
+
+    public void ValidateSolution()
+    {
+        // There are an equal number of columns, rows, and blocks, so we can
+        // use the same incrementing value to check all three each iteration.
+        for (int i = 0; i < 9; i++)
+        {
+            // Check the column, row, and block. If any are invalid, update the attribute to false and return. 
+            // Otherwise, keep iterating.
+            if (!ValidateRegionGroup(i))
+            {
+                _isSolved = false;
+                return;
+            }
+        }
+        // If it makes it to the end without finding an invalid region, then it's a valid solution.
+        _isSolved = true;
+    }
+
+    // Here, a "Region Group" means regions sharing the same index
+    // Returns true if and only if all regions sharing the index are valid
+    private bool ValidateRegionGroup(int regionIndex)
+    {
+        return ValidateRegion(GetColumn(regionIndex)) 
+                && ValidateRegion(GetRow(regionIndex)) 
+                && ValidateRegion(GetBlock(regionIndex));
+    }
+
+    public static bool ValidateRegion(Cell[] region)
+    {
+        // Use a set to determine if there are duplicate values 
+        HashSet<int> validationSet = [];
+
+        for (int i = 0; i < region.Length; i++)
+        {
+
+            validationSet.Add(region[i].PlayerValue);
+        }
+
+        // If the number of elements in the set are different
+        // than the number of cells in the region, then there
+        // must be duplicates (or skipped invalid values).
+        return region.Length == validationSet.Count;
     }
 }
