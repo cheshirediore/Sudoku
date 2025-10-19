@@ -20,14 +20,14 @@ Phase 2 focuses entirely on the puzzle generation. Milestones are:
 
 ## Phase 3: Difficulty
 
-Phase 3 focuses on refining the "minimal" puzzle from phase 3 into categories of Easy, Medium, Hard, Expert. Milestones include:
+Phase 3 focuses on refining the "minimal" puzzle from Puzzle Generation into categories of Easy, Medium, Hard, Expert. Milestones include:
 - Formally define each category
 - Implement difficulty selection method(s)
 
 
 ## Phase 4: Clean-up and Generalize API
 
-Phase 4 focuses on refactoring the codebase, and cleaning up the accessors and public methods. This phase prepares the backend code to play well with others, with emphasis on preparation for phase 6. Milestones TBD.
+Phase 4 focuses on refactoring the codebase, and cleaning up the accessors and public methods. This phase prepares the backend code to play well with others, with emphasis on preparation for the GUI. Milestones TBD.
 
 
 ## Phase 5: GUI
