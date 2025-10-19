@@ -74,3 +74,11 @@ Console.WriteLine(puzzle.IsSolved);
 puzzle.SetPlayerValue(8, 8, 8);
 puzzle.ValidateSolution();
 Console.WriteLine(puzzle.IsSolved);
+
+
+
+for (i = 0; i < 81; i++)
+{
+    Console.WriteLine($"{i} = ({Puzzle.GetCellCoordinatesByIndex(i)[0]}, {Puzzle.GetCellCoordinatesByIndex(i)[1]})");
+}
+

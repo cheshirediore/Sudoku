@@ -64,6 +64,23 @@ public class Puzzle
         return _grid[y, x];
     }
 
+    public static int[] GetCellCoordinatesByIndex(int index)
+    {
+        int[] coordinates = [-1, -1];
+
+        // x = (index % width)
+        coordinates[0] = index % Width;
+        // y = floor(index / width)
+        coordinates[1] = (int)Math.Floor((double)(index / Width));
+
+        return coordinates;
+    }
+
+    public bool IsCellSet(int x, int y)
+    {
+        return GetValue(x, y) > 0;
+    }
+
     // Public accessors for the cell's value.
     public void SetValue(int x, int y, int newValue)
     {
