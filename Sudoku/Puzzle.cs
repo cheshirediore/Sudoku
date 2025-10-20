@@ -1,6 +1,4 @@
-using System.Dynamic;
-using System.Reflection.Metadata;
-using System.Threading.Channels;
+using System.Text;
 
 namespace Sudoku;
 
@@ -26,11 +24,11 @@ public class Puzzle
     }
 
     // Although it's always a 9x9 square, using Width and Height can make it more readable in some places
-    public static int Width
+    public int Width
     {
         get => SIZE;
     }
-    public static int Height
+    public int Height
     {
         get => SIZE;
     }
@@ -64,7 +62,7 @@ public class Puzzle
         return _grid[y, x];
     }
 
-    public static int[] GetCellCoordinatesByIndex(int index)
+    public int[] GetCellCoordinatesByIndex(int index)
     {
         int[] coordinates = [-1, -1];
 
@@ -76,9 +74,9 @@ public class Puzzle
         return coordinates;
     }
 
-    public bool IsCellSet(int x, int y)
+    public bool IsCellClue(int x, int y)
     {
-        return GetValue(x, y) > 0;
+        return GetCell(x, y).IsClue;
     }
 
     // Public accessors for the cell's value.
@@ -220,7 +218,72 @@ public class Puzzle
         return column;
     }
 
-    public void ValidateSolution()
+    // Check for conflicts only
+    public bool IsConsistent()
+    {
+        for (int i = 0; i < SIZE; i++)
+        {
+            // Check columns
+            int nonZeroValues = 0;
+            var column = GetColumn(i);
+            HashSet<int> distinctColumnValues = [];
+            for (int index = 0; index < column.Length; index++)
+            {
+                if (column[index].Value != 0)
+                {
+                    nonZeroValues++;
+                    distinctColumnValues.Add(column[index].Value);
+                }
+            }
+            if (nonZeroValues != distinctColumnValues.Count)
+            {
+                // Console.WriteLine($"Column index {i} has duplicate value(s)");
+                return false;
+            }
+
+
+            // Check rows
+            nonZeroValues = 0;
+            var row = GetRow(i);
+            HashSet<int> distinctRowValues = [];
+            for (int index = 0; index < row.Length; index++)
+            {
+                if (row[index].Value != 0)
+                {
+                    nonZeroValues++;
+                    distinctRowValues.Add(row[index].Value);
+                }
+            }
+            if (nonZeroValues != distinctRowValues.Count)
+            {
+                // Console.WriteLine($"Row index {i} has duplicate value(s)");
+                return false;
+            }
+
+
+            // Check blocks
+            nonZeroValues = 0;
+            var block = GetBlock(i);
+            HashSet<int> distincBlockValues = [];
+            for (int index = 0; index < block.Length; index++)
+            {
+                if (block[index].Value != 0)
+                {
+                    nonZeroValues++;
+                    distincBlockValues.Add(block[index].Value);
+                }
+            }
+            if (nonZeroValues != distincBlockValues.Count)
+            {
+                // Console.WriteLine($"Block index {i} has duplicate value(s)");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Check that all cells are filled without conflicts
+    public bool ValidateSolution()
     {
         // There are an equal number of columns, rows, and blocks, so we can
         // use the same incrementing value to check all three each iteration.
@@ -231,11 +294,12 @@ public class Puzzle
             if (!ValidateRegionGroup(i))
             {
                 _isSolved = false;
-                return;
+                return false;
             }
         }
         // If it makes it to the end without finding an invalid region, then it's a valid solution.
         _isSolved = true;
+        return true;
     }
 
     // Here, a "Region Group" means regions sharing the same index

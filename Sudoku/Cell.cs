@@ -12,6 +12,12 @@ public class Cell(int x, int y, int cellValue) : IEquatable<Cell>
 {
     private int[] _coordinates = new int[2] { x, y };
     private int _value = cellValue;
+    private bool _isClue = false;
+
+    public bool IsClue
+    {
+        get => _isClue;
+    }
 
 
     // Accessors for the X and Y coordinates
@@ -45,6 +51,13 @@ public class Cell(int x, int y, int cellValue) : IEquatable<Cell>
     public bool IsSet()
     {
         return Value > 0 && Value < 10;
+    }
+
+    // Clues are the pre-filled cells in the puzzle that display their value to the player
+    public void SetClue(int clueValue)
+    {
+        _value = clueValue;
+        _isClue = true;
     }
 
     #region InterfaceImplementation

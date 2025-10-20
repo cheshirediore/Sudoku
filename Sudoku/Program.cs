@@ -1,5 +1,6 @@
 ﻿
 // Set the grid width and height
+
 using System.Text;
 using Sudoku;
 
@@ -36,23 +37,23 @@ int[][] RevealedCoords = [
     [0, 8], [1, 8], [4, 8], [7, 8]
 ];
 
-int i = 0;
-for (int x = 0; x < Width; x++)
-{
-    for (int y = 0; y < Height; y++)
-    {
-        puzzle.SetValue(x, y, PuzzleSolution[i]);
-        i++;
-    }
-}
+// int i = 0;
+// for (int x = 0; x < Width; x++)
+// {
+//     for (int y = 0; y < Height; y++)
+//     {
+//         puzzle.SetValue(x, y, PuzzleSolution[i]);
+//         i++;
+//     }
+// }
 
-for (i = 0; i < RevealedCoords.Length; i++)
-{
-    int x, y;
-    x = RevealedCoords[i][0];
-    y = RevealedCoords[i][1];
-    puzzle.SetPlayerValue(x, y, puzzle.GetValue(x, y));
-}
+// for (i = 0; i < RevealedCoords.Length; i++)
+// {
+//     int x, y;
+//     x = RevealedCoords[i][0];
+//     y = RevealedCoords[i][1];
+//     puzzle.SetPlayerValue(x, y, puzzle.GetValue(x, y));
+// }
 
 
 // Create the AsciiGrid to render the Sudoku puzzle
@@ -69,16 +70,31 @@ for (int x = 0; x < Width; x++)
 }
 Console.WriteLine(asciiGrid);
 
-puzzle.ValidateSolution();
-Console.WriteLine(puzzle.IsSolved);
-puzzle.SetPlayerValue(8, 8, 8);
-puzzle.ValidateSolution();
-Console.WriteLine(puzzle.IsSolved);
+// puzzle.ValidateSolution();
+// Console.WriteLine(puzzle.IsSolved);
+// puzzle.SetPlayerValue(8, 8, 8);
+// puzzle.ValidateSolution();
+// Console.WriteLine(puzzle.IsSolved);
 
 
+Solver solver = new(puzzle);
+solver.Solve();
 
-for (i = 0; i < 81; i++)
+for (int x = 0; x < Width; x++)
 {
-    Console.WriteLine($"{i} = ({Puzzle.GetCellCoordinatesByIndex(i)[0]}, {Puzzle.GetCellCoordinatesByIndex(i)[1]})");
+    for (int y = 0; y < Height; y++)
+    {
+        puzzle.SetPlayerValue(x, y, puzzle.GetValue(x, y));
+    }
 }
 
+for (int x = 0; x < Width; x++)
+{
+    for (int y = 0; y < Height; y++)
+    {
+        string cellValue = $"{puzzle.GetPlayerValue(x, y)}";
+
+        asciiGrid.SetGridCell(x, y, cellValue);
+    }
+}
+Console.WriteLine(asciiGrid);
