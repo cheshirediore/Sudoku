@@ -51,12 +51,12 @@ public class Puzzle
     }
 
     #region Accessors
-    private Cell GetCell(int x, int y)
+    public Cell GetCell(int x, int y)
     {
         return _grid[y, x];
     }
 
-    private Cell GetCell(int index)
+    public Cell GetCell(int index)
     {
         int[] coords = GetCellCoordinatesByIndex(index);
         return GetCell(coords[0], coords[1]);
@@ -68,8 +68,6 @@ public class Puzzle
     {
         _grid[y, x] = newCell;
     }
-
-
 
     public int[] GetCellCoordinatesByIndex(int index)
     {
@@ -98,12 +96,14 @@ public class Puzzle
 
     public void SetValue(int x, int y, int newValue)
     {
+       // Console.WriteLine($"Puzzle.cs: SetValue({x}, {y}, {newValue})");
         GetCell(x, y).Value = newValue;
     }
 
     public void SetValue(int index, int newValue)
     {
-        GetCell(index).Value = newValue;
+        int[] coords = GetCellCoordinatesByIndex(index);
+        SetValue(coords[0], coords[1], newValue);
     }
 
     public int GetPlayerValue(int x, int y)
@@ -237,20 +237,25 @@ public class Puzzle
         }
         return column;
     }
-    
+
     #endregion
-    
+
     public void RevealCell(int x, int y)
     {
-        Console.WriteLine($"Revealed Cell Value: {GetValue(x, y)}");
         SetPlayerValue(x, y, GetValue(x, y));
+    }
+
+    public void RevealCell(int index)
+    {
+        int[] coords = GetCellCoordinatesByIndex(index);
+        RevealCell(coords[0], coords[1]);
     }
 
     #region ValidationMethods
     // Check for conflicts only
     public bool IsConsistent()
     {
-        Console.WriteLine("Checking Consistency of Puzzle");
+        // Console.WriteLine("Checking Consistency of Puzzle");
         for (int i = 0; i < SIZE; i++)
         {
             // Check columns
@@ -267,7 +272,7 @@ public class Puzzle
             }
             if (nonZeroValues != distinctColumnValues.Count)
             {
-                Console.WriteLine($"Column index {i} has duplicate value(s)");
+               // Console.WriteLine($"Column index {i} has duplicate value(s)");
                 PrintRegion(column);
                 return false;
             }
@@ -287,7 +292,7 @@ public class Puzzle
             }
             if (nonZeroValues != distinctRowValues.Count)
             {
-                Console.WriteLine($"Row index {i} has duplicate value(s)");
+               // Console.WriteLine($"Row index {i} has duplicate value(s)");
                 PrintRegion(row);
                 return false;
             }
@@ -307,12 +312,12 @@ public class Puzzle
             }
             if (nonZeroValues != distincBlockValues.Count)
             {
-                Console.WriteLine($"Block index {i} has duplicate value(s)");
+               // Console.WriteLine($"Block index {i} has duplicate value(s)");
                 PrintRegion(block);
                 return false;
             }
         }
-        Console.WriteLine("Puzzle is consistent.");
+       // Console.WriteLine("Puzzle is consistent.");
         return true;
     }
 
@@ -380,7 +385,7 @@ public class Puzzle
                 numberOfEmptyCells++;
             }
         }
-        Console.WriteLine($"{numberOfEmptyCells} empty cells found");
+        // Console.WriteLine($"{numberOfEmptyCells} empty cells found");
         int[] emptyCells = new int[numberOfEmptyCells];
 
         int insertionIndex = 0;
@@ -389,7 +394,7 @@ public class Puzzle
             if (GetValue(i) == 0)
             {
                 emptyCells[insertionIndex] = i;
-                Console.WriteLine($"Cell {emptyCells[insertionIndex]} at index {i} added to list");
+                // Console.WriteLine($"Cell {emptyCells[insertionIndex]} at index {i} added to list");
 
                 insertionIndex++;
             }
@@ -410,10 +415,10 @@ public class Puzzle
         }
         builder.Append("]");
 
-        Console.WriteLine(builder);
+       // Console.WriteLine(builder);
     }
 
-    public void PrintPuzzle()
+    public string PrintPuzzle()
     {
         AsciiGrid asciiGrid = new(Width, Height);
         for (int x = 0; x < Width; x++)
@@ -425,7 +430,12 @@ public class Puzzle
                 asciiGrid.SetGridCell(x, y, cellValue);
             }
         }
-        Console.WriteLine(asciiGrid);
+        return asciiGrid.ToString();
+    }
+
+    public override string ToString()
+    {
+        return PrintPuzzle();
     }
     #endregion
 }

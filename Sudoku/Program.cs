@@ -40,7 +40,7 @@ for (int i = 0; i < 81; i++)
     {
         puzzle.SetValue(coords[0], coords[1], PuzzleSolution[i]);
         puzzle.RevealCell(coords[0], coords[1]);
-        Console.WriteLine($"({i}) Revealing cell ({coords[0]}, {coords[1]}) = {puzzle.GetValue(i)}");
+        // Console.WriteLine($"({i}) Revealing cell ({coords[0]}, {coords[1]}) = {puzzle.GetValue(i)}");
     }
     else
     {
@@ -50,12 +50,20 @@ for (int i = 0; i < 81; i++)
     }
 }
 
-puzzle.PrintPuzzle();
+Console.WriteLine(puzzle);
 
-Console.WriteLine("=================================================");
-Console.WriteLine("=================================================");
-Console.WriteLine("=================================================");
+// Console.WriteLine("=================================================");
+// Console.WriteLine("=================================================");
+// Console.WriteLine("=================================================");
 
 
 Solver solver = new(puzzle);
 solver.Solve();
+
+
+for (int i = 0; i < 81; i++)
+{
+    puzzle.RevealCell(i);
+}
+
+Console.WriteLine(puzzle);

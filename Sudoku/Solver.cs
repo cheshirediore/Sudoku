@@ -6,50 +6,86 @@ namespace Sudoku;
 public class Solver
 {
     private Puzzle _puzzle;
+    private int[] _emptyCellIndices;
 
     public Solver(Puzzle puzzle)
     {
         _puzzle = puzzle;
+        _emptyCellIndices = _puzzle.GetEmptyCellIndices();
     }
 
     public void Solve()
     {
-        Backtracker();
-    }
-    
-    private bool Backtracker()
-    {
         // Set the current cell as the first cell
-        // Process the first cell
-
-        // Iterate through each cell of the puzzle
-
-        // Process each cell, and check the return value
-            // If false, check if the current cell is the first cell
-                // If so, return false. This indicates there is no valid solution to the puzzle
-            // Otherwise, set the current cell to the previous cell
-            // If true, set the current cell to the next cell
-        
-        // If it reaches the end, it has found a valid solution
-        return true;
+        Backtracker(0);
     }
     
-    // Increments the given cell's value until it either satisfies the sudoku condition, or reaches 9
-    // and still violates it.
-    // Returns true when it finds a working value.
-    // Returns false if it fails to find one.
-    private bool ProcessCell()
+    private bool Backtracker(int currentIndex)
     {
-        // Check if cell is a clue. If so, return true immediately.
-        // Check cell value. If it's already 9 (and not a clue), return false immediately.
+        int nextIndex = currentIndex;
+        //Console.WriteLine($"Solver.Backtracker({currentIndex}). Current Cell: {_puzzle.GetCell(_emptyCellIndices[currentIndex])}. Empty Cell Count: {_emptyCellIndices.Length}.");
+        // Process each cell, and check the return value
+        int newValue = _puzzle.GetValue(_emptyCellIndices[currentIndex]) + 1;
+        
+        if (newValue <= 9)
+        {
+            // Increment the cell
+           // Console.WriteLine($"Solver.Backtracker({currentIndex}). Incrementing value of {_puzzle.GetCell(_emptyCellIndices[currentIndex])}.");
+            _puzzle.SetValue(_emptyCellIndices[currentIndex], newValue);
+        }
+        // Check if the puzzle is consistent
+        bool valid = _puzzle.IsConsistent();
 
-        // Increment cell's value
-        // Check if the sudoku puzzle is still valid
-        // If so, return true
+        // If it's valid, move forward. If it isn't, go back to square 1
+        if (valid)
+        {
+            nextIndex++;
+            if (nextIndex >= _emptyCellIndices.Length)
+            {
+                return true;
+            }
+        }
+        else if (newValue >= 9)
+        {
+            // If we're stepping backwards, reset the current cell's value
 
-        // Otherwise, check if the cell value is 9
-        // If so, return false
-        // Otherwise, continue iterating and incrementing values
-        return false;
+            nextIndex = 0;
+            // Keep backtracking until the puzzle is consistent
+            for (int i = currentIndex; i >= 0; i--)
+            {
+                if (_puzzle.IsConsistent())
+                {
+                    nextIndex = i;
+                    // If the last consistent cell was a 9, reset it and step back one more cell
+                    if (_puzzle.GetValue(_emptyCellIndices[i]) == 9)
+                    {
+                        _puzzle.SetValue(_emptyCellIndices[i], 0);
+                        nextIndex--;
+                    }
+                    break;
+                }
+               // Console.WriteLine($"Solver.Backtracker({currentIndex}). Resetting cell value for cell {_puzzle.GetCell(_emptyCellIndices[i])}.");
+                _puzzle.SetValue(_emptyCellIndices[i], 0);
+            }
+
+            // Check if it's the last cell
+            if (nextIndex == _emptyCellIndices.Length)
+            {
+               // Console.WriteLine($"Solver.Backtracker({currentIndex}). Next Index is outside the list: {nextIndex}.");
+                return true;
+            }
+            if (nextIndex == currentIndex)
+            {
+               // Console.WriteLine($"Solver.Backtracker({currentIndex}). Previous Index is outside the list: {nextIndex}.");
+                return false;
+            }
+        }
+
+        // Console.WriteLine($"Solver.Backtracker({currentIndex}). Calling self on {nextIndex}.");
+        // Console.WriteLine(_puzzle);
+        // Console.WriteLine("[Press Enter to Continue]");
+        // Console.ReadLine();
+        return Backtracker(nextIndex);
     }
+
 }
