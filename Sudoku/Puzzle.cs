@@ -50,6 +50,18 @@ public class Puzzle
         }
     }
 
+    #region Accessors
+    private Cell GetCell(int x, int y)
+    {
+        return _grid[y, x];
+    }
+
+    private Cell GetCell(int index)
+    {
+        int[] coords = GetCellCoordinatesByIndex(index);
+        return GetCell(coords[0], coords[1]);
+    }
+    
     // This is private because other object can update the cell's value, but shouldn't
     // be replacing the field value with a different instance of the reference type.
     private void SetCell(int x, int y, Cell newCell)
@@ -57,10 +69,7 @@ public class Puzzle
         _grid[y, x] = newCell;
     }
 
-    private Cell GetCell(int x, int y)
-    {
-        return _grid[y, x];
-    }
+
 
     public int[] GetCellCoordinatesByIndex(int index)
     {
@@ -74,48 +83,39 @@ public class Puzzle
         return coordinates;
     }
 
-    private Cell GetCell(int index)
-    {
-        int[] coords = GetCellCoordinatesByIndex(index);
-        return GetCell(coords[0], coords[1]);
-    }
 
-    public bool IsCellClue(int x, int y)
-    {
-        return GetCell(x, y).IsClue;
-    }
 
     // Public accessors for the cell's value.
-    public void SetValue(int x, int y, int newValue)
-    {
-        GetCell(x, y).Value = newValue;
-    }
-    public void SetValue(int index, int newValue)
-    {
-        GetCell(index).Value = newValue;
-    }
     public int GetValue(int x, int y)
     {
         return GetCell(x, y).Value;
     }
+    
     public int GetValue(int index)
     {
         return GetCell(index).Value;
     }
-    public void SetPlayerValue(int x, int y, int newValue)
+
+    public void SetValue(int x, int y, int newValue)
     {
-        GetCell(x, y).PlayerValue = newValue;
+        GetCell(x, y).Value = newValue;
     }
+
+    public void SetValue(int index, int newValue)
+    {
+        GetCell(index).Value = newValue;
+    }
+
     public int GetPlayerValue(int x, int y)
     {
         return GetCell(x, y).PlayerValue;
     }
 
-    public void RevealCell(int x, int y)
+    public void SetPlayerValue(int x, int y, int newValue)
     {
-        Console.WriteLine($"Revealed Cell Value: {GetValue(x, y)}");
-        SetPlayerValue(x, y, GetValue(x, y));
+        GetCell(x, y).PlayerValue = newValue;
     }
+
 
     /// <summary>
     /// <c>GetBlock</c> returns an array of <c>Cell</c> objects from a 3x3 block of the grid.
@@ -237,6 +237,15 @@ public class Puzzle
         }
         return column;
     }
+    
+    #endregion
+    
+    public void RevealCell(int x, int y)
+    {
+        Console.WriteLine($"Revealed Cell Value: {GetValue(x, y)}");
+        SetPlayerValue(x, y, GetValue(x, y));
+    }
+
 
     // Check for conflicts only
     public bool IsConsistent()
@@ -318,12 +327,10 @@ public class Puzzle
             // Otherwise, keep iterating.
             if (!ValidateRegionGroup(i))
             {
-                _isSolved = false;
                 return false;
             }
         }
         // If it makes it to the end without finding an invalid region, then it's a valid solution.
-        _isSolved = true;
         return true;
     }
 
@@ -390,7 +397,7 @@ public class Puzzle
     }
 
 
-    // debug helper
+    // debug helpers
     public void PrintRegion(Cell[] region)
     {
         StringBuilder builder = new();
