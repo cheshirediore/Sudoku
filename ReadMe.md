@@ -14,7 +14,7 @@ Phase 1 focuses on the internal integrity of the sudoku puzzle. Any UI at this p
 ## Phase 2: Puzzle Generation
 
 Phase 2 focuses entirely on the puzzle generation. Milestones are:
-- Generate valid sudoku puzzle solution
+- Generate valid sudoku puzzle solution [Complete]
 - Remove values until a minimal number of visible values remain to constitute a valid puzzle
 
 
