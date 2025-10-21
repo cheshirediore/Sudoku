@@ -48,27 +48,27 @@ public class AsciiGrid
             throw new InvalidOperationException($"y value \"{y}\"exceeds ascii grid height \"{Height}\".");
         }
 
-        grid[x, y] = newValue;
+        grid[y, x] = newValue;
     }
 
     public void AddFrame(string frameCharacter)
     {
-        for (int y = 0; y < Height; y++)
+        for (int x = 0; x < Height; x++)
         {
             // Set the leftmost column
-            grid[0, y] = frameCharacter;
+            grid[0, x] = frameCharacter;
 
             // Set the rightmost column
-            grid[Width - 1, y] = frameCharacter;
+            grid[Width - 1, x] = frameCharacter;
         }
 
-        for (int x = 0; x < Width; x++)
+        for (int y = 0; y < Width; y++)
         {
             // Set the top row
-            grid[x, 0] = frameCharacter;
+            grid[y, 0] = frameCharacter;
 
             // Set the bottom row
-            grid[x, Height - 1] = frameCharacter;
+            grid[y, Height - 1] = frameCharacter;
         }
     }
 
@@ -83,7 +83,7 @@ public class AsciiGrid
         {
             for (int y = 0; y < Height; y++)
             {
-                grid[x, y] = character;
+                grid[y, x] = character;
             }
         }
     }

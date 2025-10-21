@@ -17,6 +17,7 @@ public class Cell(int x, int y, int cellValue) : IEquatable<Cell>
     public bool IsClue
     {
         get => _isClue;
+        set => _isClue = value;
     }
 
 
@@ -70,4 +71,9 @@ public class Cell(int x, int y, int cellValue) : IEquatable<Cell>
         return this.X == other.X && this.Y == other.Y;
     }
     #endregion
+
+    public override string ToString()
+    {
+        return $"({X}, {Y}). Value={Value}";
+    }
 }

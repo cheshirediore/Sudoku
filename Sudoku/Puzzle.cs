@@ -45,7 +45,7 @@ public class Puzzle
         {
             for (int x = 0; x < Width; x++)
             {
-                SetCell(x, y, new Cell());
+                SetCell(x, y, new Cell(x, y));
             }
         }
     }
@@ -74,6 +74,12 @@ public class Puzzle
         return coordinates;
     }
 
+    private Cell GetCell(int index)
+    {
+        int[] coords = GetCellCoordinatesByIndex(index);
+        return GetCell(coords[0], coords[1]);
+    }
+
     public bool IsCellClue(int x, int y)
     {
         return GetCell(x, y).IsClue;
@@ -84,9 +90,17 @@ public class Puzzle
     {
         GetCell(x, y).Value = newValue;
     }
+    public void SetValue(int index, int newValue)
+    {
+        GetCell(index).Value = newValue;
+    }
     public int GetValue(int x, int y)
     {
         return GetCell(x, y).Value;
+    }
+    public int GetValue(int index)
+    {
+        return GetCell(index).Value;
     }
     public void SetPlayerValue(int x, int y, int newValue)
     {
@@ -95,6 +109,12 @@ public class Puzzle
     public int GetPlayerValue(int x, int y)
     {
         return GetCell(x, y).PlayerValue;
+    }
+
+    public void RevealCell(int x, int y)
+    {
+        Console.WriteLine($"Revealed Cell Value: {GetValue(x, y)}");
+        SetPlayerValue(x, y, GetValue(x, y));
     }
 
     /// <summary>
@@ -221,6 +241,7 @@ public class Puzzle
     // Check for conflicts only
     public bool IsConsistent()
     {
+        Console.WriteLine("Checking Consistency of Puzzle");
         for (int i = 0; i < SIZE; i++)
         {
             // Check columns
@@ -237,7 +258,8 @@ public class Puzzle
             }
             if (nonZeroValues != distinctColumnValues.Count)
             {
-                // Console.WriteLine($"Column index {i} has duplicate value(s)");
+                Console.WriteLine($"Column index {i} has duplicate value(s)");
+                PrintRegion(column);
                 return false;
             }
 
@@ -256,7 +278,8 @@ public class Puzzle
             }
             if (nonZeroValues != distinctRowValues.Count)
             {
-                // Console.WriteLine($"Row index {i} has duplicate value(s)");
+                Console.WriteLine($"Row index {i} has duplicate value(s)");
+                PrintRegion(row);
                 return false;
             }
 
@@ -275,10 +298,12 @@ public class Puzzle
             }
             if (nonZeroValues != distincBlockValues.Count)
             {
-                // Console.WriteLine($"Block index {i} has duplicate value(s)");
+                Console.WriteLine($"Block index {i} has duplicate value(s)");
+                PrintRegion(block);
                 return false;
             }
         }
+        Console.WriteLine("Puzzle is consistent.");
         return true;
     }
 
@@ -326,5 +351,72 @@ public class Puzzle
         // than the number of cells in the region, then there
         // must be duplicates (or skipped invalid values).
         return region.Length == validationSet.Count;
+    }
+
+
+    public void IncrementCellValue(int index)
+    {
+        int cellValue = GetValue(index);
+        cellValue = (cellValue + 1) % 9;
+        SetValue(index, cellValue);
+    }
+
+
+    public int[] GetEmptyCellIndices()
+    {
+        int numberOfEmptyCells = 0;
+        for (int i = 0; i < 81; i++)
+        {
+            if (GetValue(i) == 0)
+            {
+                numberOfEmptyCells++;
+            }
+        }
+        Console.WriteLine($"{numberOfEmptyCells} empty cells found");
+        int[] emptyCells = new int[numberOfEmptyCells];
+
+        int insertionIndex = 0;
+        for (int i = 0; i < 81; i++)
+        {
+            if (GetValue(i) == 0)
+            {
+                emptyCells[insertionIndex] = i;
+                Console.WriteLine($"Cell {emptyCells[insertionIndex]} at index {i} added to list");
+
+                insertionIndex++;
+            }
+        }
+        return emptyCells;
+    }
+
+
+    // debug helper
+    public void PrintRegion(Cell[] region)
+    {
+        StringBuilder builder = new();
+        builder.Append("[");
+        for (int i = 0; i < region.Length; i++)
+        {
+            builder.Append($"{region[i].Value}");
+            if (i < region.Length - 1) builder.Append(", ");
+        }
+        builder.Append("]");
+
+        Console.WriteLine(builder);
+    }
+
+    public void PrintPuzzle()
+    {
+        AsciiGrid asciiGrid = new(Width, Height);
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                string cellValue = $"{GetValue(x, y)}";
+
+                asciiGrid.SetGridCell(x, y, cellValue);
+            }
+        }
+        Console.WriteLine(asciiGrid);
     }
 }

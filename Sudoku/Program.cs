@@ -4,10 +4,6 @@
 using System.Text;
 using Sudoku;
 
-int Width, Height;
-Width = 9;
-Height = 9;
-
 // Create a Sudoku Puzzle
 Puzzle puzzle = new();
 
@@ -37,64 +33,29 @@ int[][] RevealedCoords = [
     [0, 8], [1, 8], [4, 8], [7, 8]
 ];
 
-// int i = 0;
-// for (int x = 0; x < Width; x++)
-// {
-//     for (int y = 0; y < Height; y++)
-//     {
-//         puzzle.SetValue(x, y, PuzzleSolution[i]);
-//         i++;
-//     }
-// }
-
-// for (i = 0; i < RevealedCoords.Length; i++)
-// {
-//     int x, y;
-//     x = RevealedCoords[i][0];
-//     y = RevealedCoords[i][1];
-//     puzzle.SetPlayerValue(x, y, puzzle.GetValue(x, y));
-// }
-
-
-// Create the AsciiGrid to render the Sudoku puzzle
-AsciiGrid asciiGrid = new(Width, Height);
-
-for (int x = 0; x < Width; x++)
+for (int i = 0; i < 81; i++)
 {
-    for (int y = 0; y < Height; y++)
+    int[] coords = puzzle.GetCellCoordinatesByIndex(i);
+    if (Array.Exists(RevealedCoords, coords.SequenceEqual))
     {
-        string cellValue = $"{puzzle.GetPlayerValue(x, y)}";
+        puzzle.SetValue(coords[0], coords[1], PuzzleSolution[i]);
+        puzzle.RevealCell(coords[0], coords[1]);
+        Console.WriteLine($"({i}) Revealing cell ({coords[0]}, {coords[1]}) = {puzzle.GetValue(i)}");
+    }
+    else
+    {
+        puzzle.SetValue(coords[0], coords[1], 0);
+        // Console.WriteLine($"({i}) Clearing cell ({coords[0]}, {coords[1]})");
 
-        asciiGrid.SetGridCell(x, y, cellValue);
     }
 }
-Console.WriteLine(asciiGrid);
 
-// puzzle.ValidateSolution();
-// Console.WriteLine(puzzle.IsSolved);
-// puzzle.SetPlayerValue(8, 8, 8);
-// puzzle.ValidateSolution();
-// Console.WriteLine(puzzle.IsSolved);
+puzzle.PrintPuzzle();
+
+Console.WriteLine("=================================================");
+Console.WriteLine("=================================================");
+Console.WriteLine("=================================================");
 
 
 Solver solver = new(puzzle);
 solver.Solve();
-
-for (int x = 0; x < Width; x++)
-{
-    for (int y = 0; y < Height; y++)
-    {
-        puzzle.SetPlayerValue(x, y, puzzle.GetValue(x, y));
-    }
-}
-
-for (int x = 0; x < Width; x++)
-{
-    for (int y = 0; y < Height; y++)
-    {
-        string cellValue = $"{puzzle.GetPlayerValue(x, y)}";
-
-        asciiGrid.SetGridCell(x, y, cellValue);
-    }
-}
-Console.WriteLine(asciiGrid);
