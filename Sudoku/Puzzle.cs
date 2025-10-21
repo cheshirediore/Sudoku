@@ -246,7 +246,7 @@ public class Puzzle
         SetPlayerValue(x, y, GetValue(x, y));
     }
 
-
+    #region ValidationMethods
     // Check for conflicts only
     public bool IsConsistent()
     {
@@ -367,6 +367,7 @@ public class Puzzle
         cellValue = (cellValue + 1) % 9;
         SetValue(index, cellValue);
     }
+    #endregion
 
 
     public int[] GetEmptyCellIndices()
@@ -397,7 +398,7 @@ public class Puzzle
     }
 
 
-    // debug helpers
+    #region DebugMethods
     public void PrintRegion(Cell[] region)
     {
         StringBuilder builder = new();
@@ -426,4 +427,5 @@ public class Puzzle
         }
         Console.WriteLine(asciiGrid);
     }
+    #endregion
 }
