@@ -14,15 +14,34 @@ public class Solver
         _emptyCellIndices = _puzzle.GetEmptyCellIndices();
     }
 
-    public void Solve()
+    public int Solve()
     {
+        int solutionsFound = 0;
         // Set the current cell as the first cell
-        Backtracker(0);
+        bool success = Backtracker(0);
+        if (success)
+        {
+            Console.WriteLine($"Solution Found:\n{_puzzle}");
+            solutionsFound++;
+        }
+        
+        return solutionsFound;
     }
     
     private bool Backtracker(int currentIndex)
     {
+        if (currentIndex < 0)
+        {
+            Console.WriteLine($"Current Index = {currentIndex}. Returning false.");
+            return false;
+        }
+        // Console.Write($"currentIndex = {currentIndex}; ");
         int nextIndex = currentIndex;
+        if (_emptyCellIndices.Length == 0)
+        {
+            Console.WriteLine("No empty cells. Returning consistency.");
+            return _puzzle.IsConsistent();
+        }
         //Console.WriteLine($"Solver.Backtracker({currentIndex}). Current Cell: {_puzzle.GetCell(_emptyCellIndices[currentIndex])}. Empty Cell Count: {_emptyCellIndices.Length}.");
         // Process each cell, and check the return value
         int newValue = _puzzle.GetValue(_emptyCellIndices[currentIndex]) + 1;
@@ -35,7 +54,6 @@ public class Solver
         }
         // Check if the puzzle is consistent
         bool valid = _puzzle.IsConsistent();
-
         // If it's valid, move forward. If it isn't, go back to square 1
         if (valid)
         {
