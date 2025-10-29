@@ -14,14 +14,10 @@ public class Puzzle
 {
 
     private readonly Cell[,] _grid;
-    private bool _isSolved = false;
 
     public const int SIZE = 9;
-    
-    public bool IsSolved
-    {
-        get => _isSolved;
-    }
+
+    private HashSet<int> _clueIndices = new();
 
     // Although it's always a 9x9 square, using Width and Height can make it more readable in some places
     public int Width
@@ -81,8 +77,6 @@ public class Puzzle
         return coordinates;
     }
 
-
-
     // Public accessors for the cell's value.
     public int GetValue(int x, int y)
     {
@@ -116,6 +110,22 @@ public class Puzzle
         GetCell(x, y).PlayerValue = newValue;
     }
 
+    public void SetPlayerValue(int index, int newValue)
+    {
+        int[] coords = GetCellCoordinatesByIndex(index);
+        SetPlayerValue(coords[0], coords[1], newValue);
+    }
+
+    public void RegisterClue(int clueIndex)
+    {
+        // Console.WriteLine($"DEBUG> Registering clue at index {clueIndex}");
+        _clueIndices.Add(clueIndex);
+    }
+    
+    public bool IsClue(int index)
+    {
+        return _clueIndices.Contains(index);
+    }
 
     /// <summary>
     /// <c>GetBlock</c> returns an array of <c>Cell</c> objects from a 3x3 block of the grid.
@@ -242,6 +252,7 @@ public class Puzzle
 
     public void RevealCell(int x, int y)
     {
+        // Console.WriteLine($"RevealCell({x}, {y})");
         SetPlayerValue(x, y, GetValue(x, y));
     }
 
@@ -249,6 +260,14 @@ public class Puzzle
     {
         int[] coords = GetCellCoordinatesByIndex(index);
         RevealCell(coords[0], coords[1]);
+    }
+
+    public void RevealClues()
+    {
+        foreach (var clueIndex in _clueIndices)
+        {
+            RevealCell(clueIndex);
+        }
     }
 
     #region ValidationMethods
@@ -426,7 +445,6 @@ public class Puzzle
             for (int y = 0; y < Height; y++)
             {
                 string cellValue = $"{GetValue(x, y)}";
-
                 asciiGrid.SetGridCell(x, y, cellValue);
             }
         }

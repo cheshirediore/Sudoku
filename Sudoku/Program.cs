@@ -4,6 +4,62 @@
 using System.Text;
 using Sudoku;
 
+// Create an empty Sudoku Puzzle
+Puzzle puzzle = new();
+
+// Open the file, read the content, and close it
+string path = "./SamplePuzzleSeed.csv";
+string fileContent = File.ReadAllText(path);
+
+// Print the file content for testing purposes
+// Console.WriteLine(fileContent);
+
+// Split the content by lines
+string[] lines = fileContent.Split("\n");
+
+Console.WriteLine("\n=================================\n");
+
+// Contains the values for each cell in the puzzle. 0 indicates cell is empty.
+int[] puzzleSeed = new int[81];
+int index = 0;
+foreach (var line in lines)
+{
+    // Split the line by commas, and trim off the whitespace
+    string[] rowValues = line.Split(",");
+    for (int i = 0; i < rowValues.Length; i++)
+    {
+        bool success = int.TryParse(rowValues[i].Trim(), out int parsedValue);
+        puzzleSeed[index] = success ? parsedValue : 0;
+        index++;
+    }
+}
+
+// initialize the puzzle grid. This could be combined with the previous loop for efficiency, 
+// but this is just for testing anyway. Ultimately, this will probably be an argument for the 
+// Puzzle constructor.
+for (int i = 0; i < 81; i++)
+{
+    puzzle.SetValue(i, puzzleSeed[i]);
+    puzzle.SetPlayerValue(i, puzzleSeed[i]);
+    if (puzzleSeed[i] != 0)
+    {
+        puzzle.RegisterClue(i);
+    }
+}
+
+puzzle.RevealClues();
+Console.WriteLine("\n=================================\n");
+
+Console.WriteLine(puzzle);
+
+Console.WriteLine("\n=================================\n");
+
+Solver solver = new(puzzle);
+int numberOfSolutionsFound = solver.Solve();
+
+Console.WriteLine($"Found {numberOfSolutionsFound} solutions");
+/*
+
 // Create a Sudoku Puzzle
 Puzzle puzzle = new();
 
@@ -67,3 +123,5 @@ for (int i = 0; i < 81; i++)
 }
 
 Console.WriteLine(puzzle);
+
+*/
