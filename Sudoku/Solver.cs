@@ -24,10 +24,10 @@ public class Solver
             Console.WriteLine($"Solution Found:\n{_puzzle}");
             solutionsFound++;
         }
-        
+
         return solutionsFound;
     }
-    
+
     private bool Backtracker(int currentIndex)
     {
         if (currentIndex < 0)
@@ -43,13 +43,13 @@ public class Solver
             return _puzzle.IsConsistent();
         }
         //Console.WriteLine($"Solver.Backtracker({currentIndex}). Current Cell: {_puzzle.GetCell(_emptyCellIndices[currentIndex])}. Empty Cell Count: {_emptyCellIndices.Length}.");
-        // Process each cell, and check the return value
+        // Process each cell, and check the value
         int newValue = _puzzle.GetValue(_emptyCellIndices[currentIndex]) + 1;
-        
+
         if (newValue <= 9)
         {
             // Increment the cell
-           // Console.WriteLine($"Solver.Backtracker({currentIndex}). Incrementing value of {_puzzle.GetCell(_emptyCellIndices[currentIndex])}.");
+            // Console.WriteLine($"Solver.Backtracker({currentIndex}). Incrementing value of {_puzzle.GetCell(_emptyCellIndices[currentIndex])}.");
             _puzzle.SetValue(_emptyCellIndices[currentIndex], newValue);
         }
         // Check if the puzzle is consistent
@@ -82,19 +82,19 @@ public class Solver
                     }
                     break;
                 }
-               // Console.WriteLine($"Solver.Backtracker({currentIndex}). Resetting cell value for cell {_puzzle.GetCell(_emptyCellIndices[i])}.");
+                // Console.WriteLine($"Solver.Backtracker({currentIndex}). Resetting cell value for cell {_puzzle.GetCell(_emptyCellIndices[i])}.");
                 _puzzle.SetValue(_emptyCellIndices[i], 0);
             }
 
             // Check if it's the last cell
             if (nextIndex == _emptyCellIndices.Length)
             {
-               // Console.WriteLine($"Solver.Backtracker({currentIndex}). Next Index is outside the list: {nextIndex}.");
+                // Console.WriteLine($"Solver.Backtracker({currentIndex}). Next Index is outside the list: {nextIndex}.");
                 return true;
             }
             if (nextIndex == currentIndex)
             {
-               // Console.WriteLine($"Solver.Backtracker({currentIndex}). Previous Index is outside the list: {nextIndex}.");
+                // Console.WriteLine($"Solver.Backtracker({currentIndex}). Previous Index is outside the list: {nextIndex}.");
                 return false;
             }
         }
@@ -105,5 +105,6 @@ public class Solver
         // Console.ReadLine();
         return Backtracker(nextIndex);
     }
+
 
 }
