@@ -88,16 +88,33 @@ public class Puzzle
         return GetCell(index).Value;
     }
 
-    public void SetValue(int x, int y, int newValue)
+    public bool SetValue(int x, int y, int newValue)
     {
-       // Console.WriteLine($"Puzzle.cs: SetValue({x}, {y}, {newValue})");
+        // Console.WriteLine($"Puzzle.cs: SetValue({x}, {y}, {newValue})");
         GetCell(x, y).Value = newValue;
+
+        return true;
     }
 
-    public void SetValue(int index, int newValue)
+    public bool SetValue(int index, int newValue)
     {
+        if (_clueIndices.Contains(index))
+        {
+            Console.WriteLine($"Index {index} is a clue cell. Update failed. Value is still {GetValue(index)}");
+            return false;
+        }
         int[] coords = GetCellCoordinatesByIndex(index);
-        SetValue(coords[0], coords[1], newValue);
+        return SetValue(coords[0], coords[1], newValue);
+    }
+
+    public bool IncrementValue(int index)
+    {
+        return SetValue(index, GetValue(index) + 1);
+    }
+
+    public bool ClearValue(int index)
+    {
+        return SetValue(index, 0);
     }
 
     public int GetPlayerValue(int x, int y)
@@ -118,7 +135,7 @@ public class Puzzle
 
     public void RegisterClue(int clueIndex)
     {
-        // Console.WriteLine($"DEBUG> Registering clue at index {clueIndex}");
+        Console.WriteLine($"DEBUG> Registering clue at index {clueIndex} with value {GetValue(clueIndex)}");
         _clueIndices.Add(clueIndex);
     }
     
@@ -252,7 +269,7 @@ public class Puzzle
 
     public void RevealCell(int x, int y)
     {
-        // Console.WriteLine($"RevealCell({x}, {y})");
+        Console.WriteLine($"RevealCell({x}, {y})");
         SetPlayerValue(x, y, GetValue(x, y));
     }
 
@@ -266,10 +283,21 @@ public class Puzzle
     {
         foreach (var clueIndex in _clueIndices)
         {
+            Console.WriteLine($"Revealing Clue at index {clueIndex}");
             RevealCell(clueIndex);
         }
     }
 
+    public void PrintClueIndices()
+    {
+        Console.Write("Clues: ");
+        foreach (var clueIndex in _clueIndices)
+        {
+            Console.Write($"{clueIndex} ");
+        }
+        Console.WriteLine();
+    }
+    
     #region ValidationMethods
     // Check for conflicts only
     public bool IsConsistent()
@@ -291,7 +319,7 @@ public class Puzzle
             }
             if (nonZeroValues != distinctColumnValues.Count)
             {
-               // Console.WriteLine($"Column index {i} has duplicate value(s)");
+                // Console.WriteLine($"Column index {i} has duplicate value(s)");
                 PrintRegion(column);
                 return false;
             }
@@ -311,7 +339,7 @@ public class Puzzle
             }
             if (nonZeroValues != distinctRowValues.Count)
             {
-               // Console.WriteLine($"Row index {i} has duplicate value(s)");
+                // Console.WriteLine($"Row index {i} has duplicate value(s)");
                 PrintRegion(row);
                 return false;
             }
@@ -331,12 +359,12 @@ public class Puzzle
             }
             if (nonZeroValues != distincBlockValues.Count)
             {
-               // Console.WriteLine($"Block index {i} has duplicate value(s)");
+                // Console.WriteLine($"Block index {i} has duplicate value(s)");
                 PrintRegion(block);
                 return false;
             }
         }
-       // Console.WriteLine("Puzzle is consistent.");
+        // Console.WriteLine("Puzzle is consistent.");
         return true;
     }
 

@@ -8,6 +8,7 @@ using Sudoku;
 Puzzle puzzle = new();
 
 // Open the file, read the content, and close it
+// string path = "./SampleInvalidSeed.csv";
 string path = "./SamplePuzzleSeed.csv";
 string fileContent = File.ReadAllText(path);
 
@@ -47,6 +48,8 @@ for (int i = 0; i < 81; i++)
     }
 }
 
+puzzle.PrintClueIndices();
+
 puzzle.RevealClues();
 Console.WriteLine("\n=================================\n");
 
@@ -58,6 +61,7 @@ Solver solver = new(puzzle);
 int numberOfSolutionsFound = solver.Solve();
 
 Console.WriteLine($"Found {numberOfSolutionsFound} solutions");
+
 /*
 
 // Create a Sudoku Puzzle
