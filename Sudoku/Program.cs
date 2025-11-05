@@ -4,6 +4,12 @@
 using System.Text;
 using Sudoku;
 
+
+Grid grid = new();
+
+Console.WriteLine(grid);
+
+return;
 // Create an empty Sudoku Puzzle
 Puzzle puzzle = new();
 

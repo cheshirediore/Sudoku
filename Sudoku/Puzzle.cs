@@ -2,6 +2,18 @@ using System.Text;
 
 namespace Sudoku;
 
+
+// REFACTORING:
+// replace the Cell[,] with a Grid object that will handle the translations
+//      between the 2d array and 1d array. It will store only integer values.
+// The Cell objects will be in a 1d array, where the index aligns with the
+//      Grid object. This way, we can pass the Grid object down the recursion
+//      stack for less overhead, and lookup cell data from the Cell[] when
+//      it's needed. Given that it is not needed for the backtrack algorithm,
+//      we can save memory usage there.
+
+
+
 /// <summary>
 /// Class <c>Puzzle</c> models the sudoku puzzle itself.
 /// 
@@ -57,7 +69,7 @@ public class Puzzle
         int[] coords = GetCellCoordinatesByIndex(index);
         return GetCell(coords[0], coords[1]);
     }
-    
+
     // This is private because other object can update the cell's value, but shouldn't
     // be replacing the field value with a different instance of the reference type.
     private void SetCell(int x, int y, Cell newCell)
@@ -82,7 +94,7 @@ public class Puzzle
     {
         return GetCell(x, y).Value;
     }
-    
+
     public int GetValue(int index)
     {
         return GetCell(index).Value;
@@ -138,7 +150,7 @@ public class Puzzle
         Console.WriteLine($"DEBUG> Registering clue at index {clueIndex} with value {GetValue(clueIndex)}");
         _clueIndices.Add(clueIndex);
     }
-    
+
     public bool IsClue(int index)
     {
         return _clueIndices.Contains(index);
@@ -297,7 +309,7 @@ public class Puzzle
         }
         Console.WriteLine();
     }
-    
+
     #region ValidationMethods
     // Check for conflicts only
     public bool IsConsistent()
@@ -390,8 +402,8 @@ public class Puzzle
     // Returns true if and only if all regions sharing the index are valid
     private bool ValidateRegionGroup(int regionIndex)
     {
-        return ValidateRegion(GetColumn(regionIndex)) 
-                && ValidateRegion(GetRow(regionIndex)) 
+        return ValidateRegion(GetColumn(regionIndex))
+                && ValidateRegion(GetRow(regionIndex))
                 && ValidateRegion(GetBlock(regionIndex));
     }
 
@@ -462,7 +474,7 @@ public class Puzzle
         }
         builder.Append("]");
 
-       // Console.WriteLine(builder);
+        // Console.WriteLine(builder);
     }
 
     public string PrintPuzzle()
