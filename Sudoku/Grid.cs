@@ -10,12 +10,12 @@ public class Grid
     {
         vertices = new int[9, 9];
 
-        // Debug dummy values
+        // Initialize values to 0
         for (int y = 0; y < 9; y++)
         {
             for (int x = 0; x < 9; x++)
             {
-                vertices[y, x] = x;
+                vertices[y, x] = 0;
             }
         }
     }

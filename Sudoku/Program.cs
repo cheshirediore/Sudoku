@@ -5,11 +5,6 @@ using System.Text;
 using Sudoku;
 
 
-Grid grid = new();
-
-Console.WriteLine(grid);
-
-return;
 // Create an empty Sudoku Puzzle
 Puzzle puzzle = new();
 
@@ -63,10 +58,29 @@ Console.WriteLine(puzzle);
 
 Console.WriteLine("\n=================================\n");
 
-Solver solver = new(puzzle);
-int numberOfSolutionsFound = solver.Solve();
+int[,] grid = new int[9, 9];
 
-Console.WriteLine($"Found {numberOfSolutionsFound} solutions");
+for (int y = 0; y < 9; y++)
+{
+    for (int x = 0; x < 9; x++)
+    {
+        grid[y, x] = puzzle.GetValue(x, y);
+    }
+}
+
+List<int[,]> solutions = new();
+
+Backtracker.Backtrack(grid, grid, solutions);
+
+Console.WriteLine($"Found {solutions.Count} solutions");
+
+Console.WriteLine("\n=================================\n");
+
+// Solver solver = new(puzzle);
+// int numberOfSolutionsFound = solver.Solve();
+
+// Console.WriteLine($"Found {numberOfSolutionsFound} solutions");
+// Console.WriteLine("\n=================================\n");
 
 /*
 
