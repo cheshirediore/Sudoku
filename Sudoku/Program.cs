@@ -10,7 +10,7 @@ Puzzle puzzle = new();
 
 // Open the file, read the content, and close it
 // string path = "./SampleInvalidSeed.csv";
-string path = "./SamplePuzzleSeed.csv";
+string path = "./SamplePuzzleSeed2.csv";
 string fileContent = File.ReadAllText(path);
 
 // Print the file content for testing purposes
@@ -75,6 +75,8 @@ Backtracker.Backtrack(grid, grid, solutions);
 Console.WriteLine($"Found {solutions.Count} solutions");
 
 Console.WriteLine("\n=================================\n");
+
+Console.WriteLine(puzzle);
 
 // Solver solver = new(puzzle);
 // int numberOfSolutionsFound = solver.Solve();
