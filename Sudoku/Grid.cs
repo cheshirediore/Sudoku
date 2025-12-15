@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 namespace Sudoku;
@@ -18,6 +19,11 @@ public class Grid
                 vertices[y, x] = 0;
             }
         }
+    }
+
+    public Grid(int[,] gridVertices)
+    {
+        vertices = gridVertices;
     }
 
     public static int[] IndexToCoordinates(int index, int width)

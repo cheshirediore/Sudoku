@@ -1,6 +1,9 @@
 ﻿
 // Set the grid width and height
 
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Sudoku;
 
@@ -10,7 +13,7 @@ Puzzle puzzle = new();
 
 // Open the file, read the content, and close it
 // string path = "./SampleInvalidSeed.csv";
-string path = "./SamplePuzzleSeed2.csv";
+string path = "./SamplePuzzleSeed.csv";
 string fileContent = File.ReadAllText(path);
 
 // Print the file content for testing purposes

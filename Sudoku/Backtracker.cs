@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace Sudoku;
 
 public class Backtracker
@@ -191,7 +194,7 @@ public class Backtracker
     // output(P, c): use the solution c of P, as appropriate to the application
     public static List<int[,]> Output(int[,] candidate, List<int[,]> solutions)
     {
-        solutions.Append(candidate);
+        solutions.Add(candidate);
         return solutions;
     }
     #endregion
