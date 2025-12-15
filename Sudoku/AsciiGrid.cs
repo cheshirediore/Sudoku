@@ -22,13 +22,31 @@ public class AsciiGrid
         fillerCharacter = filler;
 
         // Initialize default grid
-        grid = new string[Width, Height];
+        grid = new string[Height, Width];
         // Fill all cells with whitespace to enforce grid structure
         Reset();
     }
 
     public AsciiGrid(int width, int height) : this(width, height, "*")
     {
+    }
+
+    public AsciiGrid(int[,] integerGrid)
+    {
+        Height = integerGrid.GetLength(0);
+        Width = integerGrid.GetLength(1);
+        fillerCharacter = "*";
+        grid = new string[Height, Width];
+
+        // Nested for loops - row by row access
+        for (int row = 0; row < integerGrid.GetLength(0); row++)
+        {
+            for (int col = 0; col < integerGrid.GetLength(1); col++)
+            {
+                grid[row, col] = integerGrid[row, col].ToString();
+            }
+        }
+
     }
 
     public string GetGridCell(int x, int y)
@@ -40,12 +58,12 @@ public class AsciiGrid
     {
         if (x >= Width)
         {
-            throw new InvalidOperationException($"y value \"{x}\"exceeds ascii grid width \"{Width}\".");
+            throw new System.InvalidOperationException($"y value \"{x}\"exceeds ascii grid width \"{Width}\".");
         }
 
         if (y >= Height)
         {
-            throw new InvalidOperationException($"y value \"{y}\"exceeds ascii grid height \"{Height}\".");
+            throw new System.InvalidOperationException($"y value \"{y}\"exceeds ascii grid height \"{Height}\".");
         }
 
         grid[y, x] = newValue;
