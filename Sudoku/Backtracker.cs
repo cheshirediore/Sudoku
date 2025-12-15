@@ -150,14 +150,7 @@ public class Backtracker
     public static int[,]? First(int[,] data, int[,] candidate)
     {
         // Make a shallow copy of the candidate
-        int[,] grid = new int[9, 9];
-        for (int y = 0; y < 9; y++)
-        {
-            for (int x = 0; x < 9; x++)
-            {
-                grid[y, x] = candidate[y, x];
-            }
-        }
+        int[,] grid = (int[,])candidate.Clone();
 
         // Update the copy
         for (int y = 0; y < 9; y++)
