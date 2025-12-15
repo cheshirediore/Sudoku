@@ -64,7 +64,7 @@ public class Backtracker
             }
             if (nonZeroValues != distinctColumnValues.Count)
             {
-                Console.WriteLine("Duplicate values founbd in column:");
+                Console.WriteLine("Duplicate values found in column:");
                 foreach (var field in column)
                 {
                     Console.Write($"{field} ");
@@ -88,7 +88,7 @@ public class Backtracker
             }
             if (nonZeroValues != distinctRowValues.Count)
             {
-                Console.WriteLine("Duplicate values founbd in row:");
+                Console.WriteLine("Duplicate values found in row:");
                 foreach (var field in row)
                 {
                     Console.Write($"{field} ");
