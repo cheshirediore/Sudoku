@@ -38,6 +38,10 @@ public class Backtracker
         //     Environment.Exit(0);
         // }
         Console.WriteLine($"Backtrack {depth}");
+        Console.WriteLine($"Data:");
+        Console.WriteLine(new AsciiGrid(data, depth));
+        Console.WriteLine($"Candidate:");
+        Console.WriteLine(new AsciiGrid(candidate, depth));
         if (Reject(data, candidate))
         {
             Console.WriteLine($"Rejected (Depth {depth})");
@@ -134,9 +138,6 @@ public class Backtracker
                 }
             }
         }
-
-        // Check that Reject is false
-
         return true;
     }
     // first(P, c): generate the first extension of candidate c
