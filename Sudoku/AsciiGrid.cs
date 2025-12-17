@@ -14,6 +14,8 @@ public class AsciiGrid
 
     private static string HorizontalSeparator = "+-------+-------+-------+";
 
+    public string LinePrefix = "";
+
     public AsciiGrid(int width, int height, string filler)
     {
         // Set attributes
@@ -46,7 +48,14 @@ public class AsciiGrid
                 grid[row, col] = integerGrid[row, col].ToString();
             }
         }
+    }
 
+    public AsciiGrid(int[,] integerGrid, int indentationSize) : this(integerGrid)
+    {
+        for (int i = 0; i < indentationSize; i++)
+        {
+            LinePrefix = $"{LinePrefix}    ";
+        }
     }
 
     public string GetGridCell(int x, int y)
@@ -119,6 +128,8 @@ public class AsciiGrid
 
         StringBuilder builder = new();
 
+        // Add the line prefix
+        builder.Append(LinePrefix);
         // Top of the frame
         builder.AppendLine(HorizontalSeparator);
 
@@ -129,9 +140,14 @@ public class AsciiGrid
             // Add a horizontal separator before the first cell of the 4th and 7th rows
             if (y == 3 || y == 6)
             {
+                // Add the line prefix
+                builder.Append(LinePrefix);
                 builder.AppendLine(HorizontalSeparator);
             }
 
+            // Add the line prefix
+            builder.Append(LinePrefix);
+            
             // Add the left side of the frame at the start of every row
             builder.Append('|');
             for (int x = 0; x < Width; x++)
@@ -161,6 +177,8 @@ public class AsciiGrid
         }
 
         // Bottom of the frame
+        // Add the line prefix
+        builder.Append(LinePrefix);
         builder.AppendLine(HorizontalSeparator);
 
         return builder.ToString();

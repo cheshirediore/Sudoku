@@ -1,7 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Sudoku;
+
+/*
+I found the problem. It's only going down one path and checking for solutions. This is probably because the Next
+method just calls the First method. I need to find a way to get it to branch out.
+*/
 
 public class Backtracker
 {
@@ -21,25 +27,47 @@ public class Backtracker
 
     public static List<int[,]> Backtrack(int[,] data, int[,] candidate, List<int[,]> solutions)
     {
+        return Backtrack(data, candidate, solutions, 0);
+    }
+
+    public static List<int[,]> Backtrack(int[,] data, int[,] candidate, List<int[,]> solutions, int depth)
+    {
+        // string? input = Console.ReadLine();
+        // if (input != null && input == "q")
+        // {
+        //     Environment.Exit(0);
+        // }
+        Console.WriteLine($"Backtrack {depth}");
         if (Reject(data, candidate))
         {
-            Console.WriteLine("Rejected");
+            Console.WriteLine($"Rejected (Depth {depth})");
+            Console.WriteLine(new AsciiGrid(candidate, depth));
             return solutions;
         }
         if (Accept(data, candidate))
         {
-            Console.WriteLine("Accepted");
+            Console.WriteLine($"Accepted (Depth {depth})");
+            Console.WriteLine(new AsciiGrid(candidate, depth));
             return Output(candidate, solutions);
         }
 
         int[,]? nextCandidate = First(data, candidate);
+        if (nextCandidate != null)
+        {
+            Console.WriteLine($"First Candidate (Depth {depth})");
+            Console.WriteLine(new AsciiGrid(nextCandidate, depth));
+        }
         while (nextCandidate != null)
         {
-            solutions = Backtrack(data, nextCandidate, solutions);
-            nextCandidate = Next(data, nextCandidate);
+            solutions = Backtrack(candidate, nextCandidate, solutions, depth+1);
+            nextCandidate = Next(candidate, nextCandidate);
+            if (nextCandidate != null)
+            {
+                Console.WriteLine($"Next Candidate (Depth {depth})");
+                Console.WriteLine(new AsciiGrid(nextCandidate, depth));
+            }
         }
         return solutions;
-
     }
 
     // root(P): return the partial candidate at the root of the search tree
@@ -54,75 +82,40 @@ public class Backtracker
         for (int i = 0; i < 9; i++)
         {
             // Check columns
-            int nonZeroValues = 0;
             var column = GetColumnValues(candidate, i);
-            HashSet<int> distinctColumnValues = [];
+            HashSet<int> values = new();
+            
             for (int index = 0; index < column.Length; index++)
             {
-                if (column[index] != 0)
+                if (column[index] != 0 && !values.Add(column[index]))
                 {
-                    nonZeroValues++;
-                    distinctColumnValues.Add(column[index]);
+                    return true;
                 }
             }
-            if (nonZeroValues != distinctColumnValues.Count)
-            {
-                Console.WriteLine("Duplicate values found in column:");
-                foreach (var field in column)
-                {
-                    Console.Write($"{field} ");
-                }
-                Console.WriteLine();
-                return true;
-            }
-
+            values.Clear();
 
             // Check rows
-            nonZeroValues = 0;
             var row = GetRowValues(candidate, i);
-            HashSet<int> distinctRowValues = [];
             for (int index = 0; index < row.Length; index++)
             {
-                if (row[index] != 0)
+                if (row[index] != 0 && !values.Add(row[index]))
                 {
-                    nonZeroValues++;
-                    distinctRowValues.Add(row[index]);
+                    return true;
                 }
             }
-            if (nonZeroValues != distinctRowValues.Count)
-            {
-                Console.WriteLine("Duplicate values found in row:");
-                foreach (var field in row)
-                {
-                    Console.Write($"{field} ");
-                }
-                Console.WriteLine();
-                return true;
-            }
+            values.Clear();
 
 
             // Check blocks
-            nonZeroValues = 0;
             var block = GetBlockValues(candidate, i);
-            HashSet<int> distincBlockValues = [];
             for (int index = 0; index < block.Length; index++)
             {
-                if (block[index] != 0)
+                if (block[index] != 0 && !values.Add(block[index]))
                 {
-                    nonZeroValues++;
-                    distincBlockValues.Add(block[index]);
+                    return true;
                 }
             }
-            if (nonZeroValues != distincBlockValues.Count)
-            {
-                Console.WriteLine("Duplicate values founbd in block:");
-                foreach (var field in block)
-                {
-                    Console.Write($"{field} ");
-                }
-                Console.WriteLine();
-                return true;
-            }
+            values.Clear();
         }
         return false;
     }
@@ -146,7 +139,7 @@ public class Backtracker
 
         return true;
     }
-    // first(P, c): gnerate the first extension of candidate c
+    // first(P, c): generate the first extension of candidate c
     public static int[,]? First(int[,] data, int[,] candidate)
     {
         // Make a shallow copy of the candidate
@@ -160,18 +153,19 @@ public class Backtracker
                 if (candidate[y, x] != data[y, x] || data[y, x] == 0) // If the value isn't a fixed value (i.e. clue)
                 {
                     // If the value is less than 9, increment it. Otherwise, continue to the next cell.
-                    Console.Write($"({x}, {y}): ");
+                    // Console.Write($"({x}, {y}): ");
                     if (grid[y, x] < 9)
                     {
-                        Console.WriteLine(" Updated.");
+                        // Console.WriteLine(" Updated.");
                         grid[y, x] = candidate[y, x] + 1;
                         return grid;
                     }
-                    else
-                    {
-                        Console.WriteLine(" Skipped.");
-                        continue;
-                    }
+                    // else
+                    // {
+                    //     // grid[y, x] = candidate[y, x];
+                    //     // Console.WriteLine(" Skipped.");
+                    //     continue;
+                    // }
                 }
             }
         }
@@ -181,7 +175,34 @@ public class Backtracker
     // next(P, s): generate the next extension of a candidate after the extension s.
     public static int[,]? Next(int[,] data, int[,] candidate)
     {
-        return First(data, candidate);
+        // Make a shallow copy of the candidate
+        int[,] grid = (int[,])candidate.Clone();
+
+        // Update the copy
+        for (int y = 0; y < 9; y++)
+        {
+            for (int x = 0; x < 9; x++)
+            {
+                if (candidate[y, x] != data[y, x] || data[y, x] == 0) // If the value isn't a fixed value (i.e. clue)
+                {
+                    // If the value is less than 9, increment it. Otherwise, continue to the next cell.
+                    // Console.Write($"({x}, {y}): ");
+                    if (grid[y, x] < 9)
+                    {
+                        // Console.WriteLine(" Updated.");
+                        grid[y, x] = candidate[y, x] + 1;
+                        return grid;
+                    }
+                    // else
+                    // {
+                    //     grid[y, x] = candidate[y, x];
+                    //     // Console.WriteLine(" Skipped.");
+                    //     continue;
+                    // }
+                }
+            }
+        }
+        return null;
     }
 
     // output(P, c): use the solution c of P, as appropriate to the application
