@@ -114,7 +114,7 @@ public class Puzzle
     {
         if (_clueIndices.Contains(index))
         {
-            Console.WriteLine($"Index {index} is a clue cell. Update failed. Value is still {GetValue(index)}");
+            // Console.WriteLine($"[Puzzle] Index {index} is a clue cell. Update failed. Value is still {GetValue(index)}");
             return false;
         }
         int[] coords = GetCellCoordinatesByIndex(index);
@@ -149,7 +149,7 @@ public class Puzzle
 
     public void RegisterClue(int clueIndex)
     {
-        Console.WriteLine($"DEBUG> Registering clue at index {clueIndex} with value {GetValue(clueIndex)}");
+        // Console.WriteLine($"DEBUG> [Puzzle] Registering clue at index {clueIndex} with value {GetValue(clueIndex)}");
         _clueIndices.Add(clueIndex);
     }
 
@@ -283,7 +283,7 @@ public class Puzzle
 
     public void RevealCell(int x, int y)
     {
-        Console.WriteLine($"RevealCell({x}, {y})");
+        // Console.WriteLine($"[Puzzle] RevealCell({x}, {y})");
         SetPlayerValue(x, y, GetValue(x, y));
     }
 
@@ -297,14 +297,14 @@ public class Puzzle
     {
         foreach (var clueIndex in _clueIndices)
         {
-            Console.WriteLine($"Revealing Clue at index {clueIndex}");
+            // Console.WriteLine($"[Puzzle] Revealing Clue at index {clueIndex}");
             RevealCell(clueIndex);
         }
     }
 
     public void PrintClueIndices()
     {
-        Console.Write("Clues: ");
+        Console.Write("[Puzzle] Clues: ");
         foreach (var clueIndex in _clueIndices)
         {
             Console.Write($"{clueIndex} ");
