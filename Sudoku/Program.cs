@@ -34,7 +34,7 @@ foreach (var line in lines)
     for (int i = 0; i < rowValues.Length; i++)
     {
         bool success = int.TryParse(rowValues[i].Trim(), out int parsedValue);
-        puzzleSeed[index] = success ? parsedValue : 0;
+        puzzleSeed[index] = success ? parsedValue * -1 : 0; // Using negative numbers to flag the clue values using a single int
         index++;
     }
 }
@@ -79,7 +79,8 @@ Console.WriteLine($"Found {solutions.Count} solutions");
 
 Console.WriteLine("\n=================================\n");
 
-Console.WriteLine(puzzle);
+AsciiGrid asciiPuzzleGrid = new(grid);
+Console.WriteLine(asciiPuzzleGrid);
 
 Console.WriteLine("\n=================================\n");
 
