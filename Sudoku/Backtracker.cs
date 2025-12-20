@@ -89,6 +89,11 @@ public class Backtracker
             {
                 if (column[index] != 0 && !values.Add(Math.Abs(column[index])))
                 {
+                    Console.WriteLine($"Invalid Value in Column {i}: index = {index}. Value = {Math.Abs(column[index])}");
+                    for (int j = 0; j < index; j++)
+                    {
+                        Console.Write($"{Math.Abs(column[j])} ");
+                    }
                     return true;
                 }
             }
@@ -100,6 +105,11 @@ public class Backtracker
             {
                 if (row[index] != 0 && !values.Add(Math.Abs(row[index])))
                 {
+                    Console.WriteLine($"Invalid Value in Row {i}: index = {index}. Value = {Math.Abs(row[index])}");
+                    for (int j = 0; j < index; j++)
+                    {
+                        Console.Write($"{Math.Abs(row[j])} ");
+                    }
                     return true;
                 }
             }
@@ -112,6 +122,11 @@ public class Backtracker
             {
                 if (block[index] != 0 && !values.Add(Math.Abs(block[index])))
                 {
+                    Console.WriteLine($"Invalid Value in Block {i}: index = {index}. Value = {Math.Abs(block[index])}");
+                    for (int j = 0; j < index; j++)
+                    {
+                        Console.Write($"{Math.Abs(block[j])} ");
+                    }
                     return true;
                 }
             }
@@ -147,7 +162,7 @@ public class Backtracker
         {
             for (int x = 0; x < 9; x++)
             {
-                if (candidate[y, x] != data[y, x] || data[y, x] == 0) // If the value isn't a fixed value (i.e. clue)
+                if (candidate[y, x] == 0) // Find the first cell with an unset value in the partial candidate
                 {
                     // If the value is less than 9, increment it. Otherwise, continue to the next cell.
                     // Console.Write($"({x}, {y}): ");
@@ -180,7 +195,7 @@ public class Backtracker
         {
             for (int x = 0; x < 9; x++)
             {
-                if (candidate[y, x] != data[y, x] || data[y, x] == 0) // If the value isn't a fixed value (i.e. clue)
+                if (data[y, x] == 0) // Find first cell with an unset value in the parent of the partial candidate
                 {
                     // If the value is less than 9, increment it. Otherwise, continue to the next cell.
                     // Console.Write($"({x}, {y}): ");
