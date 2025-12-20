@@ -4,10 +4,6 @@ using System.Text;
 
 namespace Sudoku;
 
-/*
-I found the problem. It's only going down one path and checking for solutions. This is probably because the Next
-method just calls the First method. I need to find a way to get it to branch out.
-*/
 
 public class Backtracker
 {
