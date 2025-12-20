@@ -2,10 +2,13 @@
 // Set the grid width and height
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 using Sudoku;
+
 
 
 // Create an empty Sudoku Puzzle
@@ -78,6 +81,27 @@ Backtracker.Backtrack(grid, grid, solutions);
 Console.WriteLine($"Found {solutions.Count} solutions");
 
 Console.WriteLine("\n=================================\n");
+List<int[,]> DistinctSolutions = new();
+Console.WriteLine("Distinct Solutions not Implemented");
+// foreach(var solution in solutions)
+// {
+//     bool exists = false;
+//     foreach(var item in DistinctSolutions)
+//     {
+//         if (StructuralComparisons.StructuralEqualityComparer.Equals(solution, item))
+//         {
+//             exists = true;
+//         }
+//     }
+
+//     if (!exists)
+//     {
+//         DistinctSolutions.Add(solution);
+//     }
+// }
+Console.WriteLine($"Found {DistinctSolutions.Count} distinct solutions");
+
+Console.WriteLine("\n=================================\n");
 Console.WriteLine("Original Puzzle:");
 AsciiGrid asciiPuzzleGrid = new(grid);
 Console.WriteLine(asciiPuzzleGrid);
@@ -85,6 +109,14 @@ Console.WriteLine(asciiPuzzleGrid);
 Console.WriteLine("\n=================================\n");
 Console.WriteLine("Solutions:");
 foreach (var item in solutions)
+{
+    AsciiGrid asciiGrid = new(item);
+    Console.WriteLine(asciiGrid);
+}
+
+Console.WriteLine("\n=================================\n");
+Console.WriteLine("Distinct Solutions:");
+foreach (var item in DistinctSolutions)
 {
     AsciiGrid asciiGrid = new(item);
     Console.WriteLine(asciiGrid);
