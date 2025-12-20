@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 using System.Text;
 
@@ -45,7 +46,7 @@ public class AsciiGrid
         {
             for (int col = 0; col < integerGrid.GetLength(1); col++)
             {
-                grid[row, col] = integerGrid[row, col].ToString();
+                grid[row, col] = Math.Abs(integerGrid[row, col]).ToString();
             }
         }
     }

@@ -87,7 +87,7 @@ public class Backtracker
             
             for (int index = 0; index < column.Length; index++)
             {
-                if (column[index] != 0 && !values.Add(column[index]))
+                if (column[index] != 0 && !values.Add(Math.Abs(column[index])))
                 {
                     return true;
                 }
@@ -98,7 +98,7 @@ public class Backtracker
             var row = GetRowValues(candidate, i);
             for (int index = 0; index < row.Length; index++)
             {
-                if (row[index] != 0 && !values.Add(row[index]))
+                if (row[index] != 0 && !values.Add(Math.Abs(row[index])))
                 {
                     return true;
                 }
@@ -110,7 +110,7 @@ public class Backtracker
             var block = GetBlockValues(candidate, i);
             for (int index = 0; index < block.Length; index++)
             {
-                if (block[index] != 0 && !values.Add(block[index]))
+                if (block[index] != 0 && !values.Add(Math.Abs(block[index])))
                 {
                     return true;
                 }
