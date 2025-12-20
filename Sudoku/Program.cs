@@ -78,12 +78,12 @@ Backtracker.Backtrack(grid, grid, solutions);
 Console.WriteLine($"Found {solutions.Count} solutions");
 
 Console.WriteLine("\n=================================\n");
-
+Console.WriteLine("Original Puzzle:");
 AsciiGrid asciiPuzzleGrid = new(grid);
 Console.WriteLine(asciiPuzzleGrid);
 
 Console.WriteLine("\n=================================\n");
-
+Console.WriteLine("Solutions:");
 foreach (var item in solutions)
 {
     AsciiGrid asciiGrid = new(item);
