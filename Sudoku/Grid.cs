@@ -4,16 +4,19 @@ namespace Sudoku;
 
 public class Grid
 {
+    const int WIDTH = 9;
+    const int HEIGHT = 9;
+
     public readonly int[,] vertices;
 
     public Grid()
     {
-        vertices = new int[9, 9];
+        vertices = new int[HEIGHT, WIDTH];
 
         // Initialize values to 0
-        for (int y = 0; y < 9; y++)
+        for (int y = 0; y < HEIGHT; y++)
         {
-            for (int x = 0; x < 9; x++)
+            for (int x = 0; x < WIDTH; x++)
             {
                 vertices[y, x] = 0;
             }
