@@ -10,6 +10,7 @@ using Sudoku;
 
 class Program
 {
+    const int CELL_COUNT = 81;
 
     public static void Main()
     {
@@ -31,7 +32,7 @@ class Program
         // Console.WriteLine("\n=================================\n");
 
         // Contains the values for each cell in the puzzle. 0 indicates cell is empty.
-        int[] puzzleSeed = new int[81];
+        int[] puzzleSeed = new int[CELL_COUNT];
         int index = 0;
         foreach (var line in lines)
         {
