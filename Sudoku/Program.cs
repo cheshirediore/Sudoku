@@ -88,10 +88,10 @@ class Program
         //     Console.WriteLine(asciiPuzzleGrid);
         // }
 
-        List<int[,]> DistinctSolutions = GetDistinct2DArrays(solutions);
+        List<int[,]> distinctSolutions = GetDistinct2DArrays(solutions);
         
-        Console.WriteLine($"Found {DistinctSolutions.Count} distinct solutions");
-        foreach (var solution in DistinctSolutions)
+        Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
+        foreach (var solution in distinctSolutions)
         {
             asciiPuzzleGrid = new(solution);
             Console.WriteLine(asciiPuzzleGrid);
