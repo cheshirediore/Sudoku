@@ -28,26 +28,12 @@ public class Backtracker
 
     public static List<int[,]> Backtrack(int[,] data, int[,] candidate, List<int[,]> solutions, int depth)
     {
-        // string? input = Console.ReadLine();
-        // if (input != null && input == "q")
-        // {
-        //     Environment.Exit(0);
-        // }
-        // Console.WriteLine($"Backtrack {depth}");
-        // Console.WriteLine($"Data:");
-        // Console.WriteLine(new AsciiGrid(data, depth));
-        // Console.WriteLine($"Candidate:");
-        // Console.WriteLine(new AsciiGrid(candidate, depth));
         if (Reject(data, candidate))
         {
-            // Console.WriteLine($"Rejected (Depth {depth})");
-            // Console.WriteLine(new AsciiGrid(candidate, depth));
             return solutions;
         }
         if (Accept(data, candidate))
         {
-            // Console.WriteLine($"Accepted (Depth {depth})");
-            // Console.WriteLine(new AsciiGrid(candidate, depth));
             return Output(candidate, solutions);
         }
 
@@ -56,11 +42,6 @@ public class Backtracker
         {
             solutions = Backtrack(candidate, nextCandidate, solutions, depth+1);
             nextCandidate = Next(candidate, nextCandidate);
-            // if (nextCandidate != null)
-            // {
-            //     Console.WriteLine($"Next Candidate (Depth {depth})");
-            //     Console.WriteLine(new AsciiGrid(nextCandidate, depth));
-            // }
         }
         return solutions;
     }
@@ -86,11 +67,6 @@ public class Backtracker
             {
                 if (column[index] != 0 && !values.Add(Math.Abs(column[index])))
                 {
-                    // Console.WriteLine($"Invalid Value in Column {i}: index = {index}. Value = {Math.Abs(column[index])}");
-                    // for (int j = 0; j < index; j++)
-                    // {
-                    //     Console.Write($"{Math.Abs(column[j])} ");
-                    // }
                     return true;
                 }
             }
@@ -102,11 +78,6 @@ public class Backtracker
             {
                 if (row[index] != 0 && !values.Add(Math.Abs(row[index])))
                 {
-                    // Console.WriteLine($"Invalid Value in Row {i}: index = {index}. Value = {Math.Abs(row[index])}");
-                    // for (int j = 0; j < index; j++)
-                    // {
-                    //     Console.Write($"{Math.Abs(row[j])} ");
-                    // }
                     return true;
                 }
             }
@@ -119,11 +90,6 @@ public class Backtracker
             {
                 if (block[index] != 0 && !values.Add(Math.Abs(block[index])))
                 {
-                    // Console.WriteLine($"Invalid Value in Block {i}: index = {index}. Value = {Math.Abs(block[index])}");
-                    // for (int j = 0; j < index; j++)
-                    // {
-                    //     Console.Write($"{Math.Abs(block[j])} ");
-                    // }
                     return true;
                 }
             }
@@ -165,10 +131,8 @@ public class Backtracker
                 if (candidate[y, x] == 0) // Find the first cell with an unset value in the partial candidate
                 {
                     // If the value is less than 9, increment it. Otherwise, continue to the next cell.
-                    // Console.Write($"({x}, {y}): ");
                     if (grid[y, x] < 9)
                     {
-                        // Console.WriteLine(" Updated.");
                         grid[y, x] = candidate[y, x] + 1;
                         return grid;
                     }
@@ -196,10 +160,8 @@ public class Backtracker
                 if (data[y, x] == 0) // Find first cell with an unset value in the parent of the partial candidate
                 {
                     // If the value is less than 9, increment it. Otherwise, continue to the next cell.
-                    // Console.Write($"({x}, {y}): ");
                     if (grid[y, x] < 9)
                     {
-                        // Console.WriteLine(" Updated.");
                         grid[y, x] = candidate[y, x] + 1;
                         return grid;
                     }
