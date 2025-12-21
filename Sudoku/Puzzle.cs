@@ -365,16 +365,16 @@ public class Puzzle
             // Check blocks
             nonZeroValues = 0;
             var block = GetBlock(i);
-            HashSet<int> distincBlockValues = [];
+            HashSet<int> distinctBlockValues = [];
             for (int index = 0; index < block.Length; index++)
             {
                 if (block[index].Value != 0)
                 {
                     nonZeroValues++;
-                    distincBlockValues.Add(block[index].Value);
+                    distinctBlockValues.Add(block[index].Value);
                 }
             }
-            if (nonZeroValues != distincBlockValues.Count)
+            if (nonZeroValues != distinctBlockValues.Count)
             {
                 PrintRegion(block);
                 return false;
