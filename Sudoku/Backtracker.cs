@@ -186,7 +186,6 @@ public class Backtracker
     #region HelperFunctions
     public static int[] GetColumnValues(int[,] data, int columnIndex)
     {
-        // Console.WriteLine($"GetColumnValues(int[,] {data}, int {columnIndex})");
         int[] column = new int[9];
         for (int i = 0; i < 9; i++)
         {
@@ -197,7 +196,6 @@ public class Backtracker
 
     public static int[] GetRowValues(int[,] data, int rowIndex)
     {
-        // Console.WriteLine($"GetRowValues(int[,] {data}, int {rowIndex})");
         int[] row = new int[9];
         for (int i = 0; i < 9; i++)
         {
@@ -208,7 +206,6 @@ public class Backtracker
 
     public static int[] GetBlockValues(int[,] data, int blockIndex)
     {
-        // Console.WriteLine($"GetBlockValues(int[,] {data}, int {blockIndex})");
         int[] block = new int[9];
 
         /*
