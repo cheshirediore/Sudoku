@@ -57,13 +57,6 @@ public class Backtracker
             // Console.WriteLine($"First Candidate (Depth {depth})");
             // Console.WriteLine(new AsciiGrid(nextCandidate, depth));
         }
-        // Check that the next candidate exists and isn't a non-starter before committing to the loop.
-        if (nextCandidate != null && Reject(candidate, nextCandidate))
-        {
-            // Console.WriteLine($"First Candidate Rejected (Depth {depth})");
-            // Console.WriteLine(new AsciiGrid(candidate, depth));
-            return solutions;
-        }
         while (nextCandidate != null)
         {
             solutions = Backtrack(candidate, nextCandidate, solutions, depth+1);
