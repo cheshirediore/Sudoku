@@ -304,12 +304,12 @@ public class Puzzle
 
     public void PrintClueIndices()
     {
-        Console.Write("[Puzzle] Clues: ");
+        // Console.Write("[Puzzle] Clues: ");
         foreach (var clueIndex in _clueIndices)
         {
-            Console.Write($"{clueIndex} ");
+            // Console.Write($"{clueIndex} ");
         }
-        Console.WriteLine();
+        // Console.WriteLine();
     }
 
     #region ValidationMethods

@@ -33,45 +33,45 @@ public class Backtracker
         // {
         //     Environment.Exit(0);
         // }
-        Console.WriteLine($"Backtrack {depth}");
-        Console.WriteLine($"Data:");
-        Console.WriteLine(new AsciiGrid(data, depth));
-        Console.WriteLine($"Candidate:");
-        Console.WriteLine(new AsciiGrid(candidate, depth));
+        // Console.WriteLine($"Backtrack {depth}");
+        // Console.WriteLine($"Data:");
+        // Console.WriteLine(new AsciiGrid(data, depth));
+        // Console.WriteLine($"Candidate:");
+        // Console.WriteLine(new AsciiGrid(candidate, depth));
         if (Reject(data, candidate))
         {
-            Console.WriteLine($"Rejected (Depth {depth})");
-            Console.WriteLine(new AsciiGrid(candidate, depth));
+            // Console.WriteLine($"Rejected (Depth {depth})");
+            // Console.WriteLine(new AsciiGrid(candidate, depth));
             return solutions;
         }
         if (Accept(data, candidate))
         {
-            Console.WriteLine($"Accepted (Depth {depth})");
-            Console.WriteLine(new AsciiGrid(candidate, depth));
+            // Console.WriteLine($"Accepted (Depth {depth})");
+            // Console.WriteLine(new AsciiGrid(candidate, depth));
             return Output(candidate, solutions);
         }
 
         int[,]? nextCandidate = First(data, candidate);
         if (nextCandidate != null)
         {
-            Console.WriteLine($"First Candidate (Depth {depth})");
-            Console.WriteLine(new AsciiGrid(nextCandidate, depth));
+            // Console.WriteLine($"First Candidate (Depth {depth})");
+            // Console.WriteLine(new AsciiGrid(nextCandidate, depth));
         }
         if (Reject(data, candidate))
         {
-            Console.WriteLine($"First Candidate Rejected (Depth {depth})");
-            Console.WriteLine(new AsciiGrid(candidate, depth));
+            // Console.WriteLine($"First Candidate Rejected (Depth {depth})");
+            // Console.WriteLine(new AsciiGrid(candidate, depth));
             return solutions;
         }
         while (nextCandidate != null)
         {
             solutions = Backtrack(candidate, nextCandidate, solutions, depth+1);
             nextCandidate = Next(candidate, nextCandidate);
-            if (nextCandidate != null)
-            {
-                Console.WriteLine($"Next Candidate (Depth {depth})");
-                Console.WriteLine(new AsciiGrid(nextCandidate, depth));
-            }
+            // if (nextCandidate != null)
+            // {
+            //     Console.WriteLine($"Next Candidate (Depth {depth})");
+            //     Console.WriteLine(new AsciiGrid(nextCandidate, depth));
+            // }
         }
         return solutions;
     }
@@ -97,11 +97,11 @@ public class Backtracker
             {
                 if (column[index] != 0 && !values.Add(Math.Abs(column[index])))
                 {
-                    Console.WriteLine($"Invalid Value in Column {i}: index = {index}. Value = {Math.Abs(column[index])}");
-                    for (int j = 0; j < index; j++)
-                    {
-                        Console.Write($"{Math.Abs(column[j])} ");
-                    }
+                    // Console.WriteLine($"Invalid Value in Column {i}: index = {index}. Value = {Math.Abs(column[index])}");
+                    // for (int j = 0; j < index; j++)
+                    // {
+                    //     Console.Write($"{Math.Abs(column[j])} ");
+                    // }
                     return true;
                 }
             }
@@ -113,11 +113,11 @@ public class Backtracker
             {
                 if (row[index] != 0 && !values.Add(Math.Abs(row[index])))
                 {
-                    Console.WriteLine($"Invalid Value in Row {i}: index = {index}. Value = {Math.Abs(row[index])}");
-                    for (int j = 0; j < index; j++)
-                    {
-                        Console.Write($"{Math.Abs(row[j])} ");
-                    }
+                    // Console.WriteLine($"Invalid Value in Row {i}: index = {index}. Value = {Math.Abs(row[index])}");
+                    // for (int j = 0; j < index; j++)
+                    // {
+                    //     Console.Write($"{Math.Abs(row[j])} ");
+                    // }
                     return true;
                 }
             }
@@ -130,11 +130,11 @@ public class Backtracker
             {
                 if (block[index] != 0 && !values.Add(Math.Abs(block[index])))
                 {
-                    Console.WriteLine($"Invalid Value in Block {i}: index = {index}. Value = {Math.Abs(block[index])}");
-                    for (int j = 0; j < index; j++)
-                    {
-                        Console.Write($"{Math.Abs(block[j])} ");
-                    }
+                    // Console.WriteLine($"Invalid Value in Block {i}: index = {index}. Value = {Math.Abs(block[index])}");
+                    // for (int j = 0; j < index; j++)
+                    // {
+                    //     Console.Write($"{Math.Abs(block[j])} ");
+                    // }
                     return true;
                 }
             }

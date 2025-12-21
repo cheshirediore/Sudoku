@@ -2,11 +2,8 @@
 // Set the grid width and height
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Text;
 using Sudoku;
 
 
@@ -20,10 +17,9 @@ class Program
         Puzzle puzzle = new();
 
         // Open the file, read the content, and close it
-        // string path = "./SampleInvalidSeed.csv";
-        string path = "./SamplePuzzleSeed.csv";
+        string path = "./SampleInvalidSeed.csv";
+        // string path = "./SamplePuzzleSeed.csv";
         // string path = "./SamplePuzzleSeed2.csv";
-        // string path = "./SamplePuzzleSeed3.csv";
         string fileContent = File.ReadAllText(path);
 
         // Print the file content for testing purposes
@@ -32,7 +28,7 @@ class Program
         // Split the content by lines
         string[] lines = fileContent.Split("\n");
 
-        Console.WriteLine("\n=================================\n");
+        // Console.WriteLine("\n=================================\n");
 
         // Contains the values for each cell in the puzzle. 0 indicates cell is empty.
         int[] puzzleSeed = new int[81];
@@ -65,11 +61,11 @@ class Program
         puzzle.PrintClueIndices();
 
         puzzle.RevealClues();
-        Console.WriteLine("\n=================================\n");
+        // Console.WriteLine("\n=================================\n");
 
-        Console.WriteLine(puzzle);
+        // Console.WriteLine(puzzle);
 
-        Console.WriteLine("\n=================================\n");
+        // Console.WriteLine("\n=================================\n");
 
         int[,] grid = new int[9, 9];
 
@@ -85,11 +81,11 @@ class Program
 
         Backtracker.Backtrack(grid, grid, solutions);
 
-        Console.WriteLine($"Found {solutions.Count} solutions");
+        // Console.WriteLine($"Found {solutions.Count} solutions");
 
-        Console.WriteLine("\n=================================\n");
+        // Console.WriteLine("\n=================================\n");
         List<int[,]> DistinctSolutions = new();
-        Console.WriteLine("Checking Distinct Solutions");
+        // Console.WriteLine("Checking Distinct Solutions");
         foreach(var solution in solutions)
         {
             bool exists = false;
@@ -128,25 +124,25 @@ class Program
         }
         Console.WriteLine($"Found {DistinctSolutions.Count} distinct solutions");
 
-        Console.WriteLine("\n=================================\n");
-        Console.WriteLine("Original Puzzle:");
+        // Console.WriteLine("\n=================================\n");
+        // Console.WriteLine("Original Puzzle:");
         AsciiGrid asciiPuzzleGrid = new(grid);
-        Console.WriteLine(asciiPuzzleGrid);
+        // Console.WriteLine(asciiPuzzleGrid);
 
-        Console.WriteLine("\n=================================\n");
-        Console.WriteLine("Solutions:");
-        foreach (var item in solutions)
-        {
-            AsciiGrid asciiGrid = new(item);
-            Console.WriteLine(asciiGrid);
-        }
+        // Console.WriteLine("\n=================================\n");
+        // Console.WriteLine("Solutions:");
+        // foreach (var item in solutions)
+        // {
+        //     AsciiGrid asciiGrid = new(item);
+        //     Console.WriteLine(asciiGrid);
+        // }
 
-        Console.WriteLine("\n=================================\n");
-        Console.WriteLine("Distinct Solutions:");
-        foreach (var item in DistinctSolutions)
-        {
-            AsciiGrid asciiGrid = new(item);
-            Console.WriteLine(asciiGrid);
-        }
+        // Console.WriteLine("\n=================================\n");
+        // Console.WriteLine("Distinct Solutions:");
+        // foreach (var item in DistinctSolutions)
+        // {
+        //     AsciiGrid asciiGrid = new(item);
+        //     Console.WriteLine(asciiGrid);
+        // }
     }
 }
