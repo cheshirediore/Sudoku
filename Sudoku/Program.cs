@@ -18,8 +18,8 @@ class Program
         Puzzle puzzle = new();
 
         // Open the file, read the content, and close it
-        string path = "./SampleInvalidSeed.csv";
-        // string path = "./SamplePuzzleSeed.csv";
+        // string path = "./SampleInvalidSeed.csv";
+        string path = "./SamplePuzzleSeed.csv";
         // string path = "./SamplePuzzleSeed2.csv";
         string fileContent = File.ReadAllText(path);
 
@@ -57,11 +57,7 @@ class Program
             }
         }
 
-        //puzzle.PrintClueIndices();
-
         puzzle.RevealClues();
-
-
 
         int[,] grid = new int[9, 9];
 
@@ -82,6 +78,11 @@ class Program
         Backtracker.Backtrack(grid, grid, solutions);
 
         Console.WriteLine($"Found {solutions.Count} solutions");
+        foreach (var solution in solutions)
+        {
+            asciiPuzzleGrid = new(solution);
+            Console.WriteLine(asciiPuzzleGrid);
+        }
 
         List<int[,]> DistinctSolutions = new();
         foreach(var solution in solutions)
@@ -121,5 +122,10 @@ class Program
             }
         }
         Console.WriteLine($"Found {DistinctSolutions.Count} distinct solutions");
+        foreach (var solution in DistinctSolutions)
+        {
+            asciiPuzzleGrid = new(solution);
+            Console.WriteLine(asciiPuzzleGrid);
+        }
     }
 }
