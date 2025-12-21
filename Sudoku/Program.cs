@@ -59,7 +59,7 @@ class Program
             }
         }
 
-        puzzle.PrintClueIndices();
+        //puzzle.PrintClueIndices();
 
         puzzle.RevealClues();
         // Console.WriteLine("\n=================================\n");
