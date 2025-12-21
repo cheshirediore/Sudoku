@@ -82,7 +82,7 @@ class Program
 
         Backtracker.Backtrack(grid, grid, solutions);
 
-        // Console.WriteLine($"Found {solutions.Count} solutions");
+        Console.WriteLine($"Found {solutions.Count} solutions");
 
         // Console.WriteLine("\n=================================\n");
         List<int[,]> DistinctSolutions = new();
