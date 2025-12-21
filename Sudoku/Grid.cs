@@ -32,8 +32,8 @@ public class Grid
 
         // x = (index % width)
         coordinates[0] = index % width;
-        // y = floor(index / width)
-        coordinates[1] = (int)Math.Floor((double)(index / width));
+        // y = index / width (integer division)
+        coordinates[1] = index / width;
 
         return coordinates;
     }
