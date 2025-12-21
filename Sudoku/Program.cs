@@ -24,12 +24,10 @@ class Program
         string fileContent = File.ReadAllText(path);
 
         // Print the file content for testing purposes
-        // Console.WriteLine(fileContent);
 
         // Split the content by lines
         string[] lines = fileContent.Split("\n");
 
-        // Console.WriteLine("\n=================================\n");
 
         // Contains the values for each cell in the puzzle. 0 indicates cell is empty.
         int[] puzzleSeed = new int[CELL_COUNT];
@@ -62,11 +60,8 @@ class Program
         //puzzle.PrintClueIndices();
 
         puzzle.RevealClues();
-        // Console.WriteLine("\n=================================\n");
 
-        // Console.WriteLine(puzzle);
 
-        // Console.WriteLine("\n=================================\n");
 
         int[,] grid = new int[9, 9];
 
@@ -78,15 +73,17 @@ class Program
             }
         }
 
+        Console.WriteLine("Original Puzzle:");
+        AsciiGrid asciiPuzzleGrid = new(grid);
+        Console.WriteLine(asciiPuzzleGrid);
+        
         List<int[,]> solutions = new();
 
         Backtracker.Backtrack(grid, grid, solutions);
 
         Console.WriteLine($"Found {solutions.Count} solutions");
 
-        // Console.WriteLine("\n=================================\n");
         List<int[,]> DistinctSolutions = new();
-        // Console.WriteLine("Checking Distinct Solutions");
         foreach(var solution in solutions)
         {
             bool exists = false;
@@ -124,26 +121,5 @@ class Program
             }
         }
         Console.WriteLine($"Found {DistinctSolutions.Count} distinct solutions");
-
-        // Console.WriteLine("\n=================================\n");
-        // Console.WriteLine("Original Puzzle:");
-        AsciiGrid asciiPuzzleGrid = new(grid);
-        // Console.WriteLine(asciiPuzzleGrid);
-
-        // Console.WriteLine("\n=================================\n");
-        // Console.WriteLine("Solutions:");
-        // foreach (var item in solutions)
-        // {
-        //     AsciiGrid asciiGrid = new(item);
-        //     Console.WriteLine(asciiGrid);
-        // }
-
-        // Console.WriteLine("\n=================================\n");
-        // Console.WriteLine("Distinct Solutions:");
-        // foreach (var item in DistinctSolutions)
-        // {
-        //     AsciiGrid asciiGrid = new(item);
-        //     Console.WriteLine(asciiGrid);
-        // }
     }
 }
