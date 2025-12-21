@@ -57,6 +57,12 @@ public class Backtracker
             Console.WriteLine($"First Candidate (Depth {depth})");
             Console.WriteLine(new AsciiGrid(nextCandidate, depth));
         }
+        if (Reject(data, candidate))
+        {
+            Console.WriteLine($"First Candidate Rejected (Depth {depth})");
+            Console.WriteLine(new AsciiGrid(candidate, depth));
+            return solutions;
+        }
         while (nextCandidate != null)
         {
             solutions = Backtrack(candidate, nextCandidate, solutions, depth+1);
@@ -69,6 +75,7 @@ public class Backtracker
         }
         return solutions;
     }
+    #endregion
 
     // root(P): return the partial candidate at the root of the search tree
     public static int[,] Root(int[,] data)
@@ -76,6 +83,7 @@ public class Backtracker
         return data;
     }
 
+    #region Validation
     // reject(P, c): return true only if the partial candidate c is not worth completing
     public static bool Reject(int[,] data, int[,] candidate)
     {
@@ -151,6 +159,9 @@ public class Backtracker
         }
         return true;
     }
+    #endregion
+
+    #region Extenders
     // first(P, c): generate the first extension of candidate c
     public static int[,]? First(int[,] data, int[,] candidate)
     {
@@ -172,12 +183,10 @@ public class Backtracker
                         grid[y, x] = candidate[y, x] + 1;
                         return grid;
                     }
-                    // else
-                    // {
-                    //     // grid[y, x] = candidate[y, x];
-                    //     // Console.WriteLine(" Skipped.");
-                    //     continue;
-                    // }
+                    else
+                    {
+                        return null;
+                    }
                 }
             }
         }
@@ -205,17 +214,16 @@ public class Backtracker
                         grid[y, x] = candidate[y, x] + 1;
                         return grid;
                     }
-                    // else
-                    // {
-                    //     grid[y, x] = candidate[y, x];
-                    //     // Console.WriteLine(" Skipped.");
-                    //     continue;
-                    // }
+                    else
+                    {
+                        return null;
+                    }
                 }
             }
         }
         return null;
     }
+    #endregion
 
     // output(P, c): use the solution c of P, as appropriate to the application
     public static List<int[,]> Output(int[,] candidate, List<int[,]> solutions)
@@ -223,7 +231,6 @@ public class Backtracker
         solutions.Add(candidate);
         return solutions;
     }
-    #endregion
 
     #region HelperFunctions
     public static int[] GetColumnValues(int[,] data, int columnIndex)
