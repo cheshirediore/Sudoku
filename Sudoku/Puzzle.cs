@@ -110,7 +110,7 @@ public class Puzzle
             return false;
         }
         // Validate that the value is within the allowed range
-        if (newValue < 0 || newValue > 9)
+        if (Math.Abs(newValue) > 9)
         {
             return false;
         }
