@@ -4,6 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Reflection.Metadata;
 using Sudoku;
 
 
@@ -11,6 +13,8 @@ using Sudoku;
 class Program
 {
     const int CELL_COUNT = 81;
+    const int WIDTH = 9;
+    const int HEIGHT = 9;
 
     public static void Main()
     {
@@ -78,31 +82,48 @@ class Program
         Backtracker.Backtrack(grid, grid, solutions);
 
         Console.WriteLine($"Found {solutions.Count} solutions");
-        foreach (var solution in solutions)
+        // foreach (var solution in solutions)
+        // {
+        //     asciiPuzzleGrid = new(solution);
+        //     Console.WriteLine(asciiPuzzleGrid);
+        // }
+
+        List<int[,]> DistinctSolutions = GetDistinct2DArrays(solutions);
+        
+        Console.WriteLine($"Found {DistinctSolutions.Count} distinct solutions");
+        foreach (var solution in DistinctSolutions)
         {
             asciiPuzzleGrid = new(solution);
             Console.WriteLine(asciiPuzzleGrid);
         }
+    }
 
-        List<int[,]> DistinctSolutions = new();
-        foreach(var solution in solutions)
+    private static List<int[,]> GetDistinct2DArrays(List<int[,]> arrayList)
+    {
+        List<int[,]> distinctArrays = new();
+        // foreach(var array1 in arrayList)
+        for (int i = 0; i < arrayList.Count; i ++)
         {
+            var array1 = arrayList[i];
             bool exists = false;
-            foreach(var otherSolution in DistinctSolutions)
+            // foreach(var array2 in distinctArrays)
+            for (int j = 0; j < distinctArrays.Count; j++)
             {
+                // Console.WriteLine($"Comparing arrayList[{i}] to distinctArrays[{j}]");
+                var array2 = distinctArrays[j];
                 // If the lengths don't match, they clearly aren't the same.
-                if (solution.Length != otherSolution.Length)
+                if (array1.Length != array2.Length)
                 {
                     exists = false;
                     continue;
                 }
 
                 bool match = false;
-                foreach (var value in solution)
+                for (int y = 0; y < HEIGHT; y++)
                 {
-                    foreach (var otherValue in otherSolution)
+                    for (int x = 0; x < WIDTH; x++)
                     {
-                        match = value == otherValue;
+                        match = array1[y,x] == array2[y,x];
                         if (!match)
                         {
                             exists = false;
@@ -118,14 +139,10 @@ class Program
 
             if (!exists)
             {
-                DistinctSolutions.Add(solution);
+                distinctArrays.Add(array1);
             }
         }
-        Console.WriteLine($"Found {DistinctSolutions.Count} distinct solutions");
-        foreach (var solution in DistinctSolutions)
-        {
-            asciiPuzzleGrid = new(solution);
-            Console.WriteLine(asciiPuzzleGrid);
-        }
+
+        return distinctArrays;
     }
 }
