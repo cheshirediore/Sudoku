@@ -52,11 +52,6 @@ public class Backtracker
         }
 
         int[,]? nextCandidate = First(data, candidate);
-        if (nextCandidate != null)
-        {
-            // Console.WriteLine($"First Candidate (Depth {depth})");
-            // Console.WriteLine(new AsciiGrid(nextCandidate, depth));
-        }
         while (nextCandidate != null)
         {
             solutions = Backtrack(candidate, nextCandidate, solutions, depth+1);
