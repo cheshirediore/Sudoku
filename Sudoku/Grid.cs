@@ -53,13 +53,13 @@ public class Grid
     /// </summary>
     public int GetVertex(int index)
     {
-        int[] coords = IndexToCoordinates(index, 9);
+        int[] coords = IndexToCoordinates(index, WIDTH);
         return GetVertex(coords[0], coords[1]);
     }
 
     public void SetVertex(int index, int value)
     {
-        int[] coordinates = IndexToCoordinates(index, 9);
+        int[] coordinates = IndexToCoordinates(index, WIDTH);
         int x = coordinates[0];
         int y = coordinates[1];
 
