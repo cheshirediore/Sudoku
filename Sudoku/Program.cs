@@ -64,7 +64,7 @@ class Program
         return new AsciiGrid(grid).ToString();
     }
 
-    private int[][] GenerateGrid(string path)
+    private static int[][] GenerateGrid(string path)
     {
         // Create an empty Sudoku Puzzle
         Puzzle puzzle = new();
