@@ -43,7 +43,7 @@ public class AsciiGrid
         Width = integerGrid[0].Length;
         fillerCharacter = "*";
         grid = new string[Height][];
-        for (int y = 0; y < Width; y++)
+        for (int y = 0; y < Height; y++)
         {
             grid[y] = new string[Width];
         }
