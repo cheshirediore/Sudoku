@@ -65,9 +65,9 @@ public class Grid
         vertices[y][x] = value;
     }
 
-    // <summary>
-    // Method to get a horizontal slice of a 2D array
-    // </summary>
+    /// <summary>
+    /// Method to get a horizontal slice of a 2D array
+    /// </summary>
     public int[] GetRow(int rowIndex)
     {
         int[] row = new int[9];
@@ -78,9 +78,9 @@ public class Grid
         return row;
     }
 
-    // <summary>
-    // Method to get a vertical slice of a 2D array
-    // </summary>
+    /// <summary>
+    /// Method to get a vertical slice of a 2D array
+    /// </summary>
     public int[] GetColumn(int columnIndex)
     {
         // TODO: Handle out of bounds arguments
@@ -92,9 +92,9 @@ public class Grid
         return column;
     }
 
-    // <summary>
-    // Method to get 3x3 vector from a 2D array, transformed to a 1x9 vector.
-    // </summary>
+    /// <summary>
+    /// Method to get 3x3 vector from a 2D array, transformed to a 1x9 vector.
+    /// </summary>
     public int[] GetBlock(int blockIndex)
     {
         // TODO: Handle out of bounds arguments
