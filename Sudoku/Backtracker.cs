@@ -134,18 +134,10 @@ public class Backtracker
     public static int[][]? First(int[][] data, int[][] candidate)
     {
         // Make a shallow copy of the candidate
-        if (candidate.Length < 1)
+        int[][]? grid = MakeShallowCopy(candidate);
+        if (grid == null)
         {
             return null;
-        }
-        int[][] grid = new int[candidate.Length][];
-        for (int y = 0; y < candidate[0].Length; y++)
-        {
-            grid[y] = new int[candidate[y].Length];
-            for (int x = 0; x < candidate[y].Length; x++)
-            {
-                grid[y][x] = candidate[y][x];
-            }
         }
 
         // Update the copy
@@ -175,18 +167,10 @@ public class Backtracker
     public static int[][]? Next(int[][] data, int[][] candidate)
     {
         // Make a shallow copy of the candidate
-        if (candidate.Length < 1)
+        int[][]? grid = MakeShallowCopy(candidate);
+        if (grid == null)
         {
             return null;
-        }
-        int[][] grid = new int[candidate.Length][];
-        for (int y = 0; y < candidate[0].Length; y++)
-        {
-            grid[y] = new int[candidate[y].Length];
-            for (int x = 0; x < candidate[y].Length; x++)
-            {
-                grid[y][x] = candidate[y][x];
-            }
         }
 
         // Update the copy
@@ -335,6 +319,25 @@ public class Backtracker
             }
         }
         return block;
+    }
+
+    public static int[][]? MakeShallowCopy(int[][] candidate)
+    {
+        // Make a shallow copy of the candidate
+        if (candidate.Length < 1)
+        {
+            return null;
+        }
+        int[][] grid = new int[candidate.Length][];
+        for (int y = 0; y < candidate[0].Length; y++)
+        {
+            grid[y] = new int[candidate[y].Length];
+            for (int x = 0; x < candidate[y].Length; x++)
+            {
+                grid[y][x] = candidate[y][x];
+            }
+        }
+        return grid;
     }
     #endregion
 }
