@@ -25,7 +25,7 @@ public class AsciiGrid
 
         // Initialize default grid
         grid = new string[Height][];
-        for (int y = 0; y < Width; y++)
+        for (int y = 0; y < Height; y++)
         {
             grid[y] = new string[Width];
         }
