@@ -27,12 +27,21 @@ public class Backtracker
 
     public static List<int[][]> Backtrack(int[][] data, int[][] candidate, List<int[][]> solutions, int depth)
     {
+        // Console.WriteLine($"Backtrack {depth}");
+        // Console.WriteLine($"Data:");
+        // Console.WriteLine(new AsciiGrid(data, depth));
+        // Console.WriteLine($"Candidate:");
+        // Console.WriteLine(new AsciiGrid(candidate, depth));
         if (Reject(data, candidate))
         {
+            // Console.WriteLine($"Rejected (Depth {depth})");
+            // Console.WriteLine(new AsciiGrid(candidate, depth));
             return solutions;
         }
         if (Accept(data, candidate))
         {
+            // Console.WriteLine($"Accepted (Depth {depth})");
+            // Console.WriteLine(new AsciiGrid(candidate, depth));
             return Output(candidate, solutions);
         }
 
@@ -41,6 +50,11 @@ public class Backtracker
         {
             solutions = Backtrack(candidate, nextCandidate, solutions, depth+1);
             nextCandidate = Next(candidate, nextCandidate);
+            // if (nextCandidate != null)
+            // {
+            //     Console.WriteLine($"Next Candidate (Depth {depth})");
+            //     Console.WriteLine(new AsciiGrid(nextCandidate, depth));
+            // }
         }
         return solutions;
     }
@@ -120,7 +134,16 @@ public class Backtracker
     public static int[][]? First(int[][] data, int[][] candidate)
     {
         // Make a shallow copy of the candidate
-        int[][] grid = (int[][])candidate.Clone();
+        // int[][] grid = (int[][])candidate.Clone();
+        int[][] grid = new int[candidate.Length][];
+        for (int y = 0; y < candidate[0].Length; y++)
+        {
+            grid[y] = new int[candidate[y].Length];
+            for (int x = 0; x < candidate[y].Length; x++)
+            {
+                grid[y][x] = candidate[y][x];
+            }
+        }
 
         // Update the copy
         for (int y = 0; y < 9; y++)
