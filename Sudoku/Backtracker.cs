@@ -20,12 +20,12 @@ public class Backtracker
     //     backtrack(P, s)
     //     s ← next(P, s)
 
-    public static List<int[,]> Backtrack(int[,] data, int[,] candidate, List<int[,]> solutions)
+    public static List<int[][]> Backtrack(int[][] data, int[][] candidate, List<int[][]> solutions)
     {
         return Backtrack(data, candidate, solutions, 0);
     }
 
-    public static List<int[,]> Backtrack(int[,] data, int[,] candidate, List<int[,]> solutions, int depth)
+    public static List<int[][]> Backtrack(int[][] data, int[][] candidate, List<int[][]> solutions, int depth)
     {
         if (Reject(data, candidate))
         {
@@ -36,7 +36,7 @@ public class Backtracker
             return Output(candidate, solutions);
         }
 
-        int[,]? nextCandidate = First(data, candidate);
+        int[][]? nextCandidate = First(data, candidate);
         while (nextCandidate != null)
         {
             solutions = Backtrack(candidate, nextCandidate, solutions, depth+1);
@@ -47,14 +47,14 @@ public class Backtracker
     #endregion
 
     // root(P): return the partial candidate at the root of the search tree
-    public static int[,] Root(int[,] data)
+    public static int[][] Root(int[][] data)
     {
         return data;
     }
 
     #region Validation
     // reject(P, c): return true only if the partial candidate c is not worth completing
-    public static bool Reject(int[,] data, int[,] candidate)
+    public static bool Reject(int[][] data, int[][] candidate)
     {
         for (int i = 0; i < 9; i++)
         {
@@ -98,14 +98,14 @@ public class Backtracker
     }
 
     // accept(P, c): return true if and only if candidate c is a solution of P
-    public static bool Accept(int[,] data, int[,] candidate)
+    public static bool Accept(int[][] data, int[][] candidate)
     {
         // Check that all cells are set
         for (int y = 0; y < 9; y++)
         {
             for (int x = 0; x < 9; x++)
             {
-                if (candidate[y, x] == 0)
+                if (candidate[y][x] == 0)
                 {
                     return false;
                 }
@@ -117,22 +117,22 @@ public class Backtracker
 
     #region Extenders
     // first(P, c): generate the first extension of candidate c
-    public static int[,]? First(int[,] data, int[,] candidate)
+    public static int[][]? First(int[][] data, int[][] candidate)
     {
         // Make a shallow copy of the candidate
-        int[,] grid = (int[,])candidate.Clone();
+        int[][] grid = (int[][])candidate.Clone();
 
         // Update the copy
         for (int y = 0; y < 9; y++)
         {
             for (int x = 0; x < 9; x++)
             {
-                if (candidate[y, x] == 0) // Find the first cell with an unset value in the partial candidate
+                if (candidate[y][x] == 0) // Find the first cell with an unset value in the partial candidate
                 {
                     // If the value is less than 9, increment it. Otherwise, continue to the next cell.
-                    if (grid[y, x] < 9)
+                    if (grid[y][x] < 9)
                     {
-                        grid[y, x] = candidate[y, x] + 1;
+                        grid[y][x] = candidate[y][x] + 1;
                         return grid;
                     }
                     else
@@ -146,22 +146,22 @@ public class Backtracker
     }
 
     // next(P, s): generate the next extension of a candidate after the extension s.
-    public static int[,]? Next(int[,] data, int[,] candidate)
+    public static int[][]? Next(int[][] data, int[][] candidate)
     {
         // Make a shallow copy of the candidate
-        int[,] grid = (int[,])candidate.Clone();
+        int[][] grid = (int[][])candidate.Clone();
 
         // Update the copy
         for (int y = 0; y < 9; y++)
         {
             for (int x = 0; x < 9; x++)
             {
-                if (data[y, x] == 0) // Find first cell with an unset value in the parent of the partial candidate
+                if (data[y][x] == 0) // Find first cell with an unset value in the parent of the partial candidate
                 {
                     // If the value is less than 9, increment it. Otherwise, continue to the next cell.
-                    if (grid[y, x] < 9)
+                    if (grid[y][x] < 9)
                     {
-                        grid[y, x] = candidate[y, x] + 1;
+                        grid[y][x] = candidate[y][x] + 1;
                         return grid;
                     }
                     else
@@ -176,34 +176,34 @@ public class Backtracker
     #endregion
 
     // output(P, c): use the solution c of P, as appropriate to the application
-    public static List<int[,]> Output(int[,] candidate, List<int[,]> solutions)
+    public static List<int[][]> Output(int[][] candidate, List<int[][]> solutions)
     {
         solutions.Add(candidate);
         return solutions;
     }
 
     #region HelperFunctions
-    public static int[] GetColumnValues(int[,] data, int columnIndex)
+    public static int[] GetColumnValues(int[][] data, int columnIndex)
     {
         int[] column = new int[9];
         for (int i = 0; i < 9; i++)
         {
-            column[i] = data[i, columnIndex];
+            column[i] = data[i][columnIndex];
         }
         return column;
     }
 
-    public static int[] GetRowValues(int[,] data, int rowIndex)
+    public static int[] GetRowValues(int[][] data, int rowIndex)
     {
         int[] row = new int[9];
         for (int i = 0; i < 9; i++)
         {
-            row[i] = data[rowIndex, i];
+            row[i] = data[rowIndex][i];
         }
         return row;
     }
 
-    public static int[] GetBlockValues(int[,] data, int blockIndex)
+    public static int[] GetBlockValues(int[][] data, int blockIndex)
     {
         int[] block = new int[9];
 
@@ -292,7 +292,7 @@ public class Backtracker
         {
             for (int rowIndex = 0; rowIndex < rowIndices.Length; rowIndex++)
             {
-                block[i] = data[rowIndices[rowIndex], columnIndices[columnIndex]];
+                block[i] = data[rowIndices[rowIndex]][columnIndices[columnIndex]];
                 i++;
             }
         }
