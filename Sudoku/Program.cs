@@ -10,7 +10,6 @@ using Sudoku;
 
 class Program
 {
-    const int CELL_COUNT = 81;
     const int WIDTH = 9;
     const int HEIGHT = 9;
 
@@ -65,7 +64,7 @@ class Program
         return new AsciiGrid(grid).ToString();
     }
 
-    private static int[][] GenerateGrid(string path)
+    private int[][] GenerateGrid(string path)
     {
         // Create an empty Sudoku Puzzle
         Puzzle puzzle = new();
@@ -79,7 +78,7 @@ class Program
         string[] lines = fileContent.Split("\n");
 
         // Contains the values for each cell in the puzzle. 0 indicates cell is empty.
-        int[] puzzleSeed = new int[CELL_COUNT];
+        int[] puzzleSeed = new int[WIDTH * HEIGHT];
         int index = 0;
         foreach (var line in lines)
         {
@@ -96,7 +95,7 @@ class Program
         // initialize the puzzle grid. This could be combined with the previous loop for efficiency, 
         // but this is just for testing anyway. Ultimately, this will probably be an argument for the 
         // Puzzle constructor.
-        for (int i = 0; i < 81; i++)
+        for (int i = 0; i < WIDTH * HEIGHT; i++)
         {
             puzzle.SetValue(i, puzzleSeed[i]);
             puzzle.SetPlayerValue(i, puzzleSeed[i]);
@@ -108,12 +107,12 @@ class Program
 
         puzzle.RevealClues();
 
-        int[][] grid = new int[9][];
+        int[][] grid = new int[HEIGHT][];
 
-        for (int y = 0; y < 9; y++)
+        for (int y = 0; y < HEIGHT; y++)
         {
-            grid[y] = new int[9];
-            for (int x = 0; x < 9; x++)
+            grid[y] = new int[WIDTH];
+            for (int x = 0; x < WIDTH; x++)
             {
                 grid[y][x] = puzzle.GetValue(x, y);
             }
