@@ -5,14 +5,7 @@ using System.Text;
 namespace Sudoku;
 
 
-// REFACTORING:
-// replace the Cell[,] with a Grid object that will handle the translations
-//      between the 2d array and 1d array. It will store only integer values.
-// The Cell objects will be in a 1d array, where the index aligns with the
-//      Grid object. This way, we can pass the Grid object down the recursion
-//      stack for less overhead, and lookup cell data from the Cell[] when
-//      it's needed. Given that it is not needed for the backtrack algorithm,
-//      we can save memory usage there.
+// DEPRECATED
 
 
 
