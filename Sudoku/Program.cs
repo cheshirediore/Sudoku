@@ -22,11 +22,20 @@ class Program
         ];
 
         int pathNumber = 0;
+
         if (args.Length > 0)
         {
             if (int.TryParse(args[0], out pathNumber))
             {
-                Console.WriteLine($"Using {seedPaths[pathNumber]}");
+                if (pathNumber >= 0 && pathNumber < seedPaths.Length)
+                { 
+                    Console.WriteLine($"Using {seedPaths[pathNumber]}");
+                } 
+                else
+                {
+                    Console.WriteLine($"Provided argument {pathNumber} invalid. Using {seedPaths[pathNumber]} as path.");
+                    pathNumber = 0;
+                }
             }
         }
 
