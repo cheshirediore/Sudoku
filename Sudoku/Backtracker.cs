@@ -307,7 +307,7 @@ public class Backtracker
                 rowIndices = THIRD;
                 break;
             default:
-                throw new ArgumentOutOfRangeException("blockIndex", $"blockIndex must be an integer between 0 and 8 (inclusive). Received '{blockIndex}'.");
+                throw new ArgumentOutOfRangeException(nameof(blockIndex), $"blockIndex must be an integer between 0 and 8 (inclusive). Received '{blockIndex}'.");
         }
 
         // Iterate through the indices to get the cells in the block, as defined above
