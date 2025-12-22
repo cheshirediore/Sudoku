@@ -133,17 +133,17 @@ public class Backtracker
     // first(P, c): generate the first extension of candidate c
     public static int[][]? First(int[][] data, int[][] candidate)
     {
-        // Make a shallow copy of the candidate
-        int[][]? grid = MakeShallowCopy(candidate);
-        if (grid == null)
+        if (candidate.Length < 1)
         {
             return null;
         }
+        // Make a shallow copy of the candidate
+        int[][] grid = MakeShallowCopy(candidate);
 
         // Update the copy
-        for (int y = 0; y < 9; y++)
+        for (int y = 0; y < grid.Length; y++)
         {
-            for (int x = 0; x < 9; x++)
+            for (int x = 0; x < grid[0].Length; x++)
             {
                 if (candidate[y][x] == 0) // Find the first cell with an unset value in the partial candidate
                 {
@@ -166,17 +166,17 @@ public class Backtracker
     // next(P, s): generate the next extension of a candidate after the extension s.
     public static int[][]? Next(int[][] data, int[][] candidate)
     {
-        // Make a shallow copy of the candidate
-        int[][]? grid = MakeShallowCopy(candidate);
-        if (grid == null)
+        if (candidate.Length < 1)
         {
             return null;
         }
+        // Make a shallow copy of the candidate
+        int[][] grid = MakeShallowCopy(candidate);
 
         // Update the copy
-        for (int y = 0; y < 9; y++)
+        for (int y = 0; y < grid.Length; y++)
         {
-            for (int x = 0; x < 9; x++)
+            for (int x = 0; x < grid[0].Length; x++)
             {
                 if (data[y][x] == 0) // Find first cell with an unset value in the parent of the partial candidate
                 {
@@ -321,13 +321,9 @@ public class Backtracker
         return block;
     }
 
-    public static int[][]? MakeShallowCopy(int[][] candidate)
+    public static int[][] MakeShallowCopy(int[][] candidate)
     {
         // Make a shallow copy of the candidate
-        if (candidate.Length < 1)
-        {
-            return null;
-        }
         int[][] grid = new int[candidate.Length][];
         for (int y = 0; y < candidate[0].Length; y++)
         {
