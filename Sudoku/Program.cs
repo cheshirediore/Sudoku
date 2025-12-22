@@ -42,7 +42,7 @@ class Program
         string path = seedPaths[pathNumber];
         
         // Read the input seed file and generate a sudoku grid array
-        int[][] grid = GenerateGrid(path);
+        int[][] grid = ImportSeedFile(path);
 
         // Solve the sudoku puzzle
         List<int[][]> solutions = new();
@@ -73,7 +73,7 @@ class Program
         return new AsciiGrid(grid).ToString();
     }
 
-    private static int[][] GenerateGrid(string path)
+    private static int[][] ImportSeedFile(string path)
     {
         // Open the file, read the content, and close it
         string fileContent = File.ReadAllText(path);
