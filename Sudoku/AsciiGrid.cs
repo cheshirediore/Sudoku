@@ -138,7 +138,8 @@ public class AsciiGrid
 
         // Add the line prefix
         builder.Append(LinePrefix);
-        // Top of the frame
+
+        // Add the top of the frame
         builder.AppendLine(HorizontalSeparator);
 
         // Althought we normally access the cells column by column,

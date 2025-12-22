@@ -1,5 +1,6 @@
 using System;
 namespace Sudoku;
+// DEPRECATED
 
 /// <summary>
 /// Class <c>Cell</c> models the individual squares in a sudoku puzzle.

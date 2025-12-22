@@ -75,60 +75,47 @@ class Program
 
     private static int[][] GenerateGrid(string path)
     {
-        // Create an empty Sudoku Puzzle
-        Puzzle puzzle = new();
-
         // Open the file, read the content, and close it
         string fileContent = File.ReadAllText(path);
 
-        // Print the file content for testing purposes
-
         // Split the content by lines
         string[] lines = fileContent.Split("\n");
-
-        // Contains the values for each cell in the puzzle. 0 indicates cell is empty.
-        int[] puzzleSeed = new int[WIDTH * HEIGHT];
-        int index = 0;
-        foreach (var line in lines)
+        if (lines.Length != HEIGHT)
         {
-            // Split the line by commas, and trim off the whitespace
-            string[] rowValues = line.Split(",");
-            for (int i = 0; i < rowValues.Length; i++)
-            {
-                bool success = int.TryParse(rowValues[i].Trim(), out int parsedValue);
-                puzzleSeed[index] = success ? parsedValue * -1 : 0; // Using negative numbers to flag the clue values using a single int
-                index++;
-            }
+            throw new ArgumentOutOfRangeException(path, $"Input puzzle seed must have {HEIGHT} lines. Provided seed has '{lines.Length}'.");
         }
-
-        // initialize the puzzle grid. This could be combined with the previous loop for efficiency, 
-        // but this is just for testing anyway. Ultimately, this will probably be an argument for the 
-        // Puzzle constructor.
-        for (int i = 0; i < WIDTH * HEIGHT; i++)
-        {
-            puzzle.SetValue(i, puzzleSeed[i]);
-            puzzle.SetPlayerValue(i, puzzleSeed[i]);
-            if (puzzleSeed[i] != 0)
-            {
-                puzzle.RegisterClue(i);
-            }
-        }
-
-        puzzle.RevealClues();
-
+        // Initialize grid
         int[][] grid = new int[HEIGHT][];
 
+        // Iterate over the lines and add the values to the grid
         for (int y = 0; y < HEIGHT; y++)
         {
+            // Create the row in the grid
             grid[y] = new int[WIDTH];
-            for (int x = 0; x < WIDTH; x++)
+
+            // Split the line by commas, and trim off the whitespace
+            string[] rowValues = lines[y].Split(",");
+            // Verify that the width is correct before adding it to the grid
+            if (rowValues.Length != WIDTH)
             {
-                grid[y][x] = puzzle.GetValue(x, y);
+                throw new ArgumentOutOfRangeException(path, $"'{rowValues.Length}' is an invalid width. All rows in the input puzzle seed must have a width of {WIDTH}.");
+            }
+            // Verify that each string is numeric, and add it to the grid if it is. Otherwise, throw an exception. TODO: change line 104 into a verbose IF/ELSE block with tha exception
+            for (int x = 0; x < rowValues.Length; x++)
+            {
+                // bool success = int.TryParse(rowValues[x].Trim(), out int parsedValue);
+                // grid[y][x] = success ? parsedValue * -1 : 0; 
+                if (int.TryParse(rowValues[x].Trim(), out int parsedValue))
+                {
+                    // Using negative numbers to flag the clue values using a single int
+                    grid[y][x] = parsedValue * -1;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException(path, $"Invalid value passed in puzzle seed. Check file for non-numeric characters.");
+                }
             }
         }
-
-        // Console.WriteLine(puzzle);
-
         return grid;
     }
 
