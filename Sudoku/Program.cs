@@ -61,13 +61,14 @@ class Program
 
         puzzle.RevealClues();
 
-        int[,] grid = new int[9, 9];
+        int[][] grid = new int[9][];
 
         for (int y = 0; y < 9; y++)
         {
+            grid[y] = new int[9];
             for (int x = 0; x < 9; x++)
             {
-                grid[y, x] = puzzle.GetValue(x, y);
+                grid[y][x] = puzzle.GetValue(x, y);
             }
         }
 
@@ -75,7 +76,7 @@ class Program
         AsciiGrid asciiPuzzleGrid = new(grid);
         Console.WriteLine(asciiPuzzleGrid);
         
-        List<int[,]> solutions = new();
+        List<int[][]> solutions = new();
 
         Backtracker.Backtrack(grid, grid, solutions);
 
@@ -86,7 +87,7 @@ class Program
         //     Console.WriteLine(asciiPuzzleGrid);
         // }
 
-        List<int[,]> distinctSolutions = GetDistinct2DArrays(solutions);
+        List<int[][]> distinctSolutions = GetDistinct2DArrays(solutions);
         
         Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
         foreach (var solution in distinctSolutions)
@@ -96,9 +97,9 @@ class Program
         }
     }
 
-    private static List<int[,]> GetDistinct2DArrays(List<int[,]> arrayList)
+    private static List<int[][]> GetDistinct2DArrays(List<int[][]> arrayList)
     {
-        List<int[,]> distinctArrays = new();
+        List<int[][]> distinctArrays = new();
         // foreach(var array1 in arrayList)
         for (int i = 0; i < arrayList.Count; i ++)
         {
@@ -121,7 +122,7 @@ class Program
                 {
                     for (int x = 0; x < WIDTH; x++)
                     {
-                        match = array1[y,x] == array2[y,x];
+                        match = array1[y][x] == array2[y][x];
                         if (!match)
                         {
                             exists = false;
