@@ -10,7 +10,7 @@ public class AsciiGrid
     public int Width;
     public int Height;
     public string fillerCharacter;
-    public string[,] grid;
+    public string[][] grid;
 
     private static string HorizontalSeparator = "+-------+-------+-------+";
 
@@ -24,7 +24,11 @@ public class AsciiGrid
         fillerCharacter = filler;
 
         // Initialize default grid
-        grid = new string[Height, Width];
+        grid = new string[Height][];
+        for (int y = 0; y < Width; y++)
+        {
+            grid[y] = new string[Width];
+        }
         // Fill all cells with whitespace to enforce grid structure
         Reset();
     }
@@ -33,24 +37,28 @@ public class AsciiGrid
     {
     }
 
-    public AsciiGrid(int[,] integerGrid)
+    public AsciiGrid(int[][] integerGrid)
     {
-        Height = integerGrid.GetLength(0);
-        Width = integerGrid.GetLength(1);
+        Height = integerGrid.Length;
+        Width = integerGrid[0].Length;
         fillerCharacter = "*";
-        grid = new string[Height, Width];
+        grid = new string[Height][];
+        for (int y = 0; y < Width; y++)
+        {
+            grid[y] = new string[Width];
+        }
 
         // Nested for loops - row by row access
-        for (int row = 0; row < integerGrid.GetLength(0); row++)
+        for (int row = 0; row < Height; row++)
         {
-            for (int col = 0; col < integerGrid.GetLength(1); col++)
+            for (int col = 0; col < Width; col++)
             {
-                grid[row, col] = Math.Abs(integerGrid[row, col]).ToString();
+                grid[row][col] = Math.Abs(integerGrid[row][col]).ToString();
             }
         }
     }
 
-    public AsciiGrid(int[,] integerGrid, int indentationSize) : this(integerGrid)
+    public AsciiGrid(int[][] integerGrid, int indentationSize) : this(integerGrid)
     {
         for (int i = 0; i < indentationSize; i++)
         {
@@ -60,7 +68,7 @@ public class AsciiGrid
 
     public string GetGridCell(int x, int y)
     {
-        return grid[y, x];
+        return grid[y][x];
     }
 
     public void SetGridCell(int x, int y, string newValue)
@@ -75,7 +83,7 @@ public class AsciiGrid
             throw new System.InvalidOperationException($"y value \"{y}\"exceeds ascii grid height \"{Height}\".");
         }
 
-        grid[y, x] = newValue;
+        grid[y][x] = newValue;
     }
 
     public void AddFrame(string frameCharacter)
@@ -83,19 +91,19 @@ public class AsciiGrid
         for (int x = 0; x < Height; x++)
         {
             // Set the leftmost column
-            grid[0, x] = frameCharacter;
+            grid[0][x] = frameCharacter;
 
             // Set the rightmost column
-            grid[Width - 1, x] = frameCharacter;
+            grid[Width - 1][x] = frameCharacter;
         }
 
         for (int y = 0; y < Width; y++)
         {
             // Set the top row
-            grid[y, 0] = frameCharacter;
+            grid[y][0] = frameCharacter;
 
             // Set the bottom row
-            grid[y, Height - 1] = frameCharacter;
+            grid[y][Height - 1] = frameCharacter;
         }
     }
 
@@ -110,7 +118,7 @@ public class AsciiGrid
         {
             for (int y = 0; y < Height; y++)
             {
-                grid[y, x] = character;
+                grid[y][x] = character;
             }
         }
     }

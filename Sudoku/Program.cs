@@ -14,22 +14,69 @@ class Program
     const int WIDTH = 9;
     const int HEIGHT = 9;
 
-    public static void Main()
+    public static void Main(string[] args)
+    {
+        string[] seedPaths = [
+            "./SamplePuzzleSeed.csv",
+            "./SamplePuzzleSeed2.csv",
+            "./SampleInvalidSeed.csv"
+        ];
+
+        int pathNumber = 0;
+        if (args.Length > 0)
+        {
+            if (int.TryParse(args[0], out pathNumber))
+            {
+                Console.WriteLine($"Using {seedPaths[pathNumber]}");
+            }
+        }
+
+        string path = seedPaths[pathNumber];
+        
+        // Read the input seed file and generate a sudoku grid array
+        int[][] grid = GenerateGrid(path);
+
+        // Solve the sudoku puzzle
+        List<int[][]> solutions = new();
+        Backtracker.Backtrack(grid, grid, solutions);
+
+        // Distill the list of solutions to filter out the duplicates (ideally, this is redundant; it has not been proven for this process)
+        List<int[][]> distinctSolutions = GetDistinct2DArrays(solutions);
+        
+        // Output the results
+        
+        Console.WriteLine("Original Puzzle:");
+        Console.WriteLine(GetAsciiReprGrid(grid));
+        Console.WriteLine($"Found {solutions.Count} solutions");
+        // foreach (var solution in solutions)
+        // {
+        //      Console.WriteLine(GetAsciiReprGrid(solution));
+        // }
+        Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
+        // foreach (var solution in distinctSolutions)
+        // {
+        //     Console.WriteLine(GetAsciiReprGrid(solution));
+        // }
+        
+    }
+
+    private static string GetAsciiReprGrid(int[][] grid)
+    {
+        return new AsciiGrid(grid).ToString();
+    }
+
+    private static int[][] GenerateGrid(string path)
     {
         // Create an empty Sudoku Puzzle
         Puzzle puzzle = new();
 
         // Open the file, read the content, and close it
-        // string path = "./SampleInvalidSeed.csv";
-        string path = "./SamplePuzzleSeed.csv";
-        // string path = "./SamplePuzzleSeed2.csv";
         string fileContent = File.ReadAllText(path);
 
         // Print the file content for testing purposes
 
         // Split the content by lines
         string[] lines = fileContent.Split("\n");
-
 
         // Contains the values for each cell in the puzzle. 0 indicates cell is empty.
         int[] puzzleSeed = new int[CELL_COUNT];
@@ -72,29 +119,9 @@ class Program
             }
         }
 
-        Console.WriteLine("Original Puzzle:");
-        AsciiGrid asciiPuzzleGrid = new(grid);
-        Console.WriteLine(asciiPuzzleGrid);
-        
-        List<int[][]> solutions = new();
+        // Console.WriteLine(puzzle);
 
-        Backtracker.Backtrack(grid, grid, solutions);
-
-        Console.WriteLine($"Found {solutions.Count} solutions");
-        // foreach (var solution in solutions)
-        // {
-        //     asciiPuzzleGrid = new(solution);
-        //     Console.WriteLine(asciiPuzzleGrid);
-        // }
-
-        List<int[][]> distinctSolutions = GetDistinct2DArrays(solutions);
-        
-        Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
-        foreach (var solution in distinctSolutions)
-        {
-            asciiPuzzleGrid = new(solution);
-            Console.WriteLine(asciiPuzzleGrid);
-        }
+        return grid;
     }
 
     private static List<int[][]> GetDistinct2DArrays(List<int[][]> arrayList)
