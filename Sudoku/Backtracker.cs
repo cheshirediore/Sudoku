@@ -256,8 +256,8 @@ public class Backtracker
             (columns 6, 7, 8) intersect (rows 6, 7, 8)
         */
 
-        int[] columnIndices = new int[3];
-        int[] rowIndices = new int[3];
+        int[] columnIndices;
+        int[] rowIndices;
 
         // Give useful names to the index groups
         int[] FIRST = [0, 1, 2];
@@ -306,15 +306,19 @@ public class Backtracker
                 columnIndices = THIRD;
                 rowIndices = THIRD;
                 break;
+            default:
+                throw new ArgumentOutOfRangeException("blockIndex", $"blockIndex must be an integer between 0 and 8 (inclusive). Received '{blockIndex}'.");
         }
 
         // Iterate through the indices to get the cells in the block, as defined above
         int i = 0;
         for (int columnIndex = 0; columnIndex < columnIndices.Length; columnIndex++)
         {
+            int x = columnIndices[columnIndex];
             for (int rowIndex = 0; rowIndex < rowIndices.Length; rowIndex++)
             {
-                block[i] = data[rowIndices[rowIndex]][columnIndices[columnIndex]];
+                int y = rowIndices[rowIndex];
+                block[i] = data[y][x];
                 i++;
             }
         }
