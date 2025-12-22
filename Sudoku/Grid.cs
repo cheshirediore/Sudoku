@@ -7,23 +7,22 @@ public class Grid
     const int WIDTH = 9;
     const int HEIGHT = 9;
 
-    public readonly int[,] vertices;
+    public readonly int[][] vertices;
 
     public Grid()
     {
-        vertices = new int[HEIGHT, WIDTH];
+        // Initialize (the list of rows part of) the jagged array 
+        vertices = new int[HEIGHT][];
 
-        // Initialize values to 0
+        // Initialize rows, and set all values to 0 (the default integer value, conveniently)
         for (int y = 0; y < HEIGHT; y++)
         {
-            for (int x = 0; x < WIDTH; x++)
-            {
-                vertices[y, x] = 0;
-            }
+            // Initialize an individual row of WIDTH length in the jagged array
+            vertices[y] = new int[WIDTH];
         }
     }
 
-    public Grid(int[,] gridVertices)
+    public Grid(int[][] gridVertices)
     {
         vertices = gridVertices;
     }
@@ -45,7 +44,7 @@ public class Grid
     /// </summary>
     public int GetVertex(int x, int y)
     {
-        return vertices[y, x];
+        return vertices[y][x];
     }
 
     /// <summary>
@@ -63,7 +62,7 @@ public class Grid
         int x = coordinates[0];
         int y = coordinates[1];
 
-        vertices[y, x] = value;
+        vertices[y][x] = value;
     }
 
     // <summary>
@@ -199,7 +198,7 @@ public class Grid
         {
             for (int x = 0; x < 9; x++)
             {
-                builder.Append($"{vertices[y, x]} ");
+                builder.Append($"{vertices[y][x]} ");
             }
             builder.AppendLine();
         }
