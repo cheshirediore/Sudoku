@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 
 /// <summary>
 /// Class <c>AsciiGrid</c> is a scaffolding class that renders 2D array values to the terminal.
@@ -134,7 +133,7 @@ public class AsciiGrid
          *    Format the 2D array as an ASCII drawing
          */
 
-        StringBuilder builder = new();
+        System.Text.StringBuilder builder = new();
 
         // Add the line prefix
         builder.Append(LinePrefix);

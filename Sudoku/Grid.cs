@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace Sudoku;
 
 public class Grid
@@ -235,7 +233,7 @@ public class Grid
 
     public override string ToString()
     {
-        StringBuilder builder = new();
+        System.Text.StringBuilder builder = new();
 
         for (int y = 0; y < 9; y++)
         {

@@ -13,12 +13,14 @@ class Program
 
     public static void Main(string[] args)
     {
+        // Hard-Coded paths for testing
         string[] seedPaths = [
             "./SamplePuzzleSeed.csv",
             "./SamplePuzzleSeed2.csv",
             "./SampleInvalidSeed.csv"
         ];
 
+        // Parse the CLI input and try to select a file path from the above list
         int pathNumber = 0;
 
         if (args.Length > 0)
@@ -39,22 +41,32 @@ class Program
 
         string path = seedPaths[pathNumber];
         
+        // Verify that the chosen path actually exists
+        if (!File.Exists(path))
+        {
+            Console.WriteLine($"File path '{seedPaths[pathNumber]}' not found. Verify the file exists, and that the permissions are correct.");
+        }
+
         // Read the input seed file and generate a sudoku grid array
-        // int[][] grid = ImportSeedFile(path);
         Grid grid = new(path);
 
         // Solve the sudoku puzzle
         List<int[][]> solutions = new();
         Backtracker.Backtrack(grid.Vertices, grid.Vertices, solutions);
 
-        // Distill the list of solutions to filter out the duplicates (ideally, this is redundant; it has not been proven for this process)
+        // Distill the list of solutions to filter out the duplicates
+        // Ideally, this step is redundant. However, if there is something wrong in the solving process,
+        // then this will highlight a discrepancy.
         List<int[][]> distinctSolutions = GetDistinct2DArrays(solutions);
         
         // Output the results
-        
         Console.WriteLine("Original Puzzle:");
         Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
         Console.WriteLine($"Found {solutions.Count} solutions");
+        if (solutions.Count > 0)
+        {
+            Console.WriteLine(GetAsciiReprGrid(solutions[0]));
+        }
         // foreach (var solution in solutions)
         // {
         //      Console.WriteLine(GetAsciiReprGrid(solution));
@@ -70,52 +82,6 @@ class Program
     private static string GetAsciiReprGrid(int[][] grid)
     {
         return new AsciiGrid(grid).ToString();
-    }
-
-    private static int[][] ImportSeedFile(string path)
-    {
-        // Open the file, read the content, and close it
-        string fileContent = File.ReadAllText(path);
-
-        // Split the content by lines
-        string[] lines = fileContent.Split("\n");
-        if (lines.Length != HEIGHT)
-        {
-            throw new ArgumentOutOfRangeException(path, $"Input puzzle seed must have {HEIGHT} lines. Provided seed has '{lines.Length}'.");
-        }
-        // Initialize grid
-        int[][] grid = new int[HEIGHT][];
-
-        // Iterate over the lines and add the values to the grid
-        for (int y = 0; y < HEIGHT; y++)
-        {
-            // Create the row in the grid
-            grid[y] = new int[WIDTH];
-
-            // Split the line by commas, and trim off the whitespace
-            string[] rowValues = lines[y].Split(",");
-            // Verify that the width is correct before adding it to the grid
-            if (rowValues.Length != WIDTH)
-            {
-                throw new ArgumentOutOfRangeException(path, $"'{rowValues.Length}' is an invalid width. All rows in the input puzzle seed must have a width of {WIDTH}.");
-            }
-            // Verify that each string is numeric, and add it to the grid if it is. Otherwise, throw an exception. TODO: change line 104 into a verbose IF/ELSE block with tha exception
-            for (int x = 0; x < rowValues.Length; x++)
-            {
-                // bool success = int.TryParse(rowValues[x].Trim(), out int parsedValue);
-                // grid[y][x] = success ? parsedValue * -1 : 0; 
-                if (int.TryParse(rowValues[x].Trim(), out int parsedValue))
-                {
-                    // Using negative numbers to flag the clue values using a single int
-                    grid[y][x] = parsedValue * -1;
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException(path, $"Invalid value passed in puzzle seed. Check file for non-numeric characters.");
-                }
-            }
-        }
-        return grid;
     }
 
     private static List<int[][]> GetDistinct2DArrays(List<int[][]> arrayList)
