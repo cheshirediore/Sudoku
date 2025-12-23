@@ -1,6 +1,8 @@
+using System;
+
 namespace Sudoku;
 
-public class Grid
+public class Grid: IEquatable<Grid>
 {
     public const int WIDTH = 9;
     public const int HEIGHT = 9;
@@ -282,5 +284,23 @@ public class Grid
             }
         }
         return newGrid;
+    }
+
+    public bool Equals(Grid? other)
+    {
+        return other != null && GetHashCode() == other.GetHashCode();
+    }
+
+    public override int GetHashCode()
+    {
+        int hash = 0;
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            for (int x = 0; x < WIDTH; x++)
+            {
+                hash = HashCode.Combine(hash, GetVertex(x, y));
+            }
+        }
+        return hash;
     }
 }
