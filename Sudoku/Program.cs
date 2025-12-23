@@ -47,7 +47,7 @@ class Program
         Grid grid = new(path);
 
         // Create a Solver to process the imported seed file
-        Solver solver = new(grid);
+        Solver solver = new Backtracker(grid);
 
         // Solve the sudoku puzzle
         List<int[][]> solutions = solver.Solve();

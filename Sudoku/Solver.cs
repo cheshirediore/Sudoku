@@ -2,19 +2,11 @@ using System.Collections.Generic;
 
 namespace Sudoku;
 
-public class Solver
+public abstract class Solver
 {
-    public Grid Puzzle;
+    // A reference to the original puzzle the object is dedicated to solving.
+    public abstract Grid Puzzle {get; init;}
 
-    public Solver(Grid sudokuGrid)
-    {
-        Puzzle = sudokuGrid;
-    }
-
-    public List<int[][]> Solve()
-    {
-        // Solve the sudoku puzzle using backtracking
-        List<int[][]> solutions = Backtracker.Backtrack(Puzzle.Vertices, Puzzle.Vertices, new List<int[][]>()); 
-        return solutions;
-    }
+    // A method to return one or more solution(s) to the puzzle
+    public abstract List<int[][]> Solve();
 }
