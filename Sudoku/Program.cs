@@ -26,11 +26,11 @@ class Program
             {
                 if (pathNumber >= 0 && pathNumber < seedPaths.Length)
                 { 
-                     System.Console.WriteLine($"Using {seedPaths[pathNumber]}");
+                    System.Console.WriteLine($"Using {seedPaths[pathNumber]}");
                 } 
                 else
                 {
-                     System.Console.WriteLine($"Provided argument {pathNumber} invalid. Using {seedPaths[pathNumber]} as path.");
+                    System.Console.WriteLine($"Provided argument {pathNumber} invalid. Using {seedPaths[pathNumber]} as path.");
                     pathNumber = 0;
                 }
             }
@@ -41,7 +41,8 @@ class Program
         // Verify that the chosen path actually exists
         if (!System.IO.File.Exists(path))
         {
-             System.Console.WriteLine($"File path '{seedPaths[pathNumber]}' not found. Verify the file exists, and that the permissions are correct.");
+            System.Console.WriteLine($"File path '{seedPaths[pathNumber]}' not found. Verify the file exists, and that the permissions are correct.");
+            return;
         }
 
         // Read the input seed file and generate a sudoku grid array
