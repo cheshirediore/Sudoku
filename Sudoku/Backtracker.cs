@@ -18,19 +18,20 @@ public class Backtracker: Solver
     }
 
     #region Algorithm
-    // From wikipedia:
-    // P is the data
-    // c is a partial candidate
-
-    // backtrack(P, c)
-    // procedure backtrack(P, c) is
-    // if reject(P, c) then return
-    // if accept(P, c) then output(P, c)
-    // s ← first(P, c)
-    // while s ≠ NULL do
-    //     backtrack(P, s)
-    //     s ← next(P, s)
-
+    /*
+     * From wikipedia:
+     * P is the data
+     * c is a partial candidate
+     *
+     * backtrack(P, c)
+     * procedure backtrack(P, c) is
+     * if reject(P, c) then return
+     * if accept(P, c) then output(P, c)
+     * s ← first(P, c)
+     * while s ≠ NULL do
+     *     backtrack(P, s)
+     *     s ← next(P, s)
+     */
     public static List<int[][]> Backtrack(int[][] data, int[][] candidate, List<int[][]> solutions)
     {
         return Backtrack(data, candidate, solutions, 0);
