@@ -12,7 +12,7 @@ class Program
         // Hard-Coded paths for testing
         string[] seedPaths = [
             "./SamplePuzzleSeed.csv",
-            "./SamplePuzzleSeed2.csv",
+            "./SamplePuzzle.csv",
             "./SampleInvalidSeed.csv",
             "./EmptyPuzzleSeed.csv"
         ];
@@ -47,10 +47,20 @@ class Program
         // Read the input seed file and generate a sudoku grid array
         Grid grid = new(path);
 
+        TestGenerator(grid);
+                
+    }
+
+    private static string GetAsciiReprGrid(int[][] grid)
+    {
+        return new AsciiGrid(grid).ToString();
+    }
+
+    private static void TestSolver(Grid grid)
+    {
         // Create a Solver to process the imported seed file
         Solver solver = new Backtracker(grid);
-        // solver.MaxSolutions = 2;
-        solver.MaxSolutions = 10000;
+        solver.MaxSolutions = 2;
         // Solve the sudoku puzzle
         List<Grid> solutions = solver.Solve();
 
@@ -62,27 +72,32 @@ class Program
         // Output the results
         System.Console.WriteLine("Original Puzzle:");
         System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
-        System.Console.WriteLine($"Found {solutions.Count} solutions");
-        if (solutions.Count > 0)
+        if (distinctSolutions.Count > 1)
         {
+            System.Console.WriteLine($"Found {solutions.Count} solutions");
+            System.Console.WriteLine("Puzzle is invalid.");
+        }
+        else if (solutions.Count > 0)
+        {
+            System.Console.WriteLine("Solution found!");
             System.Console.WriteLine(GetAsciiReprGrid(solutions[0].Vertices));
             System.Console.WriteLine();
             System.Console.WriteLine(solutions[0]);
         }
-        // foreach (var solution in solutions)
-        // {
-        //      System.Console.WriteLine(GetAsciiReprGrid(solution));
-        // }
-        System.Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
-        // foreach (var solution in distinctSolutions)
-        // {
-        //     System.Console.WriteLine(GetAsciiReprGrid(solution.Vertices));
-        // }
-        
     }
 
-    private static string GetAsciiReprGrid(int[][] grid)
+    private static void TestGenerator(Grid grid)
     {
-        return new AsciiGrid(grid).ToString();
+        Generator generator = new(grid);
+        Grid? newPuzzle = generator.Erosion();
+
+        // Output the results
+        System.Console.WriteLine("Original Puzzle:");
+        System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
+        if (newPuzzle != null)
+        {
+            System.Console.WriteLine("New Puzzle:");
+            System.Console.WriteLine(GetAsciiReprGrid(newPuzzle.Vertices));
+        }
     }
 }
