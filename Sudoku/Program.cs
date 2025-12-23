@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Sudoku;
-
-class Program
+﻿class Program
 {
     const int WIDTH = 9;
     const int HEIGHT = 9;

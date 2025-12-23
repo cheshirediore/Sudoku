@@ -1,6 +1,5 @@
 namespace Sudoku;
 
-
 public class Generator
 {
     public Generator()
