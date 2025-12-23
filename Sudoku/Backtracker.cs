@@ -4,8 +4,8 @@ namespace Sudoku;
 
 public class Backtracker: Solver
 {
-
-    public override Grid Puzzle {get; init;}
+    public override int MaxSolutions { get; set; } = -1;
+    public override Grid Puzzle { get; init; }
 
     public Backtracker(Grid sudokuGrid)
     {
@@ -17,7 +17,6 @@ public class Backtracker: Solver
         return Backtrack(Puzzle, Puzzle, new List<Grid>());
     }
 
-    #region Static
     /*
      * From wikipedia:
      * P is the data
@@ -32,13 +31,18 @@ public class Backtracker: Solver
      *     backtrack(P, s)
      *     s ← next(P, s)
      */
-    public static List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions)
+    public List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions)
     {
         return Backtrack(data, candidate, solutions, 0);
     }
 
-    public static List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions, int depth)
+    public List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions, int depth)
     {
+        // Stop looking if more than one solution has been found. We only care about valid sudoku puzzles.
+        if (MaxSolutions > 0 && solutions.Count >= MaxSolutions)
+        {
+            return solutions;
+        }
         // Console.WriteLine($"Backtrack {depth}");
         // Console.WriteLine($"Data:");
         // Console.WriteLine(new AsciiGrid(data, depth));
@@ -70,7 +74,6 @@ public class Backtracker: Solver
         }
         return solutions;
     }
-    #endregion
 
     // root(P): return the partial candidate at the root of the search tree
     public Grid Root()
@@ -210,4 +213,5 @@ public class Backtracker: Solver
         return null;
     }
     #endregion
+
 }

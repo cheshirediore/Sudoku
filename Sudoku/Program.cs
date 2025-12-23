@@ -13,7 +13,8 @@ class Program
         string[] seedPaths = [
             "./SamplePuzzleSeed.csv",
             "./SamplePuzzleSeed2.csv",
-            "./SampleInvalidSeed.csv"
+            "./SampleInvalidSeed.csv",
+            "./EmptyPuzzleSeed.csv"
         ];
 
         // Parse the CLI input and try to select a file path from the above list
@@ -48,16 +49,16 @@ class Program
 
         // Create a Solver to process the imported seed file
         Solver solver = new Backtracker(grid);
-
+        // solver.MaxSolutions = 2;
+        solver.MaxSolutions = 10000;
         // Solve the sudoku puzzle
         List<Grid> solutions = solver.Solve();
 
         // Distill the list of solutions to filter out the duplicates
         // Ideally, this step is redundant. However, if there is something wrong in the solving process,
         // then this will highlight a discrepancy.
-        // List<int[][]> distinctSolutions = GetDistinct2DArrays(solutions);
-        
         HashSet<Grid> distinctSolutions = [..solutions];
+
         // Output the results
         System.Console.WriteLine("Original Puzzle:");
         System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
