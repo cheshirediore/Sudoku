@@ -298,7 +298,9 @@ public class Grid: IEquatable<Grid>
 
     public override int GetHashCode()
     {
-        int hash = HashCode.Combine(0);
+        // Use the dimensions for the initial hash seed. If the size becomes variable, it will matter. If it doesn't,
+        // then we'll still have a more interesting seed than 0.
+        int hash = HashCode.Combine(WIDTH, HEIGHT);
         for (int y = 0; y < HEIGHT; y++)
         {
             for (int x = 0; x < WIDTH; x++)
