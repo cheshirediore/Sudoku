@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace Sudoku;
@@ -77,7 +76,7 @@ public class Backtracker
             
             for (int index = 0; index < column.Length; index++)
             {
-                if (column[index] != 0 && !values.Add(Math.Abs(column[index])))
+                if (column[index] != 0 && !values.Add(System.Math.Abs(column[index])))
                 {
                     return true;
                 }
@@ -88,7 +87,7 @@ public class Backtracker
             var row = GetRowValues(candidate, i);
             for (int index = 0; index < row.Length; index++)
             {
-                if (row[index] != 0 && !values.Add(Math.Abs(row[index])))
+                if (row[index] != 0 && !values.Add(System.Math.Abs(row[index])))
                 {
                     return true;
                 }
@@ -100,7 +99,7 @@ public class Backtracker
             var block = GetBlockValues(candidate, i);
             for (int index = 0; index < block.Length; index++)
             {
-                if (block[index] != 0 && !values.Add(Math.Abs(block[index])))
+                if (block[index] != 0 && !values.Add(System.Math.Abs(block[index])))
                 {
                     return true;
                 }
@@ -306,7 +305,7 @@ public class Backtracker
                 rowIndices = THIRD;
                 break;
             default:
-                throw new ArgumentOutOfRangeException(nameof(blockIndex), $"blockIndex must be an integer between 0 and 8 (inclusive). Received '{blockIndex}'.");
+                throw new System.ArgumentOutOfRangeException(nameof(blockIndex), $"blockIndex must be an integer between 0 and 8 (inclusive). Received '{blockIndex}'.");
         }
 
         // Iterate through the indices to get the cells in the block, as defined above
