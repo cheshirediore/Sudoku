@@ -50,12 +50,12 @@ class Program
         Solver solver = new Backtracker(grid);
 
         // Solve the sudoku puzzle
-        List<int[][]> solutions = solver.Solve();
+        List<Grid> solutions = solver.Solve();
 
         // Distill the list of solutions to filter out the duplicates
         // Ideally, this step is redundant. However, if there is something wrong in the solving process,
         // then this will highlight a discrepancy.
-        List<int[][]> distinctSolutions = GetDistinct2DArrays(solutions);
+        // List<int[][]> distinctSolutions = GetDistinct2DArrays(solutions);
         
         // Output the results
        System.Console.WriteLine("Original Puzzle:");
@@ -63,13 +63,13 @@ class Program
        System.Console.WriteLine($"Found {solutions.Count} solutions");
         if (solutions.Count > 0)
         {
-           System.Console.WriteLine(GetAsciiReprGrid(solutions[0]));
+           System.Console.WriteLine(GetAsciiReprGrid(solutions[0].Vertices));
         }
         // foreach (var solution in solutions)
         // {
         //     System.Console.WriteLine(GetAsciiReprGrid(solution));
         // }
-       System.Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
+    //    System.Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
         // foreach (var solution in distinctSolutions)
         // {
         //    System.Console.WriteLine(GetAsciiReprGrid(solution));

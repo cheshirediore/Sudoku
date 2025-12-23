@@ -8,5 +8,5 @@ public abstract class Solver
     public abstract Grid Puzzle {get; init;}
 
     // A method to return one or more solution(s) to the puzzle
-    public abstract List<int[][]> Solve();
+    public abstract List<Grid> Solve();
 }
