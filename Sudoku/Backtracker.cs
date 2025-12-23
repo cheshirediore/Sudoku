@@ -12,9 +12,9 @@ public class Backtracker: Solver
         Puzzle = sudokuGrid;
     }
 
-    public override List<int[][]> Solve()
+    public override List<Grid> Solve()
     {
-        return Backtrack(Puzzle, Puzzle, new List<int[][]>());
+        return Backtrack(Puzzle, Puzzle, new List<Grid>());
     }
 
     #region Static
@@ -32,12 +32,12 @@ public class Backtracker: Solver
      *     backtrack(P, s)
      *     s ← next(P, s)
      */
-    public static List<int[][]> Backtrack(Grid data, Grid candidate, List<int[][]> solutions)
+    public static List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions)
     {
         return Backtrack(data, candidate, solutions, 0);
     }
 
-    public static List<int[][]> Backtrack(Grid data, Grid candidate, List<int[][]> solutions, int depth)
+    public static List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions, int depth)
     {
         // Console.WriteLine($"Backtrack {depth}");
         // Console.WriteLine($"Data:");
@@ -79,9 +79,9 @@ public class Backtracker: Solver
     }
 
     // output(P, c): use the solution c of P, as appropriate to the application
-    public static List<int[][]> Output(Grid candidate, List<int[][]> solutions)
+    public static List<Grid> Output(Grid candidate, List<Grid> solutions)
     {
-        solutions.Add(candidate.Vertices);
+        solutions.Add(candidate);
         return solutions;
     }
 
@@ -156,7 +156,6 @@ public class Backtracker: Solver
     public static Grid? First(Grid data, Grid candidate)
     {
         // Make a shallow copy of the candidate
-        // int[][] grid = MakeShallowCopy(candidate);
         Grid grid = candidate.ShallowCopy();
 
         // Update the copy
@@ -186,7 +185,6 @@ public class Backtracker: Solver
     public static Grid? Next(Grid data, Grid candidate)
     {
         // Make a shallow copy of the candidate
-        // int[][] grid = MakeShallowCopy(candidate);
         Grid grid = candidate.ShallowCopy();
 
         // Update the copy
