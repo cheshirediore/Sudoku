@@ -57,6 +57,7 @@ class Program
         // then this will highlight a discrepancy.
         // List<int[][]> distinctSolutions = GetDistinct2DArrays(solutions);
         
+        HashSet<Grid> distinctSolutions = [..solutions];
         // Output the results
         System.Console.WriteLine("Original Puzzle:");
         System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
@@ -71,64 +72,16 @@ class Program
         // {
         //      System.Console.WriteLine(GetAsciiReprGrid(solution));
         // }
-    //     System.Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
-        // foreach (var solution in distinctSolutions)
-        // {
-        //     System.Console.WriteLine(GetAsciiReprGrid(solution));
-        // }
+        System.Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
+        foreach (var solution in distinctSolutions)
+        {
+            System.Console.WriteLine(GetAsciiReprGrid(solution.Vertices));
+        }
         
     }
 
     private static string GetAsciiReprGrid(int[][] grid)
     {
         return new AsciiGrid(grid).ToString();
-    }
-
-    private static List<int[][]> GetDistinct2DArrays(List<int[][]> arrayList)
-    {
-        List<int[][]> distinctArrays = new();
-        // foreach(var array1 in arrayList)
-        for (int i = 0; i < arrayList.Count; i ++)
-        {
-            var array1 = arrayList[i];
-            bool exists = false;
-            // foreach(var array2 in distinctArrays)
-            for (int j = 0; j < distinctArrays.Count; j++)
-            {
-                // System.Console.WriteLine($"Comparing arrayList[{i}] to distinctArrays[{j}]");
-                var array2 = distinctArrays[j];
-                // If the lengths don't match, they clearly aren't the same.
-                if (array1.Length != array2.Length)
-                {
-                    exists = false;
-                    continue;
-                }
-
-                bool match = false;
-                for (int y = 0; y < HEIGHT; y++)
-                {
-                    for (int x = 0; x < WIDTH; x++)
-                    {
-                        match = array1[y][x] == array2[y][x];
-                        if (!match)
-                        {
-                            exists = false;
-                            break;
-                        }
-                    }
-                }
-                if (match)
-                {
-                    exists = true;
-                }
-            }
-
-            if (!exists)
-            {
-                distinctArrays.Add(array1);
-            }
-        }
-
-        return distinctArrays;
     }
 }
