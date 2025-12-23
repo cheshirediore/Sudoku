@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Sudoku;
 
 public class Backtracker
