@@ -2,8 +2,8 @@ namespace Sudoku;
 
 public class Grid
 {
-    const int WIDTH = 9;
-    const int HEIGHT = 9;
+    public const int WIDTH = 9;
+    public const int HEIGHT = 9;
 
     // Give useful names to the index groups used for blocks
     private readonly int[] FIRST = [0, 1, 2];
@@ -90,6 +90,14 @@ public class Grid
     /// </summary>
     public int GetVertex(int x, int y)
     {
+        if (x < 0 || x > 8)
+        {
+            throw new System.ArgumentOutOfRangeException(nameof(x), $"({x}, {y}) is outside of the grid bounds.");;
+        }
+        if (y < 0 || y > 8)
+        {
+            throw new System.ArgumentOutOfRangeException(nameof(y), $"({x}, {y}) is outside of the grid bounds.");;
+        }
         return Vertices[y][x];
     }
 
@@ -176,8 +184,8 @@ public class Grid
             (columns 6, 7, 8) intersect (rows 6, 7, 8)
         */
 
-        int[] columnIndices = new int[3];
-        int[] rowIndices = new int[3];
+        int[] columnIndices;
+        int[] rowIndices;
 
         // Only 9x9 grids are supported, so we can hard code these cases instead of calculating them at runtime
         switch (blockIndex)
@@ -221,15 +229,19 @@ public class Grid
                 columnIndices = THIRD;
                 rowIndices = THIRD;
                 break;
+            default:
+                throw new System.ArgumentOutOfRangeException(nameof(blockIndex), $"blockIndex must be an integer between 0 and 8 (inclusive). Received '{blockIndex}'.");
         }
 
-        // Iterate through the indices to get the cells in the block, as defined above
+        // Iterate through the indices to get the cells in the block, as defined above.
         int i = 0;
         for (int columnIndex = 0; columnIndex < columnIndices.Length; columnIndex++)
         {
+            int x = columnIndices[columnIndex];
             for (int rowIndex = 0; rowIndex < rowIndices.Length; rowIndex++)
             {
-                block[i] = GetVertex(columnIndices[columnIndex], rowIndices[rowIndex]);
+                int y = rowIndices[rowIndex];
+                block[i] = GetVertex(x, y);
                 i++;
             }
         }
@@ -250,5 +262,19 @@ public class Grid
         }
 
         return builder.ToString();
+    }
+
+    public Grid ShallowCopy()
+    {
+        // Make a shallow copy of the candidate
+        Grid newGrid = new();
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            for (int x = 0; x < WIDTH; x++)
+            {
+                newGrid.SetVertex(x, y, GetVertex(x, y));
+            }
+        }
+        return newGrid;
     }
 }
