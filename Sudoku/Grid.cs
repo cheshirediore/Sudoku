@@ -5,6 +5,11 @@ public class Grid
     const int WIDTH = 9;
     const int HEIGHT = 9;
 
+    // Give useful names to the index groups used for blocks
+    private readonly int[] FIRST = [0, 1, 2];
+    private readonly int[] SECOND = [3, 4, 5];
+    private readonly int[] THIRD = [6, 7, 8];
+
     public readonly int[][] Vertices;
 
     public Grid()
@@ -68,14 +73,14 @@ public class Grid
         }
     }
 
-    public static int[] IndexToCoordinates(int index, int width)
+    public static int[] IndexToCoordinates(int index)
     {
         int[] coordinates = [-1, -1];
 
         // x = (index % width)
-        coordinates[0] = index % width;
+        coordinates[0] = index % WIDTH;
         // y = index / width (integer division)
-        coordinates[1] = index / width;
+        coordinates[1] = index / WIDTH;
 
         return coordinates;
     }
@@ -93,18 +98,23 @@ public class Grid
     /// </summary>
     public int GetVertex(int index)
     {
-        int[] coords = IndexToCoordinates(index, WIDTH);
+        int[] coords = IndexToCoordinates(index);
         return GetVertex(coords[0], coords[1]);
+    }
+
+    public void SetVertex(int x, int y, int value)
+    {
+        Vertices[y][x] = value;
     }
 
     public void SetVertex(int index, int value)
     {
-        int[] coordinates = IndexToCoordinates(index, WIDTH);
-        int x = coordinates[0];
-        int y = coordinates[1];
+        int[] coordinates = IndexToCoordinates(index);
 
-        Vertices[y][x] = value;
+        SetVertex(coordinates[0], coordinates[1], value);
     }
+
+    
 
     /// <summary>
     /// Method to get a horizontal slice of a 2D array
@@ -168,11 +178,6 @@ public class Grid
 
         int[] columnIndices = new int[3];
         int[] rowIndices = new int[3];
-
-        // Give useful names to the index groups
-        int[] FIRST = [0, 1, 2];
-        int[] SECOND = [3, 4, 5];
-        int[] THIRD = [6, 7, 8];
 
         // Only 9x9 grids are supported, so we can hard code these cases instead of calculating them at runtime
         switch (blockIndex)
