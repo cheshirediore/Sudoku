@@ -46,9 +46,11 @@ class Program
         // Read the input seed file and generate a sudoku grid array
         Grid grid = new(path);
 
+        // Create a Solver to process the imported seed file
+        Solver solver = new(grid);
+
         // Solve the sudoku puzzle
-        // List<int[][]> solutions = new();
-        List<int[][]> solutions = Backtracker.Backtrack(grid.Vertices, grid.Vertices, new List<int[][]>());
+        List<int[][]> solutions = solver.Solve();
 
         // Distill the list of solutions to filter out the duplicates
         // Ideally, this step is redundant. However, if there is something wrong in the solving process,

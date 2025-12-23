@@ -6,16 +6,15 @@ public class Solver
 {
     public Grid Puzzle;
 
-    public Solver(Grid grid)
+    public Solver(Grid sudokuGrid)
     {
-        Puzzle = grid;
+        Puzzle = sudokuGrid;
     }
 
     public List<int[][]> Solve()
     {
-        // Solve the sudoku puzzle
-        List<int[][]> solutions = new();
-        // Backtracker.Backtrack(grid.Vertices, grid.Vertices, solutions); 
+        // Solve the sudoku puzzle using backtracking
+        List<int[][]> solutions = Backtracker.Backtrack(Puzzle.Vertices, Puzzle.Vertices, new List<int[][]>()); 
         return solutions;
     }
 }
