@@ -2,8 +2,21 @@ using System.Collections.Generic;
 
 namespace Sudoku;
 
-public class Backtracker
+public class Backtracker: Solver
 {
+
+    public override Grid Puzzle {get; init;}
+
+    public Backtracker(Grid sudokuGrid)
+    {
+        Puzzle = sudokuGrid;
+    }
+
+    public override List<int[][]> Solve()
+    {
+        return Backtrack(Puzzle.Vertices, Puzzle.Vertices, new List<int[][]>());
+    }
+
     #region Algorithm
     // From wikipedia:
     // P is the data
