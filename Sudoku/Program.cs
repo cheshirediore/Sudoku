@@ -73,10 +73,10 @@ class Program
         //      System.Console.WriteLine(GetAsciiReprGrid(solution));
         // }
         System.Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
-        foreach (var solution in distinctSolutions)
-        {
-            System.Console.WriteLine(GetAsciiReprGrid(solution.Vertices));
-        }
+        // foreach (var solution in distinctSolutions)
+        // {
+        //     System.Console.WriteLine(GetAsciiReprGrid(solution.Vertices));
+        // }
         
     }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 
 namespace Sudoku;
 
@@ -8,9 +9,9 @@ public class Grid: IEquatable<Grid>
     public const int HEIGHT = 9;
 
     // Give useful names to the index groups used for blocks
-    private readonly int[] FIRST = [0, 1, 2];
-    private readonly int[] SECOND = [3, 4, 5];
-    private readonly int[] THIRD = [6, 7, 8];
+    private readonly ImmutableArray<int> FIRST = [0, 1, 2];
+    private readonly ImmutableArray<int> SECOND = [3, 4, 5];
+    private readonly ImmutableArray<int> THIRD = [6, 7, 8];
 
     public readonly int[][] Vertices;
 
@@ -186,8 +187,8 @@ public class Grid: IEquatable<Grid>
             (columns 6, 7, 8) intersect (rows 6, 7, 8)
         */
 
-        int[] columnIndices;
-        int[] rowIndices;
+        ImmutableArray<int> columnIndices;
+        ImmutableArray<int> rowIndices;
 
         // Only 9x9 grids are supported, so we can hard code these cases instead of calculating them at runtime
         switch (blockIndex)
