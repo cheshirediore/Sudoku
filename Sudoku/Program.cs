@@ -1,4 +1,8 @@
-﻿class Program
+﻿using System.Collections.Generic;
+
+namespace Sudoku;
+
+class Program
 {
     const int WIDTH = 9;
     const int HEIGHT = 9;
@@ -43,8 +47,8 @@
         Grid grid = new(path);
 
         // Solve the sudoku puzzle
-        List<int[][]> solutions = new();
-        Backtracker.Backtrack(grid.Vertices, grid.Vertices, solutions);
+        // List<int[][]> solutions = new();
+        List<int[][]> solutions = Backtracker.Backtrack(grid.Vertices, grid.Vertices, new List<int[][]>());
 
         // Distill the list of solutions to filter out the duplicates
         // Ideally, this step is redundant. However, if there is something wrong in the solving process,
