@@ -294,7 +294,7 @@ public class Grid: IEquatable<Grid>
 
     public override int GetHashCode()
     {
-        int hash = 0;
+        int hash = HashCode.Combine(0);
         for (int y = 0; y < HEIGHT; y++)
         {
             for (int x = 0; x < WIDTH; x++)
