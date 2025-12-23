@@ -99,11 +99,11 @@ public class Grid: IEquatable<Grid>
     {
         if (x < 0 || x > 8)
         {
-            throw new System.ArgumentOutOfRangeException(nameof(x), $"({x}, {y}) is outside of the grid bounds.");;
+            throw new System.ArgumentOutOfRangeException(nameof(x), $"({x}, {y}) is outside of the grid bounds.");
         }
         if (y < 0 || y > 8)
         {
-            throw new System.ArgumentOutOfRangeException(nameof(y), $"({x}, {y}) is outside of the grid bounds.");;
+            throw new System.ArgumentOutOfRangeException(nameof(y), $"({x}, {y}) is outside of the grid bounds.");
         }
         return Vertices[y][x];
     }
