@@ -248,6 +248,11 @@ public class Grid
         return block;
     }
 
+    /// <summary>
+    /// Formats an ascii grid of the numeric values in the grid. If the number is positive, it adds a 
+    /// space prefix to the cell to maintain a fixed width for integers between -9 and 9 (inclusive).
+    /// </summary>
+    /// <returns>A string representation of a HEIGHT x WIDTH matrix of the values in the grid, cleanly formatted for single digit signed integers.</returns>
     public override string ToString()
     {
         System.Text.StringBuilder builder = new();
@@ -256,7 +261,8 @@ public class Grid
         {
             for (int x = 0; x < 9; x++)
             {
-                builder.Append($"{Vertices[y][x]} ");
+                string prefix = Vertices[y][x] < 0 ? "": " ";
+                builder.Append($"{prefix}{Vertices[y][x]} ");
             }
             builder.AppendLine();
         }
