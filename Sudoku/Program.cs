@@ -25,11 +25,11 @@ class Program
             {
                 if (pathNumber >= 0 && pathNumber < seedPaths.Length)
                 { 
-                    System.Console.WriteLine($"Using {seedPaths[pathNumber]}");
+                     System.Console.WriteLine($"Using {seedPaths[pathNumber]}");
                 } 
                 else
                 {
-                    System.Console.WriteLine($"Provided argument {pathNumber} invalid. Using {seedPaths[pathNumber]} as path.");
+                     System.Console.WriteLine($"Provided argument {pathNumber} invalid. Using {seedPaths[pathNumber]} as path.");
                     pathNumber = 0;
                 }
             }
@@ -40,7 +40,7 @@ class Program
         // Verify that the chosen path actually exists
         if (!System.IO.File.Exists(path))
         {
-            System.Console.WriteLine($"File path '{seedPaths[pathNumber]}' not found. Verify the file exists, and that the permissions are correct.");
+             System.Console.WriteLine($"File path '{seedPaths[pathNumber]}' not found. Verify the file exists, and that the permissions are correct.");
         }
 
         // Read the input seed file and generate a sudoku grid array
@@ -58,21 +58,23 @@ class Program
         // List<int[][]> distinctSolutions = GetDistinct2DArrays(solutions);
         
         // Output the results
-       System.Console.WriteLine("Original Puzzle:");
-       System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
-       System.Console.WriteLine($"Found {solutions.Count} solutions");
+        System.Console.WriteLine("Original Puzzle:");
+        System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
+        System.Console.WriteLine($"Found {solutions.Count} solutions");
         if (solutions.Count > 0)
         {
-           System.Console.WriteLine(GetAsciiReprGrid(solutions[0].Vertices));
+            System.Console.WriteLine(GetAsciiReprGrid(solutions[0].Vertices));
+            System.Console.WriteLine();
+            System.Console.WriteLine(solutions[0]);
         }
         // foreach (var solution in solutions)
         // {
-        //     System.Console.WriteLine(GetAsciiReprGrid(solution));
+        //      System.Console.WriteLine(GetAsciiReprGrid(solution));
         // }
-    //    System.Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
+    //     System.Console.WriteLine($"Found {distinctSolutions.Count} distinct solutions");
         // foreach (var solution in distinctSolutions)
         // {
-        //    System.Console.WriteLine(GetAsciiReprGrid(solution));
+        //     System.Console.WriteLine(GetAsciiReprGrid(solution));
         // }
         
     }
@@ -93,7 +95,7 @@ class Program
             // foreach(var array2 in distinctArrays)
             for (int j = 0; j < distinctArrays.Count; j++)
             {
-                //System.Console.WriteLine($"Comparing arrayList[{i}] to distinctArrays[{j}]");
+                // System.Console.WriteLine($"Comparing arrayList[{i}] to distinctArrays[{j}]");
                 var array2 = distinctArrays[j];
                 // If the lengths don't match, they clearly aren't the same.
                 if (array1.Length != array2.Length)
