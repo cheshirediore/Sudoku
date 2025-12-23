@@ -8,6 +8,8 @@ public class Grid: IEquatable<Grid>
     public const int WIDTH = 9;
     public const int HEIGHT = 9;
 
+    public static int SIZE { get => WIDTH * HEIGHT; }
+
     // Give useful names to the index groups used for blocks
     private readonly ImmutableArray<int> FIRST = [0, 1, 2];
     private readonly ImmutableArray<int> SECOND = [3, 4, 5];
@@ -84,6 +86,8 @@ public class Grid: IEquatable<Grid>
         coordinates[0] = index % WIDTH;
         // y = index / width (integer division)
         coordinates[1] = index / WIDTH;
+        // // y = floor(index / width)
+        // coordinates[1] = (int)Math.Floor((double)(index / WIDTH));
 
         return coordinates;
     }
