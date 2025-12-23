@@ -12,7 +12,7 @@ public class Generator
 
     public Grid? Erosion()
     {
-        bool success = ReverseErode(InitialGrid, out Grid? newPuzzle);
+        bool success = Erode(InitialGrid, out Grid? newPuzzle);
         System.Console.WriteLine($"[Generator.Erosion()] success = {success}");
         return newPuzzle;
     }
@@ -23,47 +23,6 @@ public class Generator
 
         // For each clue value, try removing it and see if it's still a valid puzzle
         for (int index = Grid.SIZE - 1; index > 0; index--)
-        {
-            if (candidate.GetVertex(index) < 0)
-            {
-                System.Console.WriteLine($"[Generator.Erode()]Clearing cell #{index}");
-                candidate.SetVertex(index, 0);
-                Solver solver = new Backtracker(candidate);
-                solver.MaxSolutions = 2;
-                // If the puzzle is valid, add it to the list
-                if (solver.Solve().Count != 1)
-                {
-                    // Reset the clue
-                    System.Console.WriteLine();
-                    candidate.SetVertex(index, puzzle.GetVertex(index));
-                }
-                else
-                {
-                    System.Console.WriteLine($"[Generator.Erode()] Successfully cleared a clue...");
-                } 
-            }
-        }
-
-        bool success = candidate != puzzle;
-
-        if (success)
-        {
-            newPuzzle = candidate;
-        } else
-        {
-            newPuzzle = null;
-        }
-
-
-        return success;
-    }
-
-    private bool ReverseErode(Grid puzzle, out Grid? newPuzzle)
-    {
-        Grid candidate = puzzle.ShallowCopy();
-
-        // For each clue value, try removing it and see if it's still a valid puzzle
-        for (int index = 0; index < Grid.SIZE; index++)
         {
             if (candidate.GetVertex(index) < 0)
             {
