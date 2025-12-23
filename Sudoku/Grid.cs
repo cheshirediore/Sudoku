@@ -7,24 +7,67 @@ public class Grid
     const int WIDTH = 9;
     const int HEIGHT = 9;
 
-    public readonly int[][] vertices;
+    public readonly int[][] Vertices;
 
     public Grid()
     {
         // Initialize (the list of rows part of) the jagged array 
-        vertices = new int[HEIGHT][];
+        Vertices = new int[HEIGHT][];
 
         // Initialize rows, and set all values to 0 (the default integer value, conveniently)
         for (int y = 0; y < HEIGHT; y++)
         {
             // Initialize an individual row of WIDTH length in the jagged array
-            vertices[y] = new int[WIDTH];
+            Vertices[y] = new int[WIDTH];
         }
     }
 
     public Grid(int[][] gridVertices)
     {
-        vertices = gridVertices;
+        Vertices = gridVertices;
+    }
+
+    public Grid(string seedFilePath)
+    {
+        // Open the file, read the content, and close it
+        string fileContent = System.IO.File.ReadAllText(seedFilePath);
+
+        // Split the content by lines
+        string[] lines = fileContent.Split("\n");
+        if (lines.Length != HEIGHT)
+        {
+            throw new System.ArgumentOutOfRangeException(seedFilePath, $"Input puzzle seed must have {HEIGHT} lines. Provided seed has '{lines.Length}'.");
+        }
+        // Initialize vertex grid
+        Vertices = new int[HEIGHT][];
+
+        // Iterate over the lines and add the values to the vertex grid
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            // Create the row in the vertex grid
+            Vertices[y] = new int[WIDTH];
+
+            // Split the line by commas, and trim off the whitespace
+            string[] rowValues = lines[y].Split(",");
+            // Verify that the width is correct before adding it to the vertices
+            if (rowValues.Length != WIDTH)
+            {
+                throw new System.ArgumentOutOfRangeException(seedFilePath, $"'{rowValues.Length}' is an invalid width. All rows in the input puzzle seed must have a width of {WIDTH}.");
+            }
+            // Verify that each string is numeric, and add it to the vertices iff it is. Otherwise, throw an exception. TODO: change line 104 into a verbose IF/ELSE block with tha exception
+            for (int x = 0; x < rowValues.Length; x++)
+            {
+                if (int.TryParse(rowValues[x].Trim(), out int parsedValue))
+                {
+                    // Using negative numbers to flag the clue values using a single int
+                    Vertices[y][x] = parsedValue * -1;
+                }
+                else
+                {
+                    throw new System.ArgumentOutOfRangeException(seedFilePath, $"Invalid value passed in puzzle seed. Check file for non-numeric characters.");
+                }
+            }
+        }
     }
 
     public static int[] IndexToCoordinates(int index, int width)
@@ -44,7 +87,7 @@ public class Grid
     /// </summary>
     public int GetVertex(int x, int y)
     {
-        return vertices[y][x];
+        return Vertices[y][x];
     }
 
     /// <summary>
@@ -62,7 +105,7 @@ public class Grid
         int x = coordinates[0];
         int y = coordinates[1];
 
-        vertices[y][x] = value;
+        Vertices[y][x] = value;
     }
 
     /// <summary>
@@ -198,7 +241,7 @@ public class Grid
         {
             for (int x = 0; x < 9; x++)
             {
-                builder.Append($"{vertices[y][x]} ");
+                builder.Append($"{Vertices[y][x]} ");
             }
             builder.AppendLine();
         }

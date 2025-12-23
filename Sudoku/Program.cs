@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using Sudoku;
 
-
-
 class Program
 {
     const int WIDTH = 9;
@@ -42,11 +40,12 @@ class Program
         string path = seedPaths[pathNumber];
         
         // Read the input seed file and generate a sudoku grid array
-        int[][] grid = ImportSeedFile(path);
+        // int[][] grid = ImportSeedFile(path);
+        Grid grid = new(path);
 
         // Solve the sudoku puzzle
         List<int[][]> solutions = new();
-        Backtracker.Backtrack(grid, grid, solutions);
+        Backtracker.Backtrack(grid.Vertices, grid.Vertices, solutions);
 
         // Distill the list of solutions to filter out the duplicates (ideally, this is redundant; it has not been proven for this process)
         List<int[][]> distinctSolutions = GetDistinct2DArrays(solutions);
@@ -54,7 +53,7 @@ class Program
         // Output the results
         
         Console.WriteLine("Original Puzzle:");
-        Console.WriteLine(GetAsciiReprGrid(grid));
+        Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
         Console.WriteLine($"Found {solutions.Count} solutions");
         // foreach (var solution in solutions)
         // {
