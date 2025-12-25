@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 
 namespace Sudoku;
 
@@ -20,13 +20,26 @@ public class Generator
     private bool Erode(Grid puzzle, out Grid? newPuzzle)
     {
         Grid candidate = puzzle.ShallowCopy();
+        Random rand = new();
+        int[] clueIndices = new int[Grid.SIZE];
 
+        for (int i = 0; i < Grid.SIZE; i++)
+        {
+            clueIndices[i] = i;
+        }
+
+        Span<int> clueSpan = new Span<int>(clueIndices, 0, clueIndices.Length);
+
+        rand.Shuffle<int>(clueSpan);
+
+        clueIndices = clueSpan.ToArray();
+        
         // For each clue value, try removing it and see if it's still a valid puzzle
-        for (int index = Grid.SIZE - 1; index > 0; index--)
+        foreach (int index in clueIndices)
         {
             if (candidate.GetVertex(index) < 0)
             {
-                System.Console.WriteLine($"[Generator.Erode()]Clearing cell #{index}");
+                Console.WriteLine($"[Generator.Erode()]Clearing cell #{index}");
                 candidate.SetVertex(index, 0);
                 Solver solver = new Backtracker(candidate);
                 solver.MaxSolutions = 2;
@@ -34,12 +47,12 @@ public class Generator
                 if (solver.Solve().Count != 1)
                 {
                     // Reset the clue
-                    System.Console.WriteLine();
+                    Console.WriteLine();
                     candidate.SetVertex(index, puzzle.GetVertex(index));
                 }
                 else
                 {
-                    System.Console.WriteLine($"[Generator.Erode()] Successfully cleared a clue...");
+                    Console.WriteLine($"[Generator.Erode()] Successfully cleared a clue...");
                 } 
             }
         }
