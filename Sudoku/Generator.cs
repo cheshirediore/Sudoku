@@ -5,11 +5,13 @@ namespace Sudoku;
 
 public class Generator
 {
+    private Random rand;
     public Grid Puzzle {get; set;}
 
     public Generator()
     {
         Puzzle = new Grid();
+        rand = new();
     }
 
     public bool Generate()
@@ -65,7 +67,6 @@ public class Generator
 
     private bool StochasticFill()
     {
-        Random rand = new();
         Grid candidate = Puzzle.ShallowCopy();
 
         int targetSeedAmount = 10;
@@ -122,9 +123,8 @@ public class Generator
         return success;
     }
 
-    private static int[] GetRandomIndices()
+    private int[] GetRandomIndices()
     {
-        Random rand = new();
         int[] vertIndices = new int[Grid.SIZE];
 
         for (int i = 0; i < Grid.SIZE; i++)
