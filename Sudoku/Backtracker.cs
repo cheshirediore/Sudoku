@@ -31,12 +31,8 @@ public class Backtracker: Solver
      *     backtrack(P, s)
      *     s ← next(P, s)
      */
-    public List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions)
-    {
-        return Backtrack(data, candidate, solutions, 0);
-    }
 
-    public List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions, int depth)
+    public List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions)
     {
         // Stop looking if more than one solution has been found. We only care about valid sudoku puzzles.
         if (MaxSolutions > 0 && solutions.Count >= MaxSolutions)
@@ -55,7 +51,8 @@ public class Backtracker: Solver
         Grid? nextCandidate = First(data, candidate);
         while (nextCandidate != null)
         {
-            solutions = Backtrack(candidate, nextCandidate, solutions, depth+1);
+            
+            solutions = Backtrack(candidate, nextCandidate, solutions);
             nextCandidate = Next(candidate, nextCandidate);
         }
         return solutions;
