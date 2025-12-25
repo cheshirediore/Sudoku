@@ -16,7 +16,7 @@ Phase 1 focuses on the internal integrity of the sudoku puzzle. Any UI at this p
 Phase 2 focuses entirely on the puzzle generation. Milestones are:
 - Generate valid sudoku puzzle solution. [Complete]
 - Remove values until a minimal number of visible values remain to constitute a valid puzzle. [Complete]
-- Extend Generator to allow more variety in generated puzzles.
+- Extend Generator to allow more variety in generated puzzles. [Complete]
 
 ## Phase 2.5: Preliminary Optimization
 This intermediary phase focuses on getting runtimes down to a level acceptable for iterative development and testing. Proper optimization will occur at the end of the project.

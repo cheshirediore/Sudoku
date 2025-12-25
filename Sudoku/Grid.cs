@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Immutable;
+using System.Collections.Generic;
 
 namespace Sudoku;
 
@@ -129,7 +130,60 @@ public class Grid: IEquatable<Grid>
         SetVertex(coordinates[0], coordinates[1], value);
     }
 
-    
+    public void SetVertex(int index, int value, bool isSeedValue)
+    {
+        if (isSeedValue)
+        {
+            SetVertex(index, Math.Abs(value) * -1);
+        }
+        else
+        {
+            SetVertex(index, value);
+        }
+    }
+
+    public bool IsConsistent()
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            // Check columns
+            var column = GetColumn(i);
+            HashSet<int> values = new();
+            
+            for (int index = 0; index < column.Length; index++)
+            {
+                if (column[index] != 0 && !values.Add(System.Math.Abs(column[index])))
+                {
+                    return false;
+                }
+            }
+            values.Clear();
+
+            // Check rows
+            var row = GetRow(i);
+            for (int index = 0; index < row.Length; index++)
+            {
+                if (row[index] != 0 && !values.Add(System.Math.Abs(row[index])))
+                {
+                    return false;
+                }
+            }
+            values.Clear();
+
+
+            // Check blocks
+            var block = GetBlock(i);
+            for (int index = 0; index < block.Length; index++)
+            {
+                if (block[index] != 0 && !values.Add(System.Math.Abs(block[index])))
+                {
+                    return false;
+                }
+            }
+            values.Clear();
+        }
+        return true;
+    }
 
     /// <summary>
     /// Method to get a horizontal slice of a 2D array
