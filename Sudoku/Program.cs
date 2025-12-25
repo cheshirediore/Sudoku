@@ -90,15 +90,14 @@ class Program
     private static void TestGenerator(Grid grid)
     {
         Generator generator = new(grid);
-        Grid? newPuzzle = generator.Erosion();
 
         // Output the results
         System.Console.WriteLine("Original Puzzle:");
         System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
-        if (newPuzzle != null)
+        if (generator.Erode())
         {
             System.Console.WriteLine("New Puzzle:");
-            System.Console.WriteLine(GetAsciiReprGrid(newPuzzle.Vertices));
+            System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
         }
     }
 }

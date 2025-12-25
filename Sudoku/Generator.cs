@@ -4,22 +4,18 @@ namespace Sudoku;
 
 public class Generator
 {
-    public Grid InitialGrid {get; init;}
+    public Grid InitialGrid {get; set;}
+
     public Generator(Grid grid)
     {
         InitialGrid = grid;
     }
 
-    public Grid? Erosion()
-    {
-        bool success = Erode(InitialGrid, out Grid? newPuzzle);
-        System.Console.WriteLine($"[Generator.Erosion()] success = {success}");
-        return newPuzzle;
-    }
+    public Generator(): this(new Grid()) {}
 
-    private bool Erode(Grid puzzle, out Grid? newPuzzle)
+    public bool Erode()
     {
-        Grid candidate = puzzle.ShallowCopy();
+        Grid candidate = InitialGrid.ShallowCopy();
         Random rand = new();
         int[] clueIndices = new int[Grid.SIZE];
 
@@ -41,14 +37,16 @@ public class Generator
             {
                 Console.WriteLine($"[Generator.Erode()]Clearing cell #{index}");
                 candidate.SetVertex(index, 0);
-                Solver solver = new Backtracker(candidate);
-                solver.MaxSolutions = 2;
+                Solver solver = new Backtracker(candidate)
+                {
+                    MaxSolutions = 2
+                };
                 // If the puzzle is valid, add it to the list
                 if (solver.Solve().Count != 1)
                 {
                     // Reset the clue
                     Console.WriteLine();
-                    candidate.SetVertex(index, puzzle.GetVertex(index));
+                    candidate.SetVertex(index, InitialGrid.GetVertex(index));
                 }
                 else
                 {
@@ -57,17 +55,19 @@ public class Generator
             }
         }
 
-        bool success = candidate != puzzle;
+        bool success = candidate != InitialGrid;
 
         if (success)
         {
-            newPuzzle = candidate;
-        } else
-        {
-            newPuzzle = null;
+            InitialGrid = candidate;
         }
-
 
         return success;
     }
+
+    public bool Fill()
+    {
+        return false;
+    }
+     
 }
