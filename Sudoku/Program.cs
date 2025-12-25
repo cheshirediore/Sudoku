@@ -9,6 +9,7 @@ class Program
 
     public static void Main(string[] args)
     {
+        /*
         // Hard-Coded paths for testing
         string[] seedPaths = [
             "./SamplePuzzleSeed.csv",
@@ -47,8 +48,9 @@ class Program
 
         // Read the input seed file and generate a sudoku grid array
         Grid grid = new(path);
+        */
 
-        TestGenerator(grid);
+        TestGenerator();
                 
     }
 
@@ -60,8 +62,10 @@ class Program
     private static void TestSolver(Grid grid)
     {
         // Create a Solver to process the imported seed file
-        Solver solver = new Backtracker(grid);
-        solver.MaxSolutions = 2;
+        Solver solver = new Backtracker(grid)
+        {
+            MaxSolutions = 2
+        };
         // Solve the sudoku puzzle
         List<Grid> solutions = solver.Solve();
 
@@ -87,17 +91,25 @@ class Program
         }
     }
 
-    private static void TestGenerator(Grid grid)
+    private static void TestGenerator()
     {
+        Grid grid = new();
         Generator generator = new(grid);
 
+        System.Console.WriteLine("Testing Erosion On Filled Puzzle");
         // Output the results
         System.Console.WriteLine("Original Puzzle:");
         System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
+        if (generator.Fill())
+        {
+            System.Console.WriteLine("Filled Puzzle:");
+            System.Console.WriteLine(GetAsciiReprGrid(generator.InitialGrid.Vertices));
+        }
         if (generator.Erode())
         {
             System.Console.WriteLine("New Puzzle:");
-            System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
+            System.Console.WriteLine(GetAsciiReprGrid(generator.InitialGrid.Vertices));
         }
+
     }
 }
