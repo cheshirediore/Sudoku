@@ -43,21 +43,12 @@ public class Backtracker: Solver
         {
             return solutions;
         }
-        // Console.WriteLine($"Backtrack {depth}");
-        // Console.WriteLine($"Data:");
-        // Console.WriteLine(new AsciiGrid(data, depth));
-        // Console.WriteLine($"Candidate:");
-        // Console.WriteLine(new AsciiGrid(candidate, depth));
         if (Reject(candidate))
         {
-            // Console.WriteLine($"Rejected (Depth {depth})");
-            // Console.WriteLine(new AsciiGrid(candidate, depth));
             return solutions;
         }
         if (Accept(candidate))
         {
-            // Console.WriteLine($"Accepted (Depth {depth})");
-            // Console.WriteLine(new AsciiGrid(candidate, depth));
             return Output(candidate, solutions);
         }
 
@@ -66,11 +57,6 @@ public class Backtracker: Solver
         {
             solutions = Backtrack(candidate, nextCandidate, solutions, depth+1);
             nextCandidate = Next(candidate, nextCandidate);
-            // if (nextCandidate != null)
-            // {
-            //     Console.WriteLine($"Next Candidate (Depth {depth})");
-            //     Console.WriteLine(new AsciiGrid(nextCandidate, depth));
-            // }
         }
         return solutions;
     }

@@ -9,46 +9,7 @@ class Program
 
     public static void Main(string[] args)
     {
-        /*
-        // Hard-Coded paths for testing
-        string[] seedPaths = [
-            "./SamplePuzzleSeed.csv",
-            "./SamplePuzzle.csv",
-            "./SampleInvalidSeed.csv",
-            "./EmptyPuzzleSeed.csv"
-        ];
-
-        // Parse the CLI input and try to select a file path from the above list
-        int pathNumber = 0;
-
-        if (args.Length > 0)
-        {
-            if (int.TryParse(args[0], out pathNumber))
-            {
-                if (pathNumber >= 0 && pathNumber < seedPaths.Length)
-                { 
-                    System.Console.WriteLine($"Using {seedPaths[pathNumber]}");
-                } 
-                else
-                {
-                    System.Console.WriteLine($"Provided argument {pathNumber} invalid. Using {seedPaths[pathNumber]} as path.");
-                    pathNumber = 0;
-                }
-            }
-        }
-
-        string path = seedPaths[pathNumber];
         
-        // Verify that the chosen path actually exists
-        if (!System.IO.File.Exists(path))
-        {
-            System.Console.WriteLine($"File path '{seedPaths[pathNumber]}' not found. Verify the file exists, and that the permissions are correct.");
-            return;
-        }
-
-        // Read the input seed file and generate a sudoku grid array
-        Grid grid = new(path);
-        */
 
         TestGenerator();
                 
@@ -110,6 +71,45 @@ class Program
             System.Console.WriteLine("New Puzzle:");
             System.Console.WriteLine(GetAsciiReprGrid(generator.InitialGrid.Vertices));
         }
+    }
 
+    private static Grid ImportSeedFile(string[] args)
+    {
+        // Hard-Coded paths for testing
+        string[] seedPaths = [
+            "./SamplePuzzleSeed.csv",
+            "./SamplePuzzle.csv",
+            "./SampleInvalidSeed.csv",
+            "./EmptyPuzzleSeed.csv"
+        ];
+
+        // Parse the CLI input and try to select a file path from the above list
+        int pathNumber = 0;
+
+        if (args.Length > 0)
+        {
+            if (int.TryParse(args[0], out pathNumber))
+            {
+                if (pathNumber >= 0 && pathNumber < seedPaths.Length)
+                { 
+                    System.Console.WriteLine($"Using {seedPaths[pathNumber]}");
+                } 
+                else
+                {
+                    throw new System.ArgumentOutOfRangeException($"{seedPaths[pathNumber]}", $"Provided argument {pathNumber} invalid. Using {seedPaths[pathNumber]} as path.");
+                }
+            }
+        }
+
+        string path = seedPaths[pathNumber];
+        
+        // Verify that the chosen path actually exists
+        if (!System.IO.File.Exists(path))
+        {
+            throw new System.IO.FileNotFoundException($"File path '{seedPaths[pathNumber]}' not found. Verify the file exists, and that the permissions are correct.");
+        }
+
+        // Read the input seed file and generate a sudoku grid array
+        return new Grid(path);
     }
 }

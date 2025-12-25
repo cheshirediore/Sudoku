@@ -19,16 +19,13 @@ public class Generator
         Grid candidate = InitialGrid.ShallowCopy();
 
         int[] clueIndices = GetRandomIndices();
-        // Console.WriteLine($"clueIndices.Length = {clueIndices.Length}");
         
         // For each clue value, try removing it and see if it's still a valid puzzle
         foreach (int index in clueIndices)
         {
-            // Console.WriteLine($"[Generator.Erode()] Processing #{index}");
 
             if (candidate.GetVertex(index) < 0)
             {
-                // Console.WriteLine($"[Generator.Erode()] Clearing cell #{index}");
                 candidate.SetVertex(index, 0);
                 Solver solver = new Backtracker(candidate)
                 {
@@ -37,14 +34,9 @@ public class Generator
                 // If the puzzle is valid, add it to the list
                 if (solver.Solve().Count != 1)
                 {
-                    // Console.WriteLine($"[Generator.Erode()] Failed to clear cell {index}. Causes invalid puzzle.");
                     // Reset the clue
                     candidate.SetVertex(index, InitialGrid.GetVertex(index));
                 }
-                // else
-                // {
-                //     Console.WriteLine($"[Generator.Erode()] Successfully cleared cell {index}");
-                // } 
             }
         }
 
@@ -96,9 +88,6 @@ public class Generator
             }
         }
 
-        Console.WriteLine($"[Generator.Fill()] Seed Values:");
-        Console.WriteLine($"{new AsciiGrid(candidate.Vertices)}");
-
         // Solve the puzzle
         // Create a Solver to process the grid
         Solver solver = new Backtracker(candidate)
@@ -121,10 +110,6 @@ public class Generator
                 InitialGrid.SetVertex(index, InitialGrid.GetVertex(index), true);
             }
         }
-        else
-        {
-            Console.WriteLine("Failed to generate a valid puzzle.");
-        }
 
         return success;
     }
@@ -144,7 +129,6 @@ public class Generator
         rand.Shuffle<int>(clueSpan);
 
         return clueSpan.ToArray();
-        // return rand.GetItems<int>(vertIndices, Grid.SIZE);
     }
 
 }
