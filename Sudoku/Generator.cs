@@ -78,7 +78,7 @@ public class Generator
         foreach (int index in randomIndices)
         {
             // Set cell value to a random value
-            candidate.SetVertex(index, rand.Next(10), true);
+            candidate.SetVertex(index, rand.Next(1, 10), true);
 
             // Check consistency. If consistent, increment populated cell count. Otherwise, restore the original value.
             if (candidate.IsConsistent())
