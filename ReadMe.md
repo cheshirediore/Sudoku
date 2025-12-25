@@ -11,7 +11,7 @@ Phase 1 focuses on the internal integrity of the sudoku puzzle. Any UI at this p
 - Internal validation of a sudoku puzzle. Given a filled puzzle, determine if it is a valid solution. [Complete]
 
 
-## Phase 2: Puzzle Generation
+## Phase 2: Puzzle Generation [Complete]
 
 Phase 2 focuses entirely on the puzzle generation. Milestones are:
 - Generate valid sudoku puzzle solution. [Complete]
