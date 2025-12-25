@@ -148,7 +148,6 @@ public class Grid: IEquatable<Grid>
         {
             // Check columns
             var column = GetColumn(i);
-            // var column = GetColumnValues(candidate, i);
             HashSet<int> values = new();
             
             for (int index = 0; index < column.Length; index++)
@@ -161,7 +160,6 @@ public class Grid: IEquatable<Grid>
             values.Clear();
 
             // Check rows
-            // var row = GetRowValues(candidate, i);
             var row = GetRow(i);
             for (int index = 0; index < row.Length; index++)
             {
@@ -174,7 +172,6 @@ public class Grid: IEquatable<Grid>
 
 
             // Check blocks
-            // var block = GetBlockValues(candidate, i);
             var block = GetBlock(i);
             for (int index = 0; index < block.Length; index++)
             {

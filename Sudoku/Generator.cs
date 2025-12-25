@@ -7,6 +7,7 @@ public class Generator
 {
     private Random rand;
     public Grid Puzzle {get; set;}
+    public int TargetSeedAmount = 10;
 
     public Generator()
     {
@@ -69,7 +70,6 @@ public class Generator
     {
         Grid candidate = Puzzle.ShallowCopy();
 
-        int targetSeedAmount = 10;
         int[] randomIndices = GetRandomIndices();
 
         candidate.SetVertex(0, rand.Next(1, 10), true);
@@ -91,7 +91,7 @@ public class Generator
             }
 
             // If populated cell count is at least the targeted amount, break loop
-            if (populatedCells >= targetSeedAmount)
+            if (populatedCells >= TargetSeedAmount)
             {
                 break;
             }
