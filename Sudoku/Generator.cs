@@ -71,7 +71,7 @@ public class Generator
         int targetSeedAmount = 10;
         int[] randomIndices = GetRandomIndices();
 
-        candidate.SetVertex(0, rand.Next(10), true);
+        candidate.SetVertex(0, rand.Next(1, 10), true);
         int populatedCells = 1;
 
         foreach (int index in randomIndices)
