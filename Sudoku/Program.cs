@@ -9,10 +9,7 @@ class Program
 
     public static void Main(string[] args)
     {
-        
-
-        TestGenerator();
-                
+        TestGenerator();         
     }
 
     private static string GetAsciiReprGrid(int[][] grid)
@@ -55,22 +52,10 @@ class Program
     private static void TestGenerator()
     {
         Grid grid = new();
-        Generator generator = new(grid);
-
-        System.Console.WriteLine("Testing Erosion On Filled Puzzle");
-        // Output the results
-        System.Console.WriteLine("Original Puzzle:");
-        System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
-        if (generator.Fill())
-        {
-            System.Console.WriteLine("Filled Puzzle:");
-            System.Console.WriteLine(GetAsciiReprGrid(generator.InitialGrid.Vertices));
-        }
-        if (generator.Erode())
-        {
-            System.Console.WriteLine("New Puzzle:");
-            System.Console.WriteLine(GetAsciiReprGrid(generator.InitialGrid.Vertices));
-        }
+        Generator generator = new();
+        generator.Generate();
+        System.Console.WriteLine(generator.Puzzle);
+        System.Console.WriteLine(GetAsciiReprGrid(generator.Puzzle.Vertices));
     }
 
     private static Grid ImportSeedFile(string[] args)

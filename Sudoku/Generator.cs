@@ -5,25 +5,33 @@ namespace Sudoku;
 
 public class Generator
 {
-    public Grid InitialGrid {get; set;}
+    public Grid Puzzle {get; set;}
 
-    public Generator(Grid grid)
+    public Generator()
     {
-        InitialGrid = grid;
+        Puzzle = new Grid();
     }
 
-    public Generator(): this(new Grid()) {}
-
-    public bool Erode()
+    public bool Generate()
     {
-        Grid candidate = InitialGrid.ShallowCopy();
+        bool success = false;
+        // Keep trying until the grid is successfully populated
+        while (!success)
+        {
+            success = StochasticFill();
+        }
+        return Erode() && success;
+    }
+
+    private bool Erode()
+    {
+        Grid candidate = Puzzle.ShallowCopy();
 
         int[] clueIndices = GetRandomIndices();
         
         // For each clue value, try removing it and see if it's still a valid puzzle
         foreach (int index in clueIndices)
         {
-
             if (candidate.GetVertex(index) < 0)
             {
                 candidate.SetVertex(index, 0);
@@ -35,30 +43,30 @@ public class Generator
                 if (solver.Solve().Count != 1)
                 {
                     // Reset the clue
-                    candidate.SetVertex(index, InitialGrid.GetVertex(index));
+                    candidate.SetVertex(index, Puzzle.GetVertex(index));
                 }
             }
         }
 
-        bool success = candidate != InitialGrid;
+        bool success = candidate != Puzzle;
 
         if (success)
         {
-            InitialGrid = candidate;
+            Puzzle = candidate;
             // Set all cells as clues
             for (int index = 0; index < Grid.SIZE; index++)
             {
-                InitialGrid.SetVertex(index, InitialGrid.GetVertex(index), true);
+                Puzzle.SetVertex(index, Puzzle.GetVertex(index), true);
             }
         }
 
         return success;
     }
 
-    public bool Fill()
+    private bool StochasticFill()
     {
         Random rand = new();
-        Grid candidate = InitialGrid.ShallowCopy();
+        Grid candidate = Puzzle.ShallowCopy();
 
         int targetSeedAmount = 10;
         int[] randomIndices = GetRandomIndices();
@@ -78,7 +86,7 @@ public class Generator
             }
             else
             {
-                candidate.SetVertex(index, InitialGrid.GetVertex(index), true);
+                candidate.SetVertex(index, Puzzle.GetVertex(index), true);
             }
 
             // If populated cell count is at least the targeted amount, break loop
@@ -103,11 +111,11 @@ public class Generator
 
         if (success)
         {
-            InitialGrid = solutions[0];
+            Puzzle = solutions[0];
             // Set all cells as clues
             for (int index = 0; index < Grid.SIZE; index++)
             {
-                InitialGrid.SetVertex(index, InitialGrid.GetVertex(index), true);
+                Puzzle.SetVertex(index, Puzzle.GetVertex(index), true);
             }
         }
 
