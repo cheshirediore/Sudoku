@@ -277,84 +277,70 @@ public class Grid: IEquatable<Grid>
 
         // Not a very elegant solution, but it works.
 
-        // Top Left Corner
-        if ( 
-            x < 3               // Left 3 columns
-            && y < 3            // Top 3 rows
-        )
+        // Left 3 Rows
+        if (y < 3)
         {
-            return 0;
-        }
-
-        // Middle Left
-        if ( x < 3              // Left 3 columns
-            && y > 2 && y < 6   // Middle 3 rows
-        )
-        {
-            return 3;
-        }
-
-        // Bottom Left Corner
-        if ( 
-            x < 3               // Left 3 columns
-            && y > 5            // Bottom 3 rows
-        )
-        {
-            return 6;
-        }
+            // Top 3 columns
+            if (x < 3)
+            {
+                return 0;
+            }
         
-        // Top Middle
-        if (
-            x > 2 && x < 6      // Middle 3 columns
-            && y < 3            // Top 3 rows
-        )
-        {
-            return 1;
+            // Middle 3 columns
+            if (x > 2 && x < 6)
+            {
+                return 1;
+            }
+
+            // Bottom 3 columns
+            if (x > 5)
+            {
+                return 2;
+            }
         }
 
-        // Center
-        if (
-            x > 2 && x < 6      // Middle 3 columns
-            && y > 2 && y < 6   // Middle 3 rows
-        )
+        // Middle 3 Rows
+        if (y > 2 && y < 6 )
         {
-            return 4;
+            // Top 3 columns
+            if (x < 3)
+            {
+                return 3;
+            }
+        
+            // Middle 3 columns
+            if (x > 2 && x < 6)
+            {
+                return 4;
+            }
+
+            // Bottom 3 columns
+            if (x > 5)
+            {
+                return 5;
+            }
         }
 
-        // Bottom Middle
-        if (
-            x > 2 && x < 6      // Middle 3 columns
-            && y > 5            // Bottom 3 rows
-        )
+        // Right 3 Rows
+        if (y > 5)
         {
-            return 7;
-        }
+            // Top 3 columns
+            if (x < 3)
+            {
+                return 6;
+            }
+        
+            // Middle 3 columns
+            if (x > 2 && x < 6)
+            {
+                return 7;
+            }
 
-        // Top Right Corner
-        if ( 
-            x > 5               // Right 3 columns
-            && y < 3            // Top 3 rows
-        )
-        {
-            return 2;
-        }
-
-        // Right Middle
-        if ( 
-            x > 5               // Right 3 columns
-            && y > 2 && y < 6   // Middle 3 rows
-        )
-        {
-            return 5;
-        }
-
-        // Bottom Right Corner
-        if ( 
-            x > 5               // Right 3 columns
-            && y > 5            // Bottom 3 rows
-        )
-        {
-            return 8;
+            // Bottom 3 columns
+            if (x > 5)
+            {
+                return 8;
+            }
         }
 
         return -1;
