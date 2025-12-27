@@ -51,7 +51,6 @@ public class Backtracker: Solver
         Grid? nextCandidate = First(data, candidate);
         while (nextCandidate != null)
         {
-            
             solutions = Backtrack(candidate, nextCandidate, solutions);
             nextCandidate = Next(candidate, nextCandidate);
         }
@@ -75,6 +74,9 @@ public class Backtracker: Solver
     // reject(P, c): return true only if the partial candidate c is not worth completing
     public static bool Reject(Grid candidate)
     {
+        // Only check the last updated cell's row, column, and block.
+        return !candidate.IsLastUpdateValid(); 
+        /*
         for (int i = 0; i < 9; i++)
         {
             // Check columns
@@ -117,6 +119,7 @@ public class Backtracker: Solver
             values.Clear();
         }
         return false;
+        */
     }
 
     // accept(P, c): return true if and only if candidate c is a solution of P

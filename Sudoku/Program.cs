@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Sudoku;
 
@@ -9,12 +10,28 @@ class Program
 
     public static void Main(string[] args)
     {
-        TestGenerator();         
+        TestGenerator();     
     }
 
     private static string GetAsciiReprGrid(int[][] grid)
     {
         return new AsciiGrid(grid).ToString();
+    }
+
+    private static void TestIndexTranslation()
+    {
+        for (int y = 0; y < Grid.HEIGHT; y++)
+        {
+            for (int x = 0; x < Grid.WIDTH; x++)
+            {
+                int[] inputCoordinates = [x, y];
+                int index = Grid.CoordinatesToIndex(inputCoordinates);    
+                int[] outputCoordinates = Grid.IndexToCoordinates(index);
+                Console.WriteLine($"Index: {index}; x={x}, y={y}");
+                Console.WriteLine($"Input Coordinates:  [{inputCoordinates[0]}, {inputCoordinates[1]}]");  
+                Console.WriteLine($"Output Coordinates: [{outputCoordinates[0]}, {outputCoordinates[1]}]");
+            }
+        }
     }
 
     private static void TestSolver(Grid grid)

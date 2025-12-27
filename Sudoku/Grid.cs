@@ -6,9 +6,9 @@ namespace Sudoku;
 
 public class Grid: IEquatable<Grid>
 {
+    // Static Constants
     public const int WIDTH = 9;
     public const int HEIGHT = 9;
-
     public static int SIZE { get => WIDTH * HEIGHT; }
 
     // Give useful names to the index groups used for blocks
@@ -16,7 +16,11 @@ public class Grid: IEquatable<Grid>
     private readonly ImmutableArray<int> SECOND = [3, 4, 5];
     private readonly ImmutableArray<int> THIRD = [6, 7, 8];
 
+    // Instance Attributes
     public readonly int[][] Vertices;
+
+    // Validation Assist
+    int lastUpdatedCellIndex = 0;
 
     public Grid()
     {
@@ -79,6 +83,11 @@ public class Grid: IEquatable<Grid>
         }
     }
 
+    public static int CoordinatesToIndex(int[] coordinates)
+    {
+        return coordinates[1] * WIDTH + coordinates[0];
+    }
+
     public static int[] IndexToCoordinates(int index)
     {
         int[] coordinates = [-1, -1];
@@ -120,6 +129,7 @@ public class Grid: IEquatable<Grid>
 
     public void SetVertex(int x, int y, int value)
     {
+        lastUpdatedCellIndex = CoordinatesToIndex([x, y]);
         Vertices[y][x] = value;
     }
 
@@ -142,45 +152,73 @@ public class Grid: IEquatable<Grid>
         }
     }
 
-    public bool IsConsistent()
+    public bool IsLastUpdateValid()
+    {
+        int[] coordinates = IndexToCoordinates(lastUpdatedCellIndex);
+        int x = coordinates[0];
+        int y = coordinates[1];
+
+        return IsRowConsistent(y) && IsColumnConsistent(x) && IsBlockConsistent(x, y);
+    }
+
+    public bool IsRowConsistent(int rowIndex)
+    {
+        HashSet<int> values = new();
+
+        var row = GetRow(rowIndex);
+        for (int index = 0; index < row.Length; index++)
+        {
+            if (row[index] != 0 && !values.Add(System.Math.Abs(row[index])))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool IsColumnConsistent(int columnIndex)
+    {
+        HashSet<int> values = new();
+
+        var column = GetColumn(columnIndex);
+        for (int index = 0; index < column.Length; index++)
+        {
+            if (column[index] != 0 && !values.Add(System.Math.Abs(column[index])))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool IsBlockConsistent(int x, int y)
+    {
+        return IsBlockConsistent(GetBlockIndex(x, y));
+    }
+
+    public bool IsBlockConsistent(int blockIndex)
+    {
+        HashSet<int> values = new();
+
+        var block = GetBlock(blockIndex);
+        for (int index = 0; index < block.Length; index++)
+        {
+            if (block[index] != 0 && !values.Add(System.Math.Abs(block[index])))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool IsGridConsistent()
     {
         for (int i = 0; i < 9; i++)
         {
-            // Check columns
-            var column = GetColumn(i);
-            HashSet<int> values = new();
-            
-            for (int index = 0; index < column.Length; index++)
+            if (!IsRowConsistent(i) || !IsColumnConsistent(i) || !IsBlockConsistent(i))
             {
-                if (column[index] != 0 && !values.Add(System.Math.Abs(column[index])))
-                {
-                    return false;
-                }
+                return false;
             }
-            values.Clear();
-
-            // Check rows
-            var row = GetRow(i);
-            for (int index = 0; index < row.Length; index++)
-            {
-                if (row[index] != 0 && !values.Add(System.Math.Abs(row[index])))
-                {
-                    return false;
-                }
-            }
-            values.Clear();
-
-
-            // Check blocks
-            var block = GetBlock(i);
-            for (int index = 0; index < block.Length; index++)
-            {
-                if (block[index] != 0 && !values.Add(System.Math.Abs(block[index])))
-                {
-                    return false;
-                }
-            }
-            values.Clear();
         }
         return true;
     }
@@ -212,6 +250,116 @@ public class Grid: IEquatable<Grid>
         return column;
     }
 
+
+    public int GetBlockIndex(int cellIndex)
+    {
+        int[] coordinates = IndexToCoordinates(cellIndex);  
+        return GetBlockIndex(coordinates[0], coordinates[1]);   
+    }
+
+    public int GetBlockIndex(int x, int y)
+    {
+        /*
+              0  1  2    3  4  5    6  7  8
+
+        0     0  1  2 |  3  4  5 |  6  7  8
+        1     9 10 11 | 12 13 14 | 15 16 17
+        2    18 19 20 | 21 22 23 | 24 25 26
+             ------------------------------
+        3    27 28 29 | 30 31 32 | 33 34 35
+        4    36 37 38 | 39 40 41 | 42 43 44
+        5    45 46 47 | 48 49 50 | 51 52 53
+             ------------------------------
+        6    54 55 56 | 57 58 59 | 60 61 62
+        7    63 64 65 | 66 67 68 | 69 70 71
+        8    72 73 74 | 75 76 77 | 78 79 80
+        */
+
+        // Not a very elegant solution, but it works.
+
+        // Top Left Corner
+        if ( 
+            x < 3               // Left 3 columns
+            && y < 3            // Top 3 rows
+        )
+        {
+            return 0;
+        }
+
+        // Middle Left
+        if ( x < 3              // Left 3 columns
+            && y > 2 && y < 6   // Middle 3 rows
+        )
+        {
+            return 3;
+        }
+
+        // Bottom Left Corner
+        if ( 
+            x < 3               // Left 3 columns
+            && y > 5            // Bottom 3 rows
+        )
+        {
+            return 6;
+        }
+        
+        // Top Middle
+        if (
+            x > 2 && x < 6      // Middle 3 columns
+            && y < 3            // Top 3 rows
+        )
+        {
+            return 1;
+        }
+
+        // Center
+        if (
+            x > 2 && x < 6      // Middle 3 columns
+            && y > 2 && y < 6   // Middle 3 rows
+        )
+        {
+            return 4;
+        }
+
+        // Bottom Middle
+        if (
+            x > 2 && x < 6      // Middle 3 columns
+            && y > 5            // Bottom 3 rows
+        )
+        {
+            return 7;
+        }
+
+        // Top Right Corner
+        if ( 
+            x > 5               // Right 3 columns
+            && y < 3            // Top 3 rows
+        )
+        {
+            return 2;
+        }
+
+        // Right Middle
+        if ( 
+            x > 5               // Right 3 columns
+            && y > 2 && y < 6   // Middle 3 rows
+        )
+        {
+            return 5;
+        }
+
+        // Bottom Right Corner
+        if ( 
+            x > 5               // Right 3 columns
+            && y > 5            // Bottom 3 rows
+        )
+        {
+            return 8;
+        }
+
+        return -1;
+        
+    }
     /// <summary>
     /// Method to get 3x3 vector from a 2D array, transformed to a 1x9 vector.
     /// </summary>

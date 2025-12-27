@@ -81,7 +81,7 @@ public class Generator
             candidate.SetVertex(index, rand.Next(1, 10), true);
 
             // Check consistency. If consistent, increment populated cell count. Otherwise, restore the original value.
-            if (candidate.IsConsistent())
+            if (candidate.IsGridConsistent())
             {
                 populatedCells++;
             }
