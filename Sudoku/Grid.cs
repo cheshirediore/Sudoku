@@ -365,9 +365,6 @@ public class Grid: IEquatable<Grid>
     /// </summary>
     public int[] GetBlock(int blockIndex)
     {
-        // TODO: Handle out of bounds arguments
-        int[] block = new int[9];
-
         /*
             A block is the intersection of (union of three columns) and (union of three rows)
 
@@ -392,6 +389,8 @@ public class Grid: IEquatable<Grid>
             Block 8
             (columns 6, 7, 8) intersect (rows 6, 7, 8)
         */
+
+        int[] block = new int[9];
 
         ImmutableArray<int> columnIndices;
         ImmutableArray<int> rowIndices;
@@ -481,15 +480,12 @@ public class Grid: IEquatable<Grid>
 
     public Grid ShallowCopy()
     {
-        // var watch = System.Diagnostics.Stopwatch.StartNew();
         // Make a shallow copy of the candidate
         Grid newGrid = new();
         for (int y = 0; y < HEIGHT; y++)
         {
             Array.Copy(Vertices[y], newGrid.Vertices[y], Grid.WIDTH);
         }
-        // watch.Stop();
-        // Console.WriteLine($"Grid.ShallowCopy() runtime: {watch}");
         return newGrid;
     }
 
