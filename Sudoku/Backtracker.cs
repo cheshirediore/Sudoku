@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Sudoku;
@@ -48,7 +49,7 @@ public class Backtracker: Solver
             return Output(candidate, solutions);
         }
 
-        Grid? nextCandidate = First(data, candidate);
+        Grid? nextCandidate = First(candidate);
         while (nextCandidate != null)
         {
             solutions = Backtrack(candidate, nextCandidate, solutions);
@@ -98,7 +99,7 @@ public class Backtracker: Solver
 
     #region Extenders
     // first(P, c): generate the first extension of candidate c
-    public static Grid? First(Grid data, Grid candidate)
+    public static Grid? First(Grid candidate)
     {
         // Make a shallow copy of the candidate
         Grid grid = candidate.ShallowCopy();
