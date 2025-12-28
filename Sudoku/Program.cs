@@ -12,7 +12,8 @@ class Program
     {
         var watch = System.Diagnostics.Stopwatch.StartNew();
         TestGenerator();
-        watch.Stop(); Console.WriteLine($"Generate() runtime: {watch}");
+        watch.Stop();
+        Console.WriteLine($"Generate() runtime: {watch}");
     }
 
     private static string GetAsciiReprGrid(int[][] grid)
@@ -72,8 +73,8 @@ class Program
     {
         Generator generator = new();
         generator.Generate();
-        // System.Console.WriteLine(generator.Puzzle);
-        // System.Console.WriteLine(GetAsciiReprGrid(generator.Puzzle.Vertices));
+        System.Console.WriteLine(generator.Puzzle);
+        System.Console.WriteLine(GetAsciiReprGrid(generator.Puzzle.Vertices));
     }
 
     private static Grid ImportSeedFile(string[] args)
