@@ -18,19 +18,20 @@ Phase 2 focuses entirely on the puzzle generation. Milestones are:
 - Remove values until a minimal number of visible values remain to constitute a valid puzzle. [Complete]
 - Extend Generator to allow more variety in generated puzzles. [Complete]
 
-## Phase 2.5: Preliminary Optimization
-This intermediary phase focuses on getting runtimes down to a level acceptable for iterative development and testing. Proper optimization will occur at the end of the project.
+## Phase 2.5: Preliminary Optimization [Complete]
 
-## Phase 3: Difficulty
+This intermediary phase focuses on getting runtimes down to a level acceptable for iterative development and testing. Proper optimization will occur at the end of the project. [Complete]
 
-Phase 3 focuses on refining the "minimal" puzzle from Puzzle Generation into categories of Easy, Medium, Hard, Expert. Milestones include:
-- Formally define each category
-- Implement difficulty selection method(s)
+~~## Phase 3: Difficulty~~
+
+~~Phase 3 focuses on refining the "minimal" puzzle from Puzzle Generation into categories of Easy, Medium, Hard, Expert. Milestones include:~~
+~~- Formally define each category~~
+~~- Implement difficulty selection method(s)~~
 
 
 ## Phase 4: Clean-up and Generalize API
 
-Phase 4 focuses on refactoring the codebase, and cleaning up the accessors and public methods. This phase prepares the backend code to play well with others, with emphasis on preparation for the GUI. Milestones TBD.
+Phase 4 focuses on refactoring and restructuring the codebase, and cleaning up the accessors and public methods. This phase prepares the backend code to play well with others, with emphasis on preparation for the GUI. Milestones TBD.
 
 
 ## Phase 5: GUI
