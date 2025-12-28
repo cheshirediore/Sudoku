@@ -31,12 +31,8 @@ public class Backtracker: Solver
      *     backtrack(P, s)
      *     s ← next(P, s)
      */
-    public List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions)
-    {
-        return Backtrack(data, candidate, solutions, 0);
-    }
 
-    public List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions, int depth)
+    public List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions)
     {
         // Stop looking if more than one solution has been found. We only care about valid sudoku puzzles.
         if (MaxSolutions > 0 && solutions.Count >= MaxSolutions)
@@ -55,7 +51,7 @@ public class Backtracker: Solver
         Grid? nextCandidate = First(data, candidate);
         while (nextCandidate != null)
         {
-            solutions = Backtrack(candidate, nextCandidate, solutions, depth+1);
+            solutions = Backtrack(candidate, nextCandidate, solutions);
             nextCandidate = Next(candidate, nextCandidate);
         }
         return solutions;
@@ -78,48 +74,8 @@ public class Backtracker: Solver
     // reject(P, c): return true only if the partial candidate c is not worth completing
     public static bool Reject(Grid candidate)
     {
-        for (int i = 0; i < 9; i++)
-        {
-            // Check columns
-            var column = candidate.GetColumn(i);
-            // var column = GetColumnValues(candidate, i);
-            HashSet<int> values = new();
-            
-            for (int index = 0; index < column.Length; index++)
-            {
-                if (column[index] != 0 && !values.Add(System.Math.Abs(column[index])))
-                {
-                    return true;
-                }
-            }
-            values.Clear();
-
-            // Check rows
-            // var row = GetRowValues(candidate, i);
-            var row = candidate.GetRow(i);
-            for (int index = 0; index < row.Length; index++)
-            {
-                if (row[index] != 0 && !values.Add(System.Math.Abs(row[index])))
-                {
-                    return true;
-                }
-            }
-            values.Clear();
-
-
-            // Check blocks
-            // var block = GetBlockValues(candidate, i);
-            var block = candidate.GetBlock(i);
-            for (int index = 0; index < block.Length; index++)
-            {
-                if (block[index] != 0 && !values.Add(System.Math.Abs(block[index])))
-                {
-                    return true;
-                }
-            }
-            values.Clear();
-        }
-        return false;
+        // Only check the last updated cell's row, column, and block.
+        return !candidate.IsLastUpdateValid();
     }
 
     // accept(P, c): return true if and only if candidate c is a solution of P

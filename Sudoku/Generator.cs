@@ -15,6 +15,12 @@ public class Generator
         rand = new();
     }
 
+    public Generator(int randomSeed)
+    {
+        Puzzle = new Grid();
+        rand = new(randomSeed);
+    }
+
     public bool Generate()
     {
         bool success = false;
@@ -81,7 +87,7 @@ public class Generator
             candidate.SetVertex(index, rand.Next(1, 10), true);
 
             // Check consistency. If consistent, increment populated cell count. Otherwise, restore the original value.
-            if (candidate.IsConsistent())
+            if (candidate.IsGridConsistent())
             {
                 populatedCells++;
             }
