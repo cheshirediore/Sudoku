@@ -68,8 +68,7 @@ class Program
 
     private static void TestGenerator()
     {
-        Grid grid = new();
-        Generator generator = new();
+        Generator generator = new(13);
         generator.Generate();
         System.Console.WriteLine(generator.Puzzle);
         System.Console.WriteLine(GetAsciiReprGrid(generator.Puzzle.Vertices));

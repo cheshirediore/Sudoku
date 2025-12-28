@@ -154,11 +154,25 @@ public class Grid: IEquatable<Grid>
 
     public bool IsLastUpdateValid()
     {
-        int[] coordinates = IndexToCoordinates(lastUpdatedCellIndex);
-        int x = coordinates[0];
-        int y = coordinates[1];
+        return IsLastUpdatedRowValid() && IsLastUpdatedColumnValid() && IsLastUpdatedBlockValid();
+    }
 
-        return IsRowConsistent(y) && IsColumnConsistent(x) && IsBlockConsistent(x, y);
+    public bool IsLastUpdatedRowValid()
+    {
+        int[] coordinates = IndexToCoordinates(lastUpdatedCellIndex);
+        return IsRowConsistent(coordinates[1]);
+    }
+
+    public bool IsLastUpdatedColumnValid()
+    {
+        int[] coordinates = IndexToCoordinates(lastUpdatedCellIndex);
+        return IsColumnConsistent(coordinates[0]);
+    }
+
+    public bool IsLastUpdatedBlockValid()
+    {
+        int[] coordinates = IndexToCoordinates(lastUpdatedCellIndex);
+        return IsBlockConsistent(coordinates[0], coordinates[1]);
     }
 
     public bool IsRowConsistent(int rowIndex)
@@ -381,7 +395,7 @@ public class Grid: IEquatable<Grid>
 
         ImmutableArray<int> columnIndices;
         ImmutableArray<int> rowIndices;
-
+        
         // Only 9x9 grids are supported, so we can hard code these cases instead of calculating them at runtime
         switch (blockIndex)
         {

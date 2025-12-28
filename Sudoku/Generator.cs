@@ -15,6 +15,12 @@ public class Generator
         rand = new();
     }
 
+    public Generator(int randomSeed)
+    {
+        Puzzle = new Grid();
+        rand = new(randomSeed);
+    }
+
     public bool Generate()
     {
         bool success = false;
