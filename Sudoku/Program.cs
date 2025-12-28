@@ -10,7 +10,10 @@ class Program
 
     public static void Main(string[] args)
     {
-        TestGenerator();     
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        TestGenerator();
+        watch.Stop();
+        Console.WriteLine($"Generate() runtime: {watch}");
     }
 
     private static string GetAsciiReprGrid(int[][] grid)
@@ -68,7 +71,7 @@ class Program
 
     private static void TestGenerator()
     {
-        Generator generator = new(13);
+        Generator generator = new();
         generator.Generate();
         System.Console.WriteLine(generator.Puzzle);
         System.Console.WriteLine(GetAsciiReprGrid(generator.Puzzle.Vertices));
