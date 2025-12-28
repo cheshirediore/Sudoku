@@ -68,7 +68,6 @@ public class Generator
                 Puzzle.SetVertex(index, Puzzle.GetVertex(index), true);
             }
         }
-
         return success;
     }
 

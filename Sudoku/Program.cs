@@ -68,8 +68,12 @@ class Program
 
     private static void TestGenerator()
     {
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+
         Generator generator = new(13);
         generator.Generate();
+        watch.Stop();
+        Console.WriteLine($"Generate() runtime: {watch}");
         System.Console.WriteLine(generator.Puzzle);
         System.Console.WriteLine(GetAsciiReprGrid(generator.Puzzle.Vertices));
     }

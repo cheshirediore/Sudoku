@@ -481,15 +481,15 @@ public class Grid: IEquatable<Grid>
 
     public Grid ShallowCopy()
     {
+        // var watch = System.Diagnostics.Stopwatch.StartNew();
         // Make a shallow copy of the candidate
         Grid newGrid = new();
         for (int y = 0; y < HEIGHT; y++)
         {
-            for (int x = 0; x < WIDTH; x++)
-            {
-                newGrid.SetVertex(x, y, GetVertex(x, y));
-            }
+            Array.Copy(Vertices[y], newGrid.Vertices[y], Grid.WIDTH);
         }
+        // watch.Stop();
+        // Console.WriteLine($"Grid.ShallowCopy() runtime: {watch}");
         return newGrid;
     }
 
