@@ -170,7 +170,8 @@ public class Grid: IEquatable<Grid>
     /// The y coordinate of the vertex. 
     /// </param>
     /// <returns>
-    /// An index indicating which block contains the given pair of coordinates.
+    /// Returns index indicating which block contains the given pair of coordinates.
+    /// If the pair of coordinates is invalid, returns a -1.
     /// </returns>
     private static int GetBlockIndex(int x, int y)
     {
