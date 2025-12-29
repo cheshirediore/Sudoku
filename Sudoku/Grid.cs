@@ -129,7 +129,7 @@ public class Grid: IEquatable<Grid>
     /// <remarks>
     /// Does not check if the given corrodinates (and corresponding index) are valid for a Grid.
     /// </remarks>
-    public static int CoordinatesToIndex(int[] coordinates)
+    private static int CoordinatesToIndex(int[] coordinates)
     {
         return coordinates[1] * WIDTH + coordinates[0];
     }
@@ -146,7 +146,7 @@ public class Grid: IEquatable<Grid>
     /// <remarks>
     /// Does not check if the given index (and corresponding pair of coordinates) is valid for a Grid.
     /// </remarks>
-    public static int[] IndexToCoordinates(int index)
+    private static int[] IndexToCoordinates(int index)
     {
         int[] coordinates = [-1, -1];
 
@@ -172,7 +172,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// An index indicating which block contains the given pair of coordinates.
     /// </returns>
-    public static int GetBlockIndex(int x, int y)
+    private static int GetBlockIndex(int x, int y)
     {
         /*
               0  1  2    3  4  5    6  7  8
@@ -267,7 +267,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns the index of the block containing the given cell index.
     /// </returns>
-    public static int GetBlockIndex(int cellIndex)
+    private static int GetBlockIndex(int cellIndex)
     {
         int[] coordinates = IndexToCoordinates(cellIndex);  
         return GetBlockIndex(coordinates[0], coordinates[1]);   
@@ -400,7 +400,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns true if and only if the row that contains the last updated vertex is consistent.
     /// </returns>
-    public bool IsLastUpdatedRowValid()
+    private bool IsLastUpdatedRowValid()
     {
         int[] coordinates = IndexToCoordinates(_lastUpdatedCellIndex);
         return IsRowConsistent(coordinates[1]);
@@ -412,7 +412,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns true if and only if the column that contains the last updated vertex is consistent.
     /// </returns>
-    public bool IsLastUpdatedColumnValid()
+    private bool IsLastUpdatedColumnValid()
     {
         int[] coordinates = IndexToCoordinates(_lastUpdatedCellIndex);
         return IsColumnConsistent(coordinates[0]);
@@ -424,7 +424,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns true if and only if the block that contains the last updated vertex is consistent.
     /// </returns>
-    public bool IsLastUpdatedBlockValid()
+    private bool IsLastUpdatedBlockValid()
     {
         int[] coordinates = IndexToCoordinates(_lastUpdatedCellIndex);
         return IsBlockConsistent(coordinates[0], coordinates[1]);
@@ -437,7 +437,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns true if and only if the given row does not contain any non-zero duplicate values.
     /// </returns>
-    public bool IsRowConsistent(int rowIndex)
+    private bool IsRowConsistent(int rowIndex)
     {
         HashSet<int> values = new();
 
@@ -459,7 +459,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns true if and only if the given column does not contain any non-zero duplicate values.
     /// </returns>
-    public bool IsColumnConsistent(int columnIndex)
+    private bool IsColumnConsistent(int columnIndex)
     {
         HashSet<int> values = new();
 
@@ -486,7 +486,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns true if and only if the block that contains the given vertex is consistent.
     /// </returns>
-    public bool IsBlockConsistent(int x, int y)
+    private bool IsBlockConsistent(int x, int y)
     {
         return IsBlockConsistent(GetBlockIndex(x, y));
     }
@@ -498,7 +498,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns true if and only if the given block does not contain any non-zero duplicate values.
     /// </returns>
-    public bool IsBlockConsistent(int blockIndex)
+    private bool IsBlockConsistent(int blockIndex)
     {
         HashSet<int> values = new();
 
