@@ -33,18 +33,18 @@ This intermediary phase focuses on getting runtimes down to a level acceptable f
 ~~- Implement difficulty selection method(s)~~
 
 
-## Phase 4: Clean-up and Generalize API
+## Phase 4: Clean-up and Generalize API [Complete]
 Phase 4 focuses on refactoring and restructuring the codebase, and cleaning up the accessors and public methods. This phase prepares the backend code to play well with others, with emphasis on preparation for the GUI.
 
 Milestones include:
-- Determine what needs to be exposed to the front-end, and what should not be.
+- Determine what needs to be exposed to the front-end, and what should not be. [Complete]
     - Read and write cell values
     - Get rows, columns, and blocks
     - Check validity of rows, columns, blocks, and entire puzzle
 - Add documentation comments to methods. [Complete]
-- Verify that all methods and properties have the correct access levels.
-- Add public methods, as needed, to allow communication with a front-end GUI.
-- Remove unused methods.
+- Verify that all methods and properties have the correct access levels. [Complete]
+- Add public methods, as needed, to allow communication with a front-end GUI. [Complete]
+- Remove unused methods. [Complete]
 
 ## Phase 5: GUI
 
