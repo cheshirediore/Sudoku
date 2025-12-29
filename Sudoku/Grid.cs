@@ -18,10 +18,9 @@ public class Grid: IEquatable<Grid>
 
     // Instance Attributes
     public readonly int[][] Vertices;
+    private int _lastUpdatedCellIndex = 0;
 
-    // Validation Assist
-    int lastUpdatedCellIndex = 0;
-
+    #region Constructors
     public Grid()
     {
         // Initialize (the list of rows part of) the jagged array 
@@ -82,6 +81,7 @@ public class Grid: IEquatable<Grid>
             }
         }
     }
+    #endregion
 
     public static int CoordinatesToIndex(int[] coordinates)
     {
@@ -105,6 +105,9 @@ public class Grid: IEquatable<Grid>
     /// <summary>
     /// Method used to translate familiar (x, y) cartesian coordinate notation to [row, column] 2D array indices.
     /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when either <paramref name="x"/> or <paramref name="y"/> are less than 0 or greater than 8.
+    /// </exception>
     public int GetVertex(int x, int y)
     {
         if (x < 0 || x > 8)
@@ -127,9 +130,24 @@ public class Grid: IEquatable<Grid>
         return GetVertex(coords[0], coords[1]);
     }
 
+    /// <summary>
+    /// Method used to translate familiar (x, y) cartesian coordinate notation to [row, column] 2D array indices. 
+    /// Primary accessor method for setting the value of a given vertex.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when either <paramref name="x"/> or <paramref name="y"/> are less than 0 or greater than 8.
+    /// </exception>
     public void SetVertex(int x, int y, int value)
     {
-        lastUpdatedCellIndex = CoordinatesToIndex([x, y]);
+        if (x < 0 || x > 8)
+        {
+            throw new System.ArgumentOutOfRangeException(nameof(x), $"({x}, {y}) is outside of the grid bounds.");
+        }
+        if (y < 0 || y > 8)
+        {
+            throw new System.ArgumentOutOfRangeException(nameof(y), $"({x}, {y}) is outside of the grid bounds.");
+        }
+        _lastUpdatedCellIndex = CoordinatesToIndex([x, y]);
         Vertices[y][x] = value;
     }
 
@@ -159,19 +177,19 @@ public class Grid: IEquatable<Grid>
 
     public bool IsLastUpdatedRowValid()
     {
-        int[] coordinates = IndexToCoordinates(lastUpdatedCellIndex);
+        int[] coordinates = IndexToCoordinates(_lastUpdatedCellIndex);
         return IsRowConsistent(coordinates[1]);
     }
 
     public bool IsLastUpdatedColumnValid()
     {
-        int[] coordinates = IndexToCoordinates(lastUpdatedCellIndex);
+        int[] coordinates = IndexToCoordinates(_lastUpdatedCellIndex);
         return IsColumnConsistent(coordinates[0]);
     }
 
     public bool IsLastUpdatedBlockValid()
     {
-        int[] coordinates = IndexToCoordinates(lastUpdatedCellIndex);
+        int[] coordinates = IndexToCoordinates(_lastUpdatedCellIndex);
         return IsBlockConsistent(coordinates[0], coordinates[1]);
     }
 
