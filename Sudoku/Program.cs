@@ -13,7 +13,7 @@ class Program
         var watch = System.Diagnostics.Stopwatch.StartNew();
         TestGenerator();
         watch.Stop();
-        Console.WriteLine($"Generate() runtime: {watch}");
+        Console.WriteLine($"Generator.Generate() runtime: {watch.Elapsed.TotalSeconds} seconds");
     }
 
     private static string GetAsciiReprGrid(int[][] grid)
