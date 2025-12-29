@@ -9,12 +9,24 @@ public class Generator
     public Grid Puzzle {get; set;}
     public int TargetSeedAmount = 10;
 
+    /// <summary>
+    /// Primary constructor for Generator objects.
+    /// </summary>
+    /// <param name="randomseed">
+    /// An optional seed value for the Random object. By default, no seed is provided. The parameter exists for testing purposes.
+    /// </param>
     public Generator(int? randomseed=null)
     {
         Puzzle = new Grid();
         random = randomseed != null? new((int)randomseed): new();
     }
 
+    /// <summary>
+    /// Fills an empty Grid object with consistent values, then removes values while ensuring the puzzle is still valid.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if a valid puzzle is successfully generated.
+    /// </returns>
     public bool Generate()
     {
         bool success = false;
@@ -26,6 +38,12 @@ public class Generator
         return Erode() && success;
     }
 
+    /// <summary>
+    /// Updates the <c>Puzzle<c/> property by removing values that do not result in an invalid puzzle.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if the result is different than the starting puzzle.
+    /// </returns>
     private bool Erode()
     {
         Grid candidate = Puzzle.ShallowCopy();
@@ -65,6 +83,12 @@ public class Generator
         return success;
     }
 
+    /// <summary>
+    /// Updates the <c>Puzzle<c/> property by seeding it with random values, and then solving it.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if a solution was found.
+    /// </returns>
     private bool StochasticFill()
     {
         Grid candidate = Puzzle.ShallowCopy();
@@ -122,6 +146,13 @@ public class Generator
         return success;
     }
 
+    /// <summary>
+    /// Uses this instance's <c>random<c/> property to randomize the order of cell indices. This is used
+    /// to provide random access to the grid vertices without repeated values.
+    /// </summary>
+    /// <returns>
+    /// An array of cell indices for the <c>Puzzle<c/>'s vertices in a stochastic order.
+    /// </returns>
     private int[] GetRandomIndices()
     {
         int[] vertIndices = new int[Grid.SIZE];
