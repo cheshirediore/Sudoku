@@ -613,7 +613,7 @@ public class Grid: IEquatable<Grid>
     ///     (columns 3, 4, 5) intersect (rows 6, 7, 8)
     ///     Block 8
     ///     (columns 6, 7, 8) intersect (rows 6, 7, 8)
-    /// <remarks/>
+    /// </remarks>
     public int[] GetBlock(int blockIndex)
     {
         int[] block = new int[9];
@@ -742,7 +742,7 @@ public class Grid: IEquatable<Grid>
     /// Override method for IEquatable interface.
     /// </summary>
     /// <param name="obj">
-    /// The object to be compared with <c>this<c/>.
+    /// The object to be compared with <c>this</c>.
     /// </param>
     /// <returns>
     /// Returns the result of Equals(Grid? other)
