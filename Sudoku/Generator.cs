@@ -5,20 +5,20 @@ namespace Sudoku;
 
 public class Generator
 {
-    private Random rand;
+    private readonly Random random;
     public Grid Puzzle {get; set;}
     public int TargetSeedAmount = 10;
 
     public Generator()
     {
         Puzzle = new Grid();
-        rand = new();
+        random = new();
     }
 
     public Generator(int randomSeed)
     {
         Puzzle = new Grid();
-        rand = new(randomSeed);
+        random = new(randomSeed);
     }
 
     public bool Generate()
@@ -77,13 +77,13 @@ public class Generator
 
         int[] randomIndices = GetRandomIndices();
 
-        candidate.SetVertex(0, rand.Next(1, 10), true);
+        candidate.SetVertex(0, random.Next(1, 10), true);
         int populatedCells = 1;
 
         foreach (int index in randomIndices)
         {
             // Set cell value to a random value
-            candidate.SetVertex(index, rand.Next(1, 10), true);
+            candidate.SetVertex(index, random.Next(1, 10), true);
 
             // Check consistency. If consistent, increment populated cell count. Otherwise, restore the original value.
             if (candidate.IsGridConsistent())
@@ -139,7 +139,7 @@ public class Generator
 
         Span<int> clueSpan = new Span<int>(vertIndices);
 
-        rand.Shuffle<int>(clueSpan);
+        random.Shuffle<int>(clueSpan);
 
         return clueSpan.ToArray();
     }
