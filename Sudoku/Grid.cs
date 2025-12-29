@@ -6,22 +6,26 @@ namespace Sudoku;
 
 public class Grid: IEquatable<Grid>
 {
-    // Static Constants
+    // Static Constants //
+    // Only a 9x9 grid is supported by this implementation. WIDTH, HEIGHT, and SIZE are provided for clean reference by other objects.
     public const int WIDTH = 9;
     public const int HEIGHT = 9;
     public static int SIZE { get => WIDTH * HEIGHT; }
 
-    // Give useful names to the index groups used for blocks
+    // Give useful names to the index groups used for blocks. FIRST, SECOND, and THIRD can refer to either a group of columns or rows.
+    // These are used exclusively by the GetBlock method.
     private readonly ImmutableArray<int> FIRST = [0, 1, 2];
     private readonly ImmutableArray<int> SECOND = [3, 4, 5];
     private readonly ImmutableArray<int> THIRD = [6, 7, 8];
 
-    // Instance Attributes
+    // Instance Attributes //
     public readonly int[][] Vertices;
+    private int _lastUpdatedCellIndex = 0;
 
-    // Validation Assist
-    int lastUpdatedCellIndex = 0;
-
+    #region Constructors
+    /// <summary>
+    /// Default constructor. Creates a Grid object where all vertices are empty.
+    /// </summary>
     public Grid()
     {
         // Initialize (the list of rows part of) the jagged array 
@@ -35,11 +39,38 @@ public class Grid: IEquatable<Grid>
         }
     }
 
+    /// <summary>
+    /// Creates a Grid object from an existing array of integer array.
+    /// </summary>
+    /// <exception cref="System.ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="gridVertices"/> is not of the expected dimensions.
+    /// </exception>
     public Grid(int[][] gridVertices)
     {
+        if (gridVertices.Length != HEIGHT)
+        {
+            throw new System.ArgumentOutOfRangeException(nameof(gridVertices), $"int[{gridVertices.Length}][] is an invalid length. Array must be of length {HEIGHT}.");
+        }
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            if (gridVertices[y].Length != WIDTH)
+            {
+                throw new System.ArgumentOutOfRangeException(nameof(gridVertices), $"int[{y}][{gridVertices[y].Length}] is an invalid length. Arrays must be of length {WIDTH}.");
+            }
+        }
         Vertices = gridVertices;
     }
 
+    /// <summary>
+    /// Creates a Grid object using a provided file.
+    /// </summary>
+    /// <param name="seedFilePath">
+    /// File path should indicate a csv file with 9 lines, and 9 columns. Each column must contain an integer
+    /// value between 0 and 8 (inclusive), where 0 indicates an unset value.
+    /// </param>
+    /// <exception cref="System.ArgumentOutOfRangeException">
+    /// Thrown when the input file is not the appropriate width, height, or when it contains non-numeric values.
+    /// </exception>
     public Grid(string seedFilePath)
     {
         // Open the file, read the content, and close it
@@ -82,13 +113,40 @@ public class Grid: IEquatable<Grid>
             }
         }
     }
+    #endregion
 
-    public static int CoordinatesToIndex(int[] coordinates)
+    #region Static Methods
+
+    /// <summary>
+    /// Converts a pair of coordinates to a cell index.
+    /// </summary>
+    /// <param name="coordinates">
+    /// A Cartesian coordinate pair indicating the location of the cell on a Cartesian plane.
+    /// </param>
+    /// <returns>
+    /// An integer value indicating the number of the cell as counted from top left to bottom right of the grid.
+    /// </returns>
+    /// <remarks>
+    /// Does not check if the given coordinates (and corresponding index) are valid for a Grid.
+    /// </remarks>
+    private static int CoordinatesToIndex(int[] coordinates)
     {
         return coordinates[1] * WIDTH + coordinates[0];
     }
 
-    public static int[] IndexToCoordinates(int index)
+    /// <summary>
+    /// Converts a cell index to a pair of coordinates.
+    /// </summary>
+    /// <param name="index">
+    /// An integer value indicating the number of the cell as counted from top left to bottom right of the grid.
+    /// </param>
+    /// <returns>
+    /// The Cartesian coordinate pair of the cell indicated by the <paramref name="index"/>.
+    /// </returns>
+    /// <remarks>
+    /// Does not check if the given index (and corresponding pair of coordinates) is valid for a Grid.
+    /// </remarks>
+    private static int[] IndexToCoordinates(int index)
     {
         int[] coordinates = [-1, -1];
 
@@ -101,10 +159,130 @@ public class Grid: IEquatable<Grid>
 
         return coordinates;
     }
-    
+
     /// <summary>
-    /// Method used to translate familiar (x, y) cartesian coordinate notation to [row, column] 2D array indices.
+    /// Method to translate a given pair of coordinates to block index.
     /// </summary>
+    /// <param name="x">
+    /// The x coordinate of the vertex.
+    /// </param>
+    /// <param name="y">
+    /// The y coordinate of the vertex. 
+    /// </param>
+    /// <returns>
+    /// Returns index indicating which block contains the given pair of coordinates.
+    /// If the pair of coordinates is invalid, returns a -1.
+    /// </returns>
+    private static int GetBlockIndex(int x, int y)
+    {
+        /*
+              0  1  2    3  4  5    6  7  8
+
+        0     0  1  2 |  3  4  5 |  6  7  8
+        1     9 10 11 | 12 13 14 | 15 16 17
+        2    18 19 20 | 21 22 23 | 24 25 26
+             ------------------------------
+        3    27 28 29 | 30 31 32 | 33 34 35
+        4    36 37 38 | 39 40 41 | 42 43 44
+        5    45 46 47 | 48 49 50 | 51 52 53
+             ------------------------------
+        6    54 55 56 | 57 58 59 | 60 61 62
+        7    63 64 65 | 66 67 68 | 69 70 71
+        8    72 73 74 | 75 76 77 | 78 79 80
+        */
+
+        // Not a very elegant solution, but it works.
+
+        // Top 3 Rows
+        if (y < 3)
+        {
+            // Left 3 columns
+            if (x < 3)
+            {
+                return 0;
+            }
+        
+            // Middle 3 columns
+            if (x > 2 && x < 6)
+            {
+                return 1;
+            }
+
+            // Right 3 columns
+            if (x > 5)
+            {
+                return 2;
+            }
+        }
+
+        // Middle 3 Rows
+        if (y > 2 && y < 6 )
+        {
+            // Left 3 columns
+            if (x < 3)
+            {
+                return 3;
+            }
+        
+            // Middle 3 columns
+            if (x > 2 && x < 6)
+            {
+                return 4;
+            }
+
+            // Right 3 columns
+            if (x > 5)
+            {
+                return 5;
+            }
+        }
+
+        // Bottom 3 Rows
+        if (y > 5)
+        {
+            // Left 3 columns
+            if (x < 3)
+            {
+                return 6;
+            }
+        
+            // Middle 3 columns
+            if (x > 2 && x < 6)
+            {
+                return 7;
+            }
+
+            // Right 3 columns
+            if (x > 5)
+            {
+                return 8;
+            }
+        }
+        return -1;
+    }
+
+    /// <summary>
+    /// Translates a given cell index to a block index.
+    /// </summary>
+    /// <param name="cellIndex"></param>
+    /// <returns>
+    /// Returns the index of the block containing the given cell index.
+    /// </returns>
+    private static int GetBlockIndex(int cellIndex)
+    {
+        int[] coordinates = IndexToCoordinates(cellIndex);  
+        return GetBlockIndex(coordinates[0], coordinates[1]);   
+    }
+    #endregion Static Methods
+    
+    #region GetVertex Overloads
+    /// <summary>
+    /// Primary accessor method for getting the value of a given vertex.
+    /// Method used to translate familiar (x, y) Cartesian coordinate notation to [row, column] 2D array indices.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when either <paramref name="x"/> or <paramref name="y"/> are less than 0 or greater than 8.
+    /// </exception>
     public int GetVertex(int x, int y)
     {
         if (x < 0 || x > 8)
@@ -126,11 +304,64 @@ public class Grid: IEquatable<Grid>
         int[] coords = IndexToCoordinates(index);
         return GetVertex(coords[0], coords[1]);
     }
+    #endregion GetVertex Overloads
 
+    #region SetVertex Overloads
+    /// <summary>
+    /// Primary accessor method for setting the value of a given vertex.
+    /// Method used to translate familiar (x, y) Cartesian coordinate notation to [row, column] 2D array indices. 
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when either <paramref name="x"/> or <paramref name="y"/> are less than 0 or greater than 8.
+    /// </exception>
+    /// <param name="x">
+    /// The x coordinate of the vertex.
+    /// </param>
+    /// <param name="y">
+    /// The y coordinate of the vertex. 
+    /// </param>
+    /// <param name="value">
+    /// The new value for the vertex.
+    /// </param>
     public void SetVertex(int x, int y, int value)
     {
-        lastUpdatedCellIndex = CoordinatesToIndex([x, y]);
+        if (x < 0 || x > 8)
+        {
+            throw new System.ArgumentOutOfRangeException(nameof(x), $"({x}, {y}) is outside of the grid bounds.");
+        }
+        if (y < 0 || y > 8)
+        {
+            throw new System.ArgumentOutOfRangeException(nameof(y), $"({x}, {y}) is outside of the grid bounds.");
+        }
+        _lastUpdatedCellIndex = CoordinatesToIndex([x, y]);
         Vertices[y][x] = value;
+    }
+
+    /// <summary>
+    /// Overload of SetVertex(int x, int y, int value) to support the <paramref name="isSeedValue"/> parameter.
+    /// </summary>
+    /// <param name="x">
+    /// The x coordinate of the vertex.
+    /// </param>
+    /// <param name="y">
+    /// The y coordinate of the vertex. 
+    /// </param>
+    /// <param name="value">
+    /// The new value for the vertex.
+    /// </param>
+    /// <param name="isSeedValue">
+    /// Flag indicating whether the vertex should be considered a seed value.
+    /// </param>
+    public void SetVertex(int x, int y, int value, bool isSeedValue)
+    {
+        if (isSeedValue)
+        {
+            SetVertex(x, y, Math.Abs(value) * -1);
+        }
+        else
+        {
+            SetVertex(x, y, value);
+        }
     }
 
     public void SetVertex(int index, int value)
@@ -151,30 +382,63 @@ public class Grid: IEquatable<Grid>
             SetVertex(index, value);
         }
     }
+    #endregion SetVertex Overloads
 
+    #region Validity Checking Methods
+    /// <summary>
+    /// Method to check the consistency of the row, column, and block that contain the last updated vertex.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if the row, column, and block that contain the last updated vertex are consistent.
+    /// </returns>
     public bool IsLastUpdateValid()
     {
         return IsLastUpdatedRowValid() && IsLastUpdatedColumnValid() && IsLastUpdatedBlockValid();
     }
 
-    public bool IsLastUpdatedRowValid()
+    /// <summary>
+    /// Method to check the consistency of the row that contains the last updated vertex.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if the row that contains the last updated vertex is consistent.
+    /// </returns>
+    private bool IsLastUpdatedRowValid()
     {
-        int[] coordinates = IndexToCoordinates(lastUpdatedCellIndex);
+        int[] coordinates = IndexToCoordinates(_lastUpdatedCellIndex);
         return IsRowConsistent(coordinates[1]);
     }
 
-    public bool IsLastUpdatedColumnValid()
+    /// <summary>
+    /// Method to check the consistency of the column that contains the last updated vertex.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if the column that contains the last updated vertex is consistent.
+    /// </returns>
+    private bool IsLastUpdatedColumnValid()
     {
-        int[] coordinates = IndexToCoordinates(lastUpdatedCellIndex);
+        int[] coordinates = IndexToCoordinates(_lastUpdatedCellIndex);
         return IsColumnConsistent(coordinates[0]);
     }
 
-    public bool IsLastUpdatedBlockValid()
+    /// <summary>
+    /// Method to check the consistency of the block that contains the last updated vertex.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if the block that contains the last updated vertex is consistent.
+    /// </returns>
+    private bool IsLastUpdatedBlockValid()
     {
-        int[] coordinates = IndexToCoordinates(lastUpdatedCellIndex);
+        int[] coordinates = IndexToCoordinates(_lastUpdatedCellIndex);
         return IsBlockConsistent(coordinates[0], coordinates[1]);
     }
 
+    /// <summary>
+    /// Method to check the consistency of the indicated row.
+    /// </summary>
+    /// <param name="rowIndex"></param>
+    /// <returns>
+    /// Returns true if and only if the given row does not contain any non-zero duplicate values.
+    /// </returns>
     public bool IsRowConsistent(int rowIndex)
     {
         HashSet<int> values = new();
@@ -190,6 +454,13 @@ public class Grid: IEquatable<Grid>
         return true;
     }
 
+    /// <summary>
+    /// Method to check the consistency of the indicated column.
+    /// </summary>
+    /// <param name="columnIndex"></param>
+    /// <returns>
+    /// Returns true if and only if the given column does not contain any non-zero duplicate values.
+    /// </returns>
     public bool IsColumnConsistent(int columnIndex)
     {
         HashSet<int> values = new();
@@ -205,11 +476,30 @@ public class Grid: IEquatable<Grid>
         return true;
     }
 
+    /// <summary>
+    /// Method to check the consistency of the block containing the indicated vertex.
+    /// </summary>
+    /// <param name="x">
+    /// The x coordinate of the given vertex.
+    /// </param>
+    /// <param name="y">
+    /// The y coordinate of the given vertex.
+    /// </param>
+    /// <returns>
+    /// Returns true if and only if the block that contains the given vertex is consistent.
+    /// </returns>
     public bool IsBlockConsistent(int x, int y)
     {
         return IsBlockConsistent(GetBlockIndex(x, y));
     }
 
+    /// <summary>
+    /// Method to check the consistency of the indicated block.
+    /// </summary>
+    /// <param name="blockIndex"></param>
+    /// <returns>
+    /// Returns true if and only if the given block does not contain any non-zero duplicate values.
+    /// </returns>
     public bool IsBlockConsistent(int blockIndex)
     {
         HashSet<int> values = new();
@@ -225,6 +515,12 @@ public class Grid: IEquatable<Grid>
         return true;
     }
 
+    /// <summary>
+    /// Method to check the consistency of the entire grid.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if all rows, columns, and blocks are consistent.
+    /// </returns>
     public bool IsGridConsistent()
     {
         for (int i = 0; i < 9; i++)
@@ -238,7 +534,30 @@ public class Grid: IEquatable<Grid>
     }
 
     /// <summary>
-    /// Method to get a horizontal slice of a 2D array
+    /// Method to check if the entire grid is populated. It does not check consistency or validity, only completeness.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if all cells are set.
+    /// </returns>
+    public bool IsGridComplete()
+    {
+        for (int y = 0; y < HEIGHT; y ++)
+        {
+            for (int x = 0; x < WIDTH; x ++)
+            {
+                if (GetVertex(x, y) == 0)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    #endregion Validity Checking Methods
+
+    #region Grid Region Accessor Methods
+    /// <summary>
+    /// Method to get the horizontal slice of a 2D array representing a grid row.
     /// </summary>
     public int[] GetRow(int rowIndex)
     {
@@ -251,7 +570,7 @@ public class Grid: IEquatable<Grid>
     }
 
     /// <summary>
-    /// Method to get a vertical slice of a 2D array
+    /// Method to get the vertical slice of a 2D array representing a grid column.
     /// </summary>
     public int[] GetColumn(int columnIndex)
     {
@@ -263,133 +582,42 @@ public class Grid: IEquatable<Grid>
         }
         return column;
     }
-
-
-    public int GetBlockIndex(int cellIndex)
-    {
-        int[] coordinates = IndexToCoordinates(cellIndex);  
-        return GetBlockIndex(coordinates[0], coordinates[1]);   
-    }
-
-    public int GetBlockIndex(int x, int y)
-    {
-        /*
-              0  1  2    3  4  5    6  7  8
-
-        0     0  1  2 |  3  4  5 |  6  7  8
-        1     9 10 11 | 12 13 14 | 15 16 17
-        2    18 19 20 | 21 22 23 | 24 25 26
-             ------------------------------
-        3    27 28 29 | 30 31 32 | 33 34 35
-        4    36 37 38 | 39 40 41 | 42 43 44
-        5    45 46 47 | 48 49 50 | 51 52 53
-             ------------------------------
-        6    54 55 56 | 57 58 59 | 60 61 62
-        7    63 64 65 | 66 67 68 | 69 70 71
-        8    72 73 74 | 75 76 77 | 78 79 80
-        */
-
-        // Not a very elegant solution, but it works.
-
-        // Left 3 Rows
-        if (y < 3)
-        {
-            // Top 3 columns
-            if (x < 3)
-            {
-                return 0;
-            }
-        
-            // Middle 3 columns
-            if (x > 2 && x < 6)
-            {
-                return 1;
-            }
-
-            // Bottom 3 columns
-            if (x > 5)
-            {
-                return 2;
-            }
-        }
-
-        // Middle 3 Rows
-        if (y > 2 && y < 6 )
-        {
-            // Top 3 columns
-            if (x < 3)
-            {
-                return 3;
-            }
-        
-            // Middle 3 columns
-            if (x > 2 && x < 6)
-            {
-                return 4;
-            }
-
-            // Bottom 3 columns
-            if (x > 5)
-            {
-                return 5;
-            }
-        }
-
-        // Right 3 Rows
-        if (y > 5)
-        {
-            // Top 3 columns
-            if (x < 3)
-            {
-                return 6;
-            }
-        
-            // Middle 3 columns
-            if (x > 2 && x < 6)
-            {
-                return 7;
-            }
-
-            // Bottom 3 columns
-            if (x > 5)
-            {
-                return 8;
-            }
-        }
-
-        return -1;
-        
-    }
+    
     /// <summary>
     /// Method to get 3x3 vector from a 2D array, transformed to a 1x9 vector.
     /// </summary>
+    /// <param name="blockIndex">
+    /// The index of a block, where each block is a 3x3 group of vertices numbered left to right, top to bottom.
+    /// </param>
+    /// <returns>
+    /// The collection of cell indices that are within the block at the provided <paramref name="blockIndex"/>
+    /// </returns>
+    /// <exception cref="System.ArgumentOutOfRangeException"></exception>
+    /// <remarks>
+    /// A block is the intersection of (union of three columns) and (union of three rows)
+    ///     Block 0
+    ///     (columns 0, 1, 2) intersect (rows 0, 1, 2)
+    ///     Block 1
+    ///     (columns 3, 4, 5) intersect (rows 0, 1, 2)
+    ///     Block 2
+    ///     (columns 6, 7, 8) intersect (rows 0, 1, 2)
+    /// 
+    ///     Block 3
+    ///     (columns 0, 1, 2) intersect (rows 3, 4, 5)
+    ///     Block 4
+    ///     (columns 3, 4, 5) intersect (rows 3, 4, 5)
+    ///     Block 5
+    ///     (columns 6, 7, 8) intersect (rows 3, 4, 5)
+    /// 
+    ///     Block 6
+    ///     (columns 0, 1, 2) intersect (rows 6, 7, 8)
+    ///     Block 7
+    ///     (columns 3, 4, 5) intersect (rows 6, 7, 8)
+    ///     Block 8
+    ///     (columns 6, 7, 8) intersect (rows 6, 7, 8)
+    /// </remarks>
     public int[] GetBlock(int blockIndex)
     {
-        /*
-            A block is the intersection of (union of three columns) and (union of three rows)
-
-            Block 0
-            (columns 0, 1, 2) intersect (rows 0, 1, 2)
-            Block 1
-            (columns 3, 4, 5) intersect (rows 0, 1, 2)
-            Block 2
-            (columns 6, 7, 8) intersect (rows 0, 1, 2)
-
-            Block 3
-            (columns 0, 1, 2) intersect (rows 3, 4, 5)
-            Block 4
-            (columns 3, 4, 5) intersect (rows 3, 4, 5)
-            Block 5
-            (columns 6, 7, 8) intersect (rows 3, 4, 5)
-
-            Block 6
-            (columns 0, 1, 2) intersect (rows 6, 7, 8)
-            Block 7
-            (columns 3, 4, 5) intersect (rows 6, 7, 8)
-            Block 8
-            (columns 6, 7, 8) intersect (rows 6, 7, 8)
-        */
-
         int[] block = new int[9];
 
         ImmutableArray<int> columnIndices;
@@ -455,7 +683,29 @@ public class Grid: IEquatable<Grid>
         }
         return block;
     }
+    #endregion Grid Region Accessor Methods
 
+    
+    #region Utility
+    /// <summary>
+    /// Memberwise copy method.
+    /// </summary>
+    /// <returns>
+    /// Returns a new Grid object with the same values for each vertices as the original Grid.
+    /// </returns>
+    public Grid ShallowCopy()
+    {
+        // Make a shallow copy of the candidate
+        Grid newGrid = new();
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            Array.Copy(Vertices[y], newGrid.Vertices[y], Grid.WIDTH);
+        }
+        return newGrid;
+    }
+    #endregion Utility
+
+    #region Overrides and Interface
     /// <summary>
     /// Formats an ascii grid of the numeric values in the grid. If the number is positive, it adds a 
     /// space prefix to the cell to maintain a fixed width for integers between -9 and 9 (inclusive).
@@ -478,34 +728,53 @@ public class Grid: IEquatable<Grid>
         return builder.ToString();
     }
 
-    public Grid ShallowCopy()
-    {
-        // Make a shallow copy of the candidate
-        Grid newGrid = new();
-        for (int y = 0; y < HEIGHT; y++)
-        {
-            Array.Copy(Vertices[y], newGrid.Vertices[y], Grid.WIDTH);
-        }
-        return newGrid;
-    }
-
+    /// <summary>
+    /// A Grid is considered equal to another Grid if it is not null and has the same hashcode.
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns>
+    /// Returns true if and only if both Grid objects are not null and have the same hashcode.
+    /// </returns>
     public bool Equals(Grid? other)
     {
         return other != null && GetHashCode() == other.GetHashCode();
     }
 
+    /// <summary>
+    /// Override method for IEquatable interface.
+    /// </summary>
+    /// <param name="obj">
+    /// The object to be compared with <c>this</c>.
+    /// </param>
+    /// <returns>
+    /// Returns the result of Equals(Grid? other)
+    /// </returns>
+    /// <see cref="Equals"/>
+    public override bool Equals(object? obj)
+    {
+        return obj != null && Equals(obj as Grid);
+    }
+
+    /// <summary>
+    /// Combines all values of vertices into a hashcode.
+    /// </summary>
+    /// <returns>
+    /// The hash representing this object.
+    /// </returns>
     public override int GetHashCode()
     {
         // Use the dimensions for the initial hash seed. If the size becomes variable, it will matter. If it doesn't,
         // then we'll still have a more interesting seed than 0.
-        int hash = HashCode.Combine(WIDTH, HEIGHT);
+        // Values are multiplied by 100 to improve diffusion of the resulting hash.
+        int hash = HashCode.Combine(WIDTH * 100, HEIGHT * 100);
         for (int y = 0; y < HEIGHT; y++)
         {
             for (int x = 0; x < WIDTH; x++)
             {
-                hash = HashCode.Combine(hash, GetVertex(x, y));
+                hash = HashCode.Combine(hash, GetVertex(x, y) * 100);
             }
         }
         return hash;
     }
+    #endregion Overrides and Interface
 }

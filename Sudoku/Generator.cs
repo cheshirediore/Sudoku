@@ -5,22 +5,28 @@ namespace Sudoku;
 
 public class Generator
 {
-    private Random rand;
-    public Grid Puzzle {get; set;}
-    public int TargetSeedAmount = 10;
+    public const int TargetSeedAmount = 10;
+    private readonly Random random;
+    public Grid Puzzle {get; private set;}
 
-    public Generator()
+    /// <summary>
+    /// Primary constructor for Generator objects.
+    /// </summary>
+    /// <param name="randomSeed">
+    /// An optional seed value for the Random object. By default, no seed is provided. The parameter exists for testing purposes.
+    /// </param>
+    public Generator(int? randomSeed=null)
     {
         Puzzle = new Grid();
-        rand = new();
+        random = randomSeed != null? new((int)randomSeed): new();
     }
 
-    public Generator(int randomSeed)
-    {
-        Puzzle = new Grid();
-        rand = new(randomSeed);
-    }
-
+    /// <summary>
+    /// Fills an empty Grid object with consistent values, then removes values while ensuring the puzzle is still valid.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if a valid puzzle is successfully generated.
+    /// </returns>
     public bool Generate()
     {
         bool success = false;
@@ -32,6 +38,12 @@ public class Generator
         return Erode() && success;
     }
 
+    /// <summary>
+    /// Updates the <c>Puzzle</c> property by removing values that do not result in an invalid puzzle.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if the result is different than the starting puzzle.
+    /// </returns>
     private bool Erode()
     {
         Grid candidate = Puzzle.ShallowCopy();
@@ -71,19 +83,25 @@ public class Generator
         return success;
     }
 
+    /// <summary>
+    /// Updates the <c>Puzzle</c> property by seeding it with random values, and then solving it.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if a solution was found.
+    /// </returns>
     private bool StochasticFill()
     {
         Grid candidate = Puzzle.ShallowCopy();
 
         int[] randomIndices = GetRandomIndices();
 
-        candidate.SetVertex(0, rand.Next(1, 10), true);
+        candidate.SetVertex(0, random.Next(1, 10), true);
         int populatedCells = 1;
 
         foreach (int index in randomIndices)
         {
             // Set cell value to a random value
-            candidate.SetVertex(index, rand.Next(1, 10), true);
+            candidate.SetVertex(index, random.Next(1, 10), true);
 
             // Check consistency. If consistent, increment populated cell count. Otherwise, restore the original value.
             if (candidate.IsGridConsistent())
@@ -128,6 +146,13 @@ public class Generator
         return success;
     }
 
+    /// <summary>
+    /// Uses this instance's <c>random</c> property to randomize the order of cell indices. This is used
+    /// to provide random access to the grid vertices without repeated values.
+    /// </summary>
+    /// <returns>
+    /// An array of cell indices for the <c>Puzzle</c>'s vertices in a stochastic order.
+    /// </returns>
     private int[] GetRandomIndices()
     {
         int[] vertIndices = new int[Grid.SIZE];
@@ -139,7 +164,7 @@ public class Generator
 
         Span<int> clueSpan = new Span<int>(vertIndices);
 
-        rand.Shuffle<int>(clueSpan);
+        random.Shuffle<int>(clueSpan);
 
         return clueSpan.ToArray();
     }

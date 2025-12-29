@@ -3,37 +3,48 @@ using System.Collections.Generic;
 
 namespace Sudoku;
 
-public class Backtracker: Solver
+public class Backtracker(Grid sudokuGrid) : Solver
 {
+    /// <summary>
+    /// The puzzle the Backtracker will solve. It is updated with the solution.
+    /// </summary>
+    /// <remarks>
+    /// Overrides the property for the Solver abstract class.
+    /// </remarks>
+    public override Grid Puzzle { get; init; } = sudokuGrid;
+    /// <summary>
+    /// The maximum number of solutions the Backtracker will search for. Once this number is reached, it will return the results without looking further.
+    /// </summary>
+    /// <remarks>
+    /// Overrides the property for the Solver abstract class.
+    /// </remarks>
     public override int MaxSolutions { get; set; } = -1;
-    public override Grid Puzzle { get; init; }
 
-    public Backtracker(Grid sudokuGrid)
-    {
-        Puzzle = sudokuGrid;
-    }
-
+    /// <summary>
+    /// Invokes the top-level call of Backtrack to begin the recursive algorithm.
+    /// </summary>
+    /// <returns></returns>
+    /// <remarks>
+    /// Implements the method for the Solver abstract class.
+    /// </remarks>
     public override List<Grid> Solve()
     {
-        return Backtrack(Puzzle, Puzzle, new List<Grid>());
+        return Backtrack(Puzzle, []);
     }
 
-    /*
-     * From wikipedia:
-     * P is the data
-     * c is a partial candidate
-     *
-     * backtrack(P, c)
-     * procedure backtrack(P, c) is
-     * if reject(P, c) then return
-     * if accept(P, c) then output(P, c)
-     * s ← first(P, c)
-     * while s ≠ NULL do
-     *     backtrack(P, s)
-     *     s ← next(P, s)
-     */
-
-    public List<Grid> Backtrack(Grid data, Grid candidate, List<Grid> solutions)
+    /// <summary>
+    /// Implementation of the backtracking algorithm to search for valid configurations (i.e. solutions).
+    /// </summary>
+    /// <param name="candidate">
+    /// A puzzle state.
+    /// </param>
+    /// <param name="solutions">
+    /// The list of solutions so far.
+    /// </param>
+    /// <returns>
+    /// The provided list of solutions, extended by any solutions found in this branch of the search tree.
+    /// </returns>
+    private List<Grid> Backtrack(Grid candidate, List<Grid> solutions)
     {
         // Stop looking if more than one solution has been found. We only care about valid sudoku puzzles.
         if (MaxSolutions > 0 && solutions.Count >= MaxSolutions)
@@ -52,36 +63,63 @@ public class Backtracker: Solver
         Grid? nextCandidate = First(candidate);
         while (nextCandidate != null)
         {
-            solutions = Backtrack(candidate, nextCandidate, solutions);
+            solutions = Backtrack(nextCandidate, solutions);
             nextCandidate = Next(candidate, nextCandidate);
         }
         return solutions;
     }
 
-    // root(P): return the partial candidate at the root of the search tree
-    public Grid Root()
+    /// <summary>
+    /// Adds a given solution to the running list of solutions.
+    /// </summary>
+    /// <param name="solution">
+    /// The solution to be added to the list.
+    /// </param>
+    /// <param name="solutions">
+    /// The list of solutions.
+    /// </param>
+    /// <returns></returns>
+    /// <remarks>
+    /// This method exists more for its conceptual role in the algorithm than out of necessity. 
+    /// It continues to exist in case additional action should be desired when a solution is registered, such as an event trigger.
+    /// </remarks>
+    private static List<Grid> Output(Grid solution, List<Grid> solutions)
     {
-        return Puzzle;
-    }
-
-    // output(P, c): use the solution c of P, as appropriate to the application
-    public static List<Grid> Output(Grid candidate, List<Grid> solutions)
-    {
-        solutions.Add(candidate);
+        solutions.Add(solution);
         return solutions;
     }
 
     #region Validation
-    // reject(P, c): return true only if the partial candidate c is not worth completing
-    public static bool Reject(Grid candidate)
+    /// <summary>
+    /// Checks if a given <paramref name="candidate"/> is inconsistent. Used to prune dead ends in the search tree without having to walk all the way to the leaves.
+    /// </summary>
+    /// <param name="candidate">
+    /// A puzzle state.
+    /// </param>
+    /// <returns>
+    /// Returns true if and only if the <paramref name="candidate"/> is an invalid state (i.e. not worth completing).
+    /// </returns>
+    private static bool Reject(Grid candidate)
     {
         // Only check the last updated cell's row, column, and block.
         return !candidate.IsLastUpdateValid();
     }
 
-    // accept(P, c): return true if and only if candidate c is a solution of P
-    public static bool Accept(Grid candidate)
+    /// <summary>
+    /// Validates that a given <paramref name="candidate"/> is complete and consistent. Used to check if a leaf in the search tree is a valid solution.
+    /// </summary>
+    /// <param name="candidate">
+    /// A puzzle state.
+    /// </param>
+    /// <returns>
+    /// Returns true if and only if <paramref name="candidate"/> is a solution to <see cref="Puzzle"/>
+    /// </returns>
+    private static bool Accept(Grid candidate)
     {
+        if (Reject(candidate))
+        {
+            return false;
+        }
         // Check that all cells are set
         for (int y = 0; y < 9; y++)
         {
@@ -98,8 +136,16 @@ public class Backtracker: Solver
     #endregion
 
     #region Extenders
-    // first(P, c): generate the first extension of candidate c
-    public static Grid? First(Grid candidate)
+    /// <summary>
+    /// Finds the first unset cell in the <paramref name="candidate"/> and sets it to the lowest valid value.
+    /// </summary>
+    /// <param name="candidate">
+    /// A puzzle state.
+    /// </param>
+    /// <returns>
+    /// Returns the first extension of the <paramref name="candidate"/> if a valid extension exists. Otherwise, returns null.
+    /// </returns>
+    private static Grid? First(Grid candidate)
     {
         // Make a shallow copy of the candidate
         Grid grid = candidate.ShallowCopy();
@@ -127,8 +173,19 @@ public class Backtracker: Solver
         return null;
     }
 
-    // next(P, s): generate the next extension of a candidate after the extension s.
-    public static Grid? Next(Grid data, Grid candidate)
+    /// <summary>
+    /// Finds the next unset cell in the <paramref name="data"/> and increments the corresponding cell in <paramref name="candidate"/>.
+    /// </summary>
+    /// <param name="data">
+    /// The puzzle state from which <paramref name="candidate"/> was extended.
+    /// </param>
+    /// <param name="candidate">
+    /// The first extension of <paramref name="data"/>
+    /// </param>
+    /// <returns>
+    /// Returns the next extension of the <paramref name="candidate"/> if a valid extension exists. Otherwise, returns null.
+    /// </returns>
+    private static Grid? Next(Grid data, Grid candidate)
     {
         // Make a shallow copy of the candidate
         Grid grid = candidate.ShallowCopy();
@@ -156,5 +213,4 @@ public class Backtracker: Solver
         return null;
     }
     #endregion
-
 }
