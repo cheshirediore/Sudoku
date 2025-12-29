@@ -145,7 +145,7 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// <returns>
     /// Returns the first extension of the <paramref name="candidate"/> if a valid extension exists. Otherwise, returns null.
     /// </returns>
-    public static Grid? First(Grid candidate)
+    private static Grid? First(Grid candidate)
     {
         // Make a shallow copy of the candidate
         Grid grid = candidate.ShallowCopy();
@@ -185,7 +185,7 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// <returns>
     /// Returns the next extension of the <paramref name="candidate"/> if a valid extension exists. Otherwise, returns null.
     /// </returns>
-    public static Grid? Next(Grid data, Grid candidate)
+    private static Grid? Next(Grid data, Grid candidate)
     {
         // Make a shallow copy of the candidate
         Grid grid = candidate.ShallowCopy();
