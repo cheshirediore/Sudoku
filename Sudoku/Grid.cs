@@ -769,7 +769,7 @@ public class Grid: IEquatable<Grid>
         {
             for (int x = 0; x < WIDTH; x++)
             {
-                hash = HashCode.Combine(hash, GetVertex(x, y) * 100 );
+                hash = HashCode.Combine(hash, GetVertex(x, y) * 100);
             }
         }
         return hash;
