@@ -83,6 +83,9 @@ public class Grid: IEquatable<Grid>
     }
     #endregion
 
+    #region Static Methods
+
+    
     public static int CoordinatesToIndex(int[] coordinates)
     {
         return coordinates[1] * WIDTH + coordinates[0];
@@ -101,8 +104,99 @@ public class Grid: IEquatable<Grid>
 
         return coordinates;
     }
+
+    public static int GetBlockIndex(int x, int y)
+    {
+        /*
+              0  1  2    3  4  5    6  7  8
+
+        0     0  1  2 |  3  4  5 |  6  7  8
+        1     9 10 11 | 12 13 14 | 15 16 17
+        2    18 19 20 | 21 22 23 | 24 25 26
+             ------------------------------
+        3    27 28 29 | 30 31 32 | 33 34 35
+        4    36 37 38 | 39 40 41 | 42 43 44
+        5    45 46 47 | 48 49 50 | 51 52 53
+             ------------------------------
+        6    54 55 56 | 57 58 59 | 60 61 62
+        7    63 64 65 | 66 67 68 | 69 70 71
+        8    72 73 74 | 75 76 77 | 78 79 80
+        */
+
+        // Not a very elegant solution, but it works.
+
+        // Top 3 Rows
+        if (y < 3)
+        {
+            // Left 3 columns
+            if (x < 3)
+            {
+                return 0;
+            }
+        
+            // Middle 3 columns
+            if (x > 2 && x < 6)
+            {
+                return 1;
+            }
+
+            // Right 3 columns
+            if (x > 5)
+            {
+                return 2;
+            }
+        }
+
+        // Middle 3 Rows
+        if (y > 2 && y < 6 )
+        {
+            // Left 3 columns
+            if (x < 3)
+            {
+                return 3;
+            }
+        
+            // Middle 3 columns
+            if (x > 2 && x < 6)
+            {
+                return 4;
+            }
+
+            // Right 3 columns
+            if (x > 5)
+            {
+                return 5;
+            }
+        }
+
+        // Bottom 3 Rows
+        if (y > 5)
+        {
+            // Left 3 columns
+            if (x < 3)
+            {
+                return 6;
+            }
+        
+            // Middle 3 columns
+            if (x > 2 && x < 6)
+            {
+                return 7;
+            }
+
+            // Right 3 columns
+            if (x > 5)
+            {
+                return 8;
+            }
+        }
+        return -1;
+    }
+    #endregion Static Methods
     
+    #region GetVertex Overloads
     /// <summary>
+    /// Primary accessor method for getting the value of a given vertex.
     /// Method used to translate familiar (x, y) cartesian coordinate notation to [row, column] 2D array indices.
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -129,10 +223,12 @@ public class Grid: IEquatable<Grid>
         int[] coords = IndexToCoordinates(index);
         return GetVertex(coords[0], coords[1]);
     }
+    #endregion GetVertex Overloads
 
+    #region SetVertex Overloads
     /// <summary>
-    /// Method used to translate familiar (x, y) cartesian coordinate notation to [row, column] 2D array indices. 
     /// Primary accessor method for setting the value of a given vertex.
+    /// Method used to translate familiar (x, y) cartesian coordinate notation to [row, column] 2D array indices. 
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when either <paramref name="x"/> or <paramref name="y"/> are less than 0 or greater than 8.
@@ -149,6 +245,18 @@ public class Grid: IEquatable<Grid>
         }
         _lastUpdatedCellIndex = CoordinatesToIndex([x, y]);
         Vertices[y][x] = value;
+    }
+
+    public void SetVertex(int x, int y, int value, bool isSeedValue)
+    {
+        if (isSeedValue)
+        {
+            SetVertex(x, y, Math.Abs(value) * -1);
+        }
+        else
+        {
+            SetVertex(x, y, value);
+        }
     }
 
     public void SetVertex(int index, int value)
@@ -169,7 +277,9 @@ public class Grid: IEquatable<Grid>
             SetVertex(index, value);
         }
     }
+    #endregion SetVertex Overloads
 
+    #region Validity Checking
     public bool IsLastUpdateValid()
     {
         return IsLastUpdatedRowValid() && IsLastUpdatedColumnValid() && IsLastUpdatedBlockValid();
@@ -254,7 +364,9 @@ public class Grid: IEquatable<Grid>
         }
         return true;
     }
+    #endregion Validity Checking
 
+    #region Get Row and Column
     /// <summary>
     /// Method to get a horizontal slice of a 2D array
     /// </summary>
@@ -281,103 +393,16 @@ public class Grid: IEquatable<Grid>
         }
         return column;
     }
+    #endregion Get Row and Column
 
-
+    #region Block Methods
     public int GetBlockIndex(int cellIndex)
     {
         int[] coordinates = IndexToCoordinates(cellIndex);  
         return GetBlockIndex(coordinates[0], coordinates[1]);   
     }
 
-    public int GetBlockIndex(int x, int y)
-    {
-        /*
-              0  1  2    3  4  5    6  7  8
-
-        0     0  1  2 |  3  4  5 |  6  7  8
-        1     9 10 11 | 12 13 14 | 15 16 17
-        2    18 19 20 | 21 22 23 | 24 25 26
-             ------------------------------
-        3    27 28 29 | 30 31 32 | 33 34 35
-        4    36 37 38 | 39 40 41 | 42 43 44
-        5    45 46 47 | 48 49 50 | 51 52 53
-             ------------------------------
-        6    54 55 56 | 57 58 59 | 60 61 62
-        7    63 64 65 | 66 67 68 | 69 70 71
-        8    72 73 74 | 75 76 77 | 78 79 80
-        */
-
-        // Not a very elegant solution, but it works.
-
-        // Left 3 Rows
-        if (y < 3)
-        {
-            // Top 3 columns
-            if (x < 3)
-            {
-                return 0;
-            }
-        
-            // Middle 3 columns
-            if (x > 2 && x < 6)
-            {
-                return 1;
-            }
-
-            // Bottom 3 columns
-            if (x > 5)
-            {
-                return 2;
-            }
-        }
-
-        // Middle 3 Rows
-        if (y > 2 && y < 6 )
-        {
-            // Top 3 columns
-            if (x < 3)
-            {
-                return 3;
-            }
-        
-            // Middle 3 columns
-            if (x > 2 && x < 6)
-            {
-                return 4;
-            }
-
-            // Bottom 3 columns
-            if (x > 5)
-            {
-                return 5;
-            }
-        }
-
-        // Right 3 Rows
-        if (y > 5)
-        {
-            // Top 3 columns
-            if (x < 3)
-            {
-                return 6;
-            }
-        
-            // Middle 3 columns
-            if (x > 2 && x < 6)
-            {
-                return 7;
-            }
-
-            // Bottom 3 columns
-            if (x > 5)
-            {
-                return 8;
-            }
-        }
-
-        return -1;
-        
-    }
+    
     /// <summary>
     /// Method to get 3x3 vector from a 2D array, transformed to a 1x9 vector.
     /// </summary>
@@ -473,7 +498,23 @@ public class Grid: IEquatable<Grid>
         }
         return block;
     }
+    #endregion Block Methods
 
+    
+    #region Utility
+    public Grid ShallowCopy()
+    {
+        // Make a shallow copy of the candidate
+        Grid newGrid = new();
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            Array.Copy(Vertices[y], newGrid.Vertices[y], Grid.WIDTH);
+        }
+        return newGrid;
+    }
+    #endregion Utility
+
+    #region Overrides and Interface
     /// <summary>
     /// Formats an ascii grid of the numeric values in the grid. If the number is positive, it adds a 
     /// space prefix to the cell to maintain a fixed width for integers between -9 and 9 (inclusive).
@@ -496,17 +537,6 @@ public class Grid: IEquatable<Grid>
         return builder.ToString();
     }
 
-    public Grid ShallowCopy()
-    {
-        // Make a shallow copy of the candidate
-        Grid newGrid = new();
-        for (int y = 0; y < HEIGHT; y++)
-        {
-            Array.Copy(Vertices[y], newGrid.Vertices[y], Grid.WIDTH);
-        }
-        return newGrid;
-    }
-
     public bool Equals(Grid? other)
     {
         return other != null && GetHashCode() == other.GetHashCode();
@@ -526,4 +556,5 @@ public class Grid: IEquatable<Grid>
         }
         return hash;
     }
+    #endregion Overrides and Interface
 }
