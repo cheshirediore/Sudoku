@@ -542,6 +542,11 @@ public class Grid: IEquatable<Grid>
         return other != null && GetHashCode() == other.GetHashCode();
     }
 
+    public override bool Equals(object? obj)
+    {
+        return obj != null && Equals(obj as Grid);
+    }
+
     public override int GetHashCode()
     {
         // Use the dimensions for the initial hash seed. If the size becomes variable, it will matter. If it doesn't,
