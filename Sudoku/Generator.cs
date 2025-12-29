@@ -9,16 +9,10 @@ public class Generator
     public Grid Puzzle {get; set;}
     public int TargetSeedAmount = 10;
 
-    public Generator()
+    public Generator(int? randomseed=null)
     {
         Puzzle = new Grid();
-        random = new();
-    }
-
-    public Generator(int randomSeed)
-    {
-        Puzzle = new Grid();
-        random = new(randomSeed);
+        random = randomseed != null? new((int)randomseed): new();
     }
 
     public bool Generate()
