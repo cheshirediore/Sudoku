@@ -127,7 +127,7 @@ public class Grid: IEquatable<Grid>
     /// An integer value indicating the number of the cell as counted from top left to bottom right of the grid.
     /// </returns>
     /// <remarks>
-    /// Does not check if the given corrodinates (and corresponding index) are valid for a Grid.
+    /// Does not check if the given coordinates (and corresponding index) are valid for a Grid.
     /// </remarks>
     private static int CoordinatesToIndex(int[] coordinates)
     {
