@@ -322,6 +322,7 @@ public class Grid: IEquatable<Grid>
     /// </param>
     /// <param name="value">
     /// The new value for the vertex.
+    /// </param>
     public void SetVertex(int x, int y, int value)
     {
         if (x < 0 || x > 8)
