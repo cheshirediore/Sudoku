@@ -5,9 +5,9 @@ namespace Sudoku;
 
 public class Generator
 {
+    public const int TargetSeedAmount = 10;
     private readonly Random random;
-    public Grid Puzzle {get; set;}
-    public int TargetSeedAmount = 10;
+    public Grid Puzzle {get; private set;}
 
     /// <summary>
     /// Primary constructor for Generator objects.
