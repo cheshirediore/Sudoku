@@ -38,6 +38,9 @@ Phase 4 focuses on refactoring and restructuring the codebase, and cleaning up t
 
 Milestones include:
 - Determine what needs to be exposed to the front-end, and what should not be.
+    - Read and write cell values
+    - Get rows, columns, and blocks
+    - Check validity of rows, columns, blocks, and entire puzzle
 - Add documentation comments to methods. [Complete]
 - Verify that all methods and properties have the correct access levels.
 - Add public methods, as needed, to allow communication with a front-end GUI.

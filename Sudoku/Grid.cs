@@ -530,6 +530,27 @@ public class Grid: IEquatable<Grid>
         }
         return true;
     }
+
+    /// <summary>
+    /// Method to check if the entire grid is populated. It does not check consistency or validity, only completeness.
+    /// </summary>
+    /// <returns>
+    /// Returns true if and only if all cells are set.
+    /// </returns>
+    public bool IsGridComplete()
+    {
+        for (int y = 0; y < HEIGHT; y ++)
+        {
+            for (int x = 0; x < WIDTH; x ++)
+            {
+                if (GetVertex(x, y) == 0)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
     #endregion Validity Checking Methods
 
     #region Grid Region Accessor Methods
