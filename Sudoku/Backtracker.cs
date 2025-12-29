@@ -38,9 +38,10 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// <param name="candidate">
     /// A puzzle state.
     /// </param>
-    /// <param name="solutions"></param>
+    /// <param name="solutions">
     /// The list of solutions so far.
     /// <returns>
+    /// </param>
     /// The provided list of solutions, extended by any solutions found in this branch of the search tree.
     /// </returns>
     private List<Grid> Backtrack(Grid candidate, List<Grid> solutions)
