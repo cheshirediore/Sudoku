@@ -39,7 +39,7 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// A puzzle state.
     /// </param>
     /// <param name="solutions"></param>
-    /// The list of of solutions so far.
+    /// The list of solutions so far.
     /// <returns>
     /// The provided list of solutions, extended by any solutions found in this branch of the search tree.
     /// </returns>
@@ -79,7 +79,7 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// </param>
     /// <returns></returns>
     /// <remarks>
-    /// This method exists more for it's conceptual role in the algorithm than out of necessity. 
+    /// This method exists more for its conceptual role in the algorithm than out of necessity. 
     /// It continues to exist in case additional action should be desired when a solution is registered, such as an event trigger.
     /// </remarks>
     private static List<Grid> Output(Grid solution, List<Grid> solutions)
