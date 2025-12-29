@@ -12,13 +12,13 @@ public class Generator
     /// <summary>
     /// Primary constructor for Generator objects.
     /// </summary>
-    /// <param name="randomseed">
+    /// <param name="randomSeed">
     /// An optional seed value for the Random object. By default, no seed is provided. The parameter exists for testing purposes.
     /// </param>
-    public Generator(int? randomseed=null)
+    public Generator(int? randomSeed=null)
     {
         Puzzle = new Grid();
-        random = randomseed != null? new((int)randomseed): new();
+        random = randomSeed != null? new((int)randomSeed): new();
     }
 
     /// <summary>
