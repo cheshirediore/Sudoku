@@ -39,7 +39,7 @@ public class Generator
     }
 
     /// <summary>
-    /// Updates the <c>Puzzle<c/> property by removing values that do not result in an invalid puzzle.
+    /// Updates the <c>Puzzle</c> property by removing values that do not result in an invalid puzzle.
     /// </summary>
     /// <returns>
     /// Returns true if and only if the result is different than the starting puzzle.
@@ -84,7 +84,7 @@ public class Generator
     }
 
     /// <summary>
-    /// Updates the <c>Puzzle<c/> property by seeding it with random values, and then solving it.
+    /// Updates the <c>Puzzle</c> property by seeding it with random values, and then solving it.
     /// </summary>
     /// <returns>
     /// Returns true if and only if a solution was found.
@@ -147,11 +147,11 @@ public class Generator
     }
 
     /// <summary>
-    /// Uses this instance's <c>random<c/> property to randomize the order of cell indices. This is used
+    /// Uses this instance's <c>random</c> property to randomize the order of cell indices. This is used
     /// to provide random access to the grid vertices without repeated values.
     /// </summary>
     /// <returns>
-    /// An array of cell indices for the <c>Puzzle<c/>'s vertices in a stochastic order.
+    /// An array of cell indices for the <c>Puzzle</c>'s vertices in a stochastic order.
     /// </returns>
     private int[] GetRandomIndices()
     {
