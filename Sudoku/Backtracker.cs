@@ -3,15 +3,10 @@ using System.Collections.Generic;
 
 namespace Sudoku;
 
-public class Backtracker: Solver
+public class Backtracker(Grid sudokuGrid) : Solver
 {
     public override int MaxSolutions { get; set; } = -1;
-    public override Grid Puzzle { get; init; }
-
-    public Backtracker(Grid sudokuGrid)
-    {
-        Puzzle = sudokuGrid;
-    }
+    public override Grid Puzzle { get; init; } = sudokuGrid;
 
     public override List<Grid> Solve()
     {
