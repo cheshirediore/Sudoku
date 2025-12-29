@@ -121,7 +121,7 @@ public class Grid: IEquatable<Grid>
     /// Converts a pair of coordinates to a cell index.
     /// </summary>
     /// <param name="coordinates">
-    /// A cartesian coordinate pair indicating the location of the cell on a cartesian plan.
+    /// A Cartesian coordinate pair indicating the location of the cell on a Cartesian plane.
     /// </param>
     /// <returns>
     /// An integer value indicating the number of the cell as counted from top left to bottom right of the grid.
@@ -141,7 +141,7 @@ public class Grid: IEquatable<Grid>
     /// An integer value indicating the number of the cell as counted from top left to bottom right of the grid.
     /// </param>
     /// <returns>
-    /// The cartesian coordinate pair of the cell indicated by the <paramref name="index"/>.
+    /// The Cartesian coordinate pair of the cell indicated by the <paramref name="index"/>.
     /// </returns>
     /// <remarks>
     /// Does not check if the given index (and corresponding pair of coordinates) is valid for a Grid.
@@ -278,7 +278,7 @@ public class Grid: IEquatable<Grid>
     #region GetVertex Overloads
     /// <summary>
     /// Primary accessor method for getting the value of a given vertex.
-    /// Method used to translate familiar (x, y) cartesian coordinate notation to [row, column] 2D array indices.
+    /// Method used to translate familiar (x, y) Cartesian coordinate notation to [row, column] 2D array indices.
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when either <paramref name="x"/> or <paramref name="y"/> are less than 0 or greater than 8.
@@ -309,7 +309,7 @@ public class Grid: IEquatable<Grid>
     #region SetVertex Overloads
     /// <summary>
     /// Primary accessor method for setting the value of a given vertex.
-    /// Method used to translate familiar (x, y) cartesian coordinate notation to [row, column] 2D array indices. 
+    /// Method used to translate familiar (x, y) Cartesian coordinate notation to [row, column] 2D array indices. 
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when either <paramref name="x"/> or <paramref name="y"/> are less than 0 or greater than 8.
