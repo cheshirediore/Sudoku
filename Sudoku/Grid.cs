@@ -437,7 +437,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns true if and only if the given row does not contain any non-zero duplicate values.
     /// </returns>
-    private bool IsRowConsistent(int rowIndex)
+    public bool IsRowConsistent(int rowIndex)
     {
         HashSet<int> values = new();
 
@@ -459,7 +459,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns true if and only if the given column does not contain any non-zero duplicate values.
     /// </returns>
-    private bool IsColumnConsistent(int columnIndex)
+    public bool IsColumnConsistent(int columnIndex)
     {
         HashSet<int> values = new();
 
@@ -486,7 +486,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns true if and only if the block that contains the given vertex is consistent.
     /// </returns>
-    private bool IsBlockConsistent(int x, int y)
+    public bool IsBlockConsistent(int x, int y)
     {
         return IsBlockConsistent(GetBlockIndex(x, y));
     }
@@ -498,7 +498,7 @@ public class Grid: IEquatable<Grid>
     /// <returns>
     /// Returns true if and only if the given block does not contain any non-zero duplicate values.
     /// </returns>
-    private bool IsBlockConsistent(int blockIndex)
+    public bool IsBlockConsistent(int blockIndex)
     {
         HashSet<int> values = new();
 
