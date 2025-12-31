@@ -1,3 +1,10 @@
+# Build file ignores
 **/bin/**
 **/obj/**
-*.zsh
+# MacOS Ignores
+.DS_Store
+*/*.zsh
+# Godot 4+ specific ignores
+.godot/
+/android/
+
