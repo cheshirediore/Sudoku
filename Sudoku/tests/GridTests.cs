@@ -10,11 +10,11 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_Constructor_DefaultGrid_ShouldInitializeEmptyGrid()
         {
-            var grid = new Grid();
+            var grid = new Sudoku.Deprecated.Grid();
 
-            for (int y = 0; y < Grid.HEIGHT; y++)
+            for (int y = 0; y < Sudoku.Deprecated.Grid.HEIGHT; y++)
             {
-                for (int x = 0; x < Grid.WIDTH; x++)
+                for (int x = 0; x < Sudoku.Deprecated.Grid.WIDTH; x++)
                 {
                     Assert.That(0, Is.EqualTo(grid.GetVertex(x, y)));
                 }
@@ -24,23 +24,23 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_Constructor_GridFromArray_ShouldInitializeCorrectly()
         {
-            int[][] values = new int[Grid.HEIGHT][];
-            for (int y = 0; y < Grid.HEIGHT; y++)
+            int[][] values = new int[Sudoku.Deprecated.Grid.HEIGHT][];
+            for (int y = 0; y < Sudoku.Deprecated.Grid.HEIGHT; y++)
             {
-                values[y] = new int[Grid.WIDTH];
-                for (int x = 0; x < Grid.WIDTH; x++)
+                values[y] = new int[Sudoku.Deprecated.Grid.WIDTH];
+                for (int x = 0; x < Sudoku.Deprecated.Grid.WIDTH; x++)
                 {
-                    values[y][x] = x + y * Grid.WIDTH;
+                    values[y][x] = x + y * Sudoku.Deprecated.Grid.WIDTH;
                 }
             }
 
-            var grid = new Grid(values);
+            var grid = new Sudoku.Deprecated.Grid(values);
 
-            for (int y = 0; y < Grid.HEIGHT; y++)
+            for (int y = 0; y < Sudoku.Deprecated.Grid.HEIGHT; y++)
             {
-                for (int x = 0; x < Grid.WIDTH; x++)
+                for (int x = 0; x < Sudoku.Deprecated.Grid.WIDTH; x++)
                 {
-                    Assert.That(x + y * Grid.WIDTH, Is.EqualTo(grid.GetVertex(x, y)));
+                    Assert.That(x + y * Sudoku.Deprecated.Grid.WIDTH, Is.EqualTo(grid.GetVertex(x, y)));
                 }
             }
         }
@@ -49,7 +49,7 @@ namespace Sudoku.Tests
         public void Grid_Constructor_GridFromFile_ShouldInitializeCorrectly()
         {
             string filePath = "/Users/joshuamoore/Development/CSharp/Sudoku/Sudoku/SamplePuzzleSeed.csv";
-            var grid = new Grid(filePath);
+            var grid = new Sudoku.Deprecated.Grid(filePath);
 
             Assert.That(grid, Is.Not.Null);
             // Additional assertions can be added based on the file content
@@ -58,7 +58,7 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_SetVertex_ShouldUpdateValue()
         {
-            var grid = new Grid();
+            var grid = new Sudoku.Deprecated.Grid();
             grid.SetVertex(0, 0, 5);
 
             Assert.That(5, Is.EqualTo(grid.GetVertex(0, 0)));
@@ -67,7 +67,7 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_SetVertex_ShouldThrowExceptionForInvalidCoordinates()
         {
-            var grid = new Grid();
+            var grid = new Sudoku.Deprecated.Grid();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => grid.SetVertex(-1, 0, 5));
             Assert.Throws<ArgumentOutOfRangeException>(() => grid.SetVertex(0, -1, 5));
@@ -78,7 +78,7 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_SetVertex_ShouldNotThrowExceptionForValidCoordinates()
         {
-            var grid = new Grid();
+            var grid = new Sudoku.Deprecated.Grid();
 
             Assert.DoesNotThrow(() => grid.SetVertex(1, 0, 5));
             Assert.DoesNotThrow(() => grid.SetVertex(0, 1, 5));
@@ -89,7 +89,7 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_IsGridConsistent_ShouldReturnTrueForValidGrid()
         {
-            var grid = new Grid();
+            var grid = new Sudoku.Deprecated.Grid();
             grid.SetVertex(0, 0, 1);
             grid.SetVertex(1, 0, 2);
             grid.SetVertex(2, 0, 3);
@@ -100,7 +100,7 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_IsGridConsistent_ShouldReturnFalseForInvalidGrid()
         {
-            var grid = new Grid();
+            var grid = new Sudoku.Deprecated.Grid();
             grid.SetVertex(0, 0, 1);
             grid.SetVertex(1, 0, 1);
 
@@ -110,7 +110,7 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_IsGridComplete_ShouldReturnFalseForIncompleteGrid()
         {
-            var grid = new Grid();
+            var grid = new Sudoku.Deprecated.Grid();
 
             Assert.That(grid.IsGridComplete(), Is.False);
         }
@@ -118,11 +118,11 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_IsGridComplete_ShouldReturnTrueForCompleteGrid()
         {
-            var grid = new Grid();
+            var grid = new Sudoku.Deprecated.Grid();
 
-            for (int y = 0; y < Grid.HEIGHT; y++)
+            for (int y = 0; y < Sudoku.Deprecated.Grid.HEIGHT; y++)
             {
-                for (int x = 0; x < Grid.WIDTH; x++)
+                for (int x = 0; x < Sudoku.Deprecated.Grid.WIDTH; x++)
                 {
                     grid.SetVertex(x, y, 1);
                 }

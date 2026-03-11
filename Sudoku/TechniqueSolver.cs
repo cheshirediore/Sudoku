@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Sudoku;
 
-public class TechniqueSolver(Grid sudokuGrid) : Solver
+public class TechniqueSolver(Sudoku.Deprecated.Grid sudokuGrid) : Solver
 {
     #region SolverInterface
     /// <summary>
@@ -11,7 +11,7 @@ public class TechniqueSolver(Grid sudokuGrid) : Solver
     /// <remarks>
     /// Overrides the property for the Solver abstract class.
     /// </remarks>
-    public override Grid Puzzle { get; init; } = sudokuGrid;
+    public override Sudoku.Deprecated.Grid Puzzle { get; init; } = sudokuGrid;
     /// <summary>
     /// The maximum number of solutions to search for. Once this number is reached, 
     /// it will return the results without looking further.
@@ -21,7 +21,7 @@ public class TechniqueSolver(Grid sudokuGrid) : Solver
     /// </remarks>
     public override int MaxSolutions { get; set; } = -1;
 
-    public override List<Grid> Solve()
+    public override List<Sudoku.Deprecated.Grid> Solve()
     {
         // TODO: loop through applying rules to the current board state to determine
         //       the next valid move. Terminate and hand off to the Backtracker if 

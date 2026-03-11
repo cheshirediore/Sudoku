@@ -7,7 +7,7 @@ public class Generator
 {
     public const int TargetSeedAmount = 10;
     private readonly Random random;
-    public Grid Puzzle {get; private set;}
+    public Sudoku.Deprecated.Grid Puzzle {get; private set;}
 
     /// <summary>
     /// Primary constructor for Generator objects.
@@ -17,12 +17,12 @@ public class Generator
     /// </param>
     public Generator(int? randomSeed=null)
     {
-        Puzzle = new Grid();
+        Puzzle = new Sudoku.Deprecated.Grid();
         random = randomSeed != null? new((int)randomSeed): new();
     }
 
     /// <summary>
-    /// Fills an empty Grid object with consistent values, then removes values while ensuring the puzzle is still valid.
+    /// Fills an empty Sudoku.Deprecated.Grid object with consistent values, then removes values while ensuring the puzzle is still valid.
     /// </summary>
     /// <returns>
     /// Returns true if and only if a valid puzzle is successfully generated.
@@ -46,7 +46,7 @@ public class Generator
     /// </returns>
     private bool Erode()
     {
-        Grid candidate = Puzzle.ShallowCopy();
+        Sudoku.Deprecated.Grid candidate = Puzzle.ShallowCopy();
 
         int[] clueIndices = GetRandomIndices();
         
@@ -75,7 +75,7 @@ public class Generator
         {
             Puzzle = candidate;
             // Set all cells as clues
-            for (int index = 0; index < Grid.SIZE; index++)
+            for (int index = 0; index < Sudoku.Deprecated.Grid.SIZE; index++)
             {
                 Puzzle.SetVertex(index, Puzzle.GetVertex(index), true);
             }
@@ -91,7 +91,7 @@ public class Generator
     /// </returns>
     private bool StochasticFill()
     {
-        Grid candidate = Puzzle.ShallowCopy();
+        Sudoku.Deprecated.Grid candidate = Puzzle.ShallowCopy();
 
         int[] randomIndices = GetRandomIndices();
 
@@ -129,7 +129,7 @@ public class Generator
 
 
         // Solve the sudoku puzzle
-        List<Grid> solutions = solver.Solve();
+        List<Sudoku.Deprecated.Grid> solutions = solver.Solve();
 
         bool success = solutions.Count >= 1;
 
@@ -137,7 +137,7 @@ public class Generator
         {
             Puzzle = solutions[0];
             // Set all cells as clues
-            for (int index = 0; index < Grid.SIZE; index++)
+            for (int index = 0; index < Sudoku.Deprecated.Grid.SIZE; index++)
             {
                 Puzzle.SetVertex(index, Puzzle.GetVertex(index), true);
             }
@@ -155,9 +155,9 @@ public class Generator
     /// </returns>
     private int[] GetRandomIndices()
     {
-        int[] vertIndices = new int[Grid.SIZE];
+        int[] vertIndices = new int[Sudoku.Deprecated.Grid.SIZE];
 
-        for (int i = 0; i < Grid.SIZE; i++)
+        for (int i = 0; i < Sudoku.Deprecated.Grid.SIZE; i++)
         {
             vertIndices[i] = i;
         }

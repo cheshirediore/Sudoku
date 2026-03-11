@@ -2,7 +2,7 @@ using System;
 using System.Collections.Immutable;
 using System.Collections.Generic;
 
-namespace Sudoku;
+namespace Sudoku.Deprecated;
 
 public class Grid: IEquatable<Grid>
 {

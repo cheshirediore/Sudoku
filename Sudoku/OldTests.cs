@@ -13,7 +13,7 @@ class OldTests
         Console.WriteLine($"Generator.Generate() runtime: {watch.Elapsed.TotalSeconds} seconds");
     }
 
-    private static void TestSolver(Grid grid)
+    private static void TestSolver(Sudoku.Deprecated.Grid grid)
     {
         // Create a Solver to process the imported seed file
         Solver solver = new Backtracker(grid)
@@ -21,12 +21,12 @@ class OldTests
             MaxSolutions = 2
         };
         // Solve the sudoku puzzle
-        List<Grid> solutions = solver.Solve();
+        List<Sudoku.Deprecated.Grid> solutions = solver.Solve();
 
         // Distill the list of solutions to filter out the duplicates
         // Ideally, this step is redundant. However, if there is something wrong in the solving process,
         // then this will highlight a discrepancy.
-        HashSet<Grid> distinctSolutions = [..solutions];
+        HashSet<Sudoku.Deprecated.Grid> distinctSolutions = [..solutions];
 
         // Output the results
         System.Console.WriteLine("Original Puzzle:");
@@ -53,7 +53,7 @@ class OldTests
         System.Console.WriteLine(GetAsciiReprGrid(generator.Puzzle.Values));
     }
 
-    private static Grid ImportSeedFile(string[] args)
+    private static Sudoku.Deprecated.Grid ImportSeedFile(string[] args)
     {
         // Hard-Coded paths for testing
         string[] seedPaths = [
@@ -90,7 +90,7 @@ class OldTests
         }
 
         // Read the input seed file and generate a sudoku grid array
-        return new Grid(path);
+        return new Sudoku.Deprecated.Grid(path);
     }
     
     private static string GetAsciiReprGrid(int[][] grid)
