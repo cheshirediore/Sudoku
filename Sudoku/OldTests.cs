@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Sudoku;
 
-class Tests
+class OldTests
 {
     public static void RunTests()
     {
@@ -30,7 +30,7 @@ class Tests
 
         // Output the results
         System.Console.WriteLine("Original Puzzle:");
-        System.Console.WriteLine(GetAsciiReprGrid(grid.Vertices));
+        System.Console.WriteLine(GetAsciiReprGrid(grid.Values));
         if (distinctSolutions.Count > 1)
         {
             System.Console.WriteLine($"Found {solutions.Count} solutions");
@@ -39,7 +39,7 @@ class Tests
         else if (solutions.Count > 0)
         {
             System.Console.WriteLine("Solution found!");
-            System.Console.WriteLine(GetAsciiReprGrid(solutions[0].Vertices));
+            System.Console.WriteLine(GetAsciiReprGrid(solutions[0].Values));
             System.Console.WriteLine();
             System.Console.WriteLine(solutions[0]);
         }
@@ -50,7 +50,7 @@ class Tests
         Generator generator = new();
         generator.Generate();
         System.Console.WriteLine(generator.Puzzle);
-        System.Console.WriteLine(GetAsciiReprGrid(generator.Puzzle.Vertices));
+        System.Console.WriteLine(GetAsciiReprGrid(generator.Puzzle.Values));
     }
 
     private static Grid ImportSeedFile(string[] args)

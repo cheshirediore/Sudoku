@@ -10,16 +10,19 @@ public class Grid: IEquatable<Grid>
     // Only a 9x9 grid is supported by this implementation. WIDTH, HEIGHT, and SIZE are provided for clean reference by other objects.
     public const int WIDTH = 9;
     public const int HEIGHT = 9;
+    public const int REGION_COUNT = 9;
     public static int SIZE { get => WIDTH * HEIGHT; }
 
     // Give useful names to the index groups used for blocks. FIRST, SECOND, and THIRD can refer to either a group of columns or rows.
-    // These are used exclusively by the GetBlock method.
+    // These are used exclusively by the GetBlockValues method.
     private readonly ImmutableArray<int> FIRST = [0, 1, 2];
     private readonly ImmutableArray<int> SECOND = [3, 4, 5];
     private readonly ImmutableArray<int> THIRD = [6, 7, 8];
 
     // Instance Attributes //
-    public readonly int[][] Vertices;
+    public readonly int[][] Values;
+    // Array of dictionaries tracking the possible candidates for a given cell
+    public Dictionary<int, bool>[,] Candidates;
     private int _lastUpdatedCellIndex = 0;
 
     #region Constructors
@@ -29,13 +32,34 @@ public class Grid: IEquatable<Grid>
     public Grid()
     {
         // Initialize (the list of rows part of) the jagged array 
-        Vertices = new int[HEIGHT][];
-
+        Values = new int[HEIGHT][];
         // Initialize rows, and set all values to 0 (the default integer value, conveniently)
         for (int y = 0; y < HEIGHT; y++)
         {
             // Initialize an individual row of WIDTH length in the jagged array
-            Vertices[y] = new int[WIDTH];
+            Values[y] = new int[WIDTH];
+        }
+
+        // Initialize the Candidates dictionaries. Default candidates is the full
+        // list of possible values
+        Candidates = new Dictionary<int, bool>[HEIGHT, WIDTH];
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            for (int x = 0; x < HEIGHT; x++)
+            {
+                Candidates[y, x] = new Dictionary<int, bool>
+                {
+                    {1, true},
+                    {2, true},
+                    {3, true},
+                    {4, true},
+                    {5, true},
+                    {6, true},
+                    {7, true},
+                    {8, true},
+                    {9, true}
+                };
+            }
         }
     }
 
@@ -58,7 +82,29 @@ public class Grid: IEquatable<Grid>
                 throw new System.ArgumentOutOfRangeException(nameof(gridVertices), $"int[{y}][{gridVertices[y].Length}] is an invalid length. Arrays must be of length {WIDTH}.");
             }
         }
-        Vertices = gridVertices;
+        Values = gridVertices;
+
+        // Initialize the Candidates dictionaries. Default candidates is the full
+        // list of possible values
+        Candidates = new Dictionary<int, bool>[HEIGHT, WIDTH];
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            for (int x = 0; x < HEIGHT; x++)
+            {
+                Candidates[y, x] = new Dictionary<int, bool>
+                {
+                    {1, true},
+                    {2, true},
+                    {3, true},
+                    {4, true},
+                    {5, true},
+                    {6, true},
+                    {7, true},
+                    {8, true},
+                    {9, true}
+                };
+            }
+        }
     }
 
     /// <summary>
@@ -83,13 +129,13 @@ public class Grid: IEquatable<Grid>
             throw new System.ArgumentOutOfRangeException(seedFilePath, $"Input puzzle seed must have {HEIGHT} lines. Provided seed has '{lines.Length}'.");
         }
         // Initialize vertex grid
-        Vertices = new int[HEIGHT][];
+        Values = new int[HEIGHT][];
 
         // Iterate over the lines and add the values to the vertex grid
         for (int y = 0; y < HEIGHT; y++)
         {
             // Create the row in the vertex grid
-            Vertices[y] = new int[WIDTH];
+            Values[y] = new int[WIDTH];
 
             // Split the line by commas, and trim off the whitespace
             string[] rowValues = lines[y].Split(",");
@@ -104,7 +150,7 @@ public class Grid: IEquatable<Grid>
                 if (int.TryParse(rowValues[x].Trim(), out int parsedValue))
                 {
                     // Using negative numbers to flag the clue values using a single int
-                    Vertices[y][x] = parsedValue * -1;
+                    Values[y][x] = parsedValue * -1;
                 }
                 else
                 {
@@ -112,7 +158,63 @@ public class Grid: IEquatable<Grid>
                 }
             }
         }
+
+        // Initialize the Candidates dictionaries. Default candidates is the full
+        // list of possible values
+        Candidates = new Dictionary<int, bool>[HEIGHT, WIDTH];
+        for (int y = 0; y < HEIGHT; y++)
+        {
+            for (int x = 0; x < HEIGHT; x++)
+            {
+                Candidates[y, x] = new Dictionary<int, bool>
+                {
+                    {1, true},
+                    {2, true},
+                    {3, true},
+                    {4, true},
+                    {5, true},
+                    {6, true},
+                    {7, true},
+                    {8, true},
+                    {9, true}
+                };
+            }
+        }
     }
+    #endregion
+
+    #region Private State Management
+
+
+    /// <summary>
+    /// Iterates through each region and remove the candidates that are already set
+    /// for that region.
+    /// 
+    /// For example, if cell (0, 0) is set to 8, it would clear 8 from the candidates
+    /// list for all cells in row 0, column 0, and block 0.
+    /// 
+    /// </summary>
+    private void RefreshCandidates()
+    {
+        // Contains the values set in a given region. Used to remove these values from
+        // candidates list in that region. Cleared before moving to the next region.
+        List<int> regionValues = [];
+        
+        // TODO: get the coordinates of each cell in a region
+        // For each block
+        for (int index = 0; index < REGION_COUNT; index++)
+        {
+            int[] region = GetBlockValues(index);
+            foreach (int value in region)
+            {
+                if (value > 0 && value < 10)
+                {
+                    regionValues.Add(value);
+                }
+            }
+        }
+    }
+
     #endregion
 
     #region Static Methods
@@ -293,7 +395,7 @@ public class Grid: IEquatable<Grid>
         {
             throw new System.ArgumentOutOfRangeException(nameof(y), $"({x}, {y}) is outside of the grid bounds.");
         }
-        return Vertices[y][x];
+        return Values[y][x];
     }
 
     /// <summary>
@@ -334,7 +436,7 @@ public class Grid: IEquatable<Grid>
             throw new System.ArgumentOutOfRangeException(nameof(y), $"({x}, {y}) is outside of the grid bounds.");
         }
         _lastUpdatedCellIndex = CoordinatesToIndex([x, y]);
-        Vertices[y][x] = value;
+        Values[y][x] = value;
     }
 
     /// <summary>
@@ -443,7 +545,7 @@ public class Grid: IEquatable<Grid>
     {
         HashSet<int> values = new();
 
-        var row = GetRow(rowIndex);
+        var row = GetRowValues(rowIndex);
         for (int index = 0; index < row.Length; index++)
         {
             if (row[index] != 0 && !values.Add(System.Math.Abs(row[index])))
@@ -465,7 +567,7 @@ public class Grid: IEquatable<Grid>
     {
         HashSet<int> values = new();
 
-        var column = GetColumn(columnIndex);
+        var column = GetColumnValues(columnIndex);
         for (int index = 0; index < column.Length; index++)
         {
             if (column[index] != 0 && !values.Add(System.Math.Abs(column[index])))
@@ -504,7 +606,7 @@ public class Grid: IEquatable<Grid>
     {
         HashSet<int> values = new();
 
-        var block = GetBlock(blockIndex);
+        var block = GetBlockValues(blockIndex);
         for (int index = 0; index < block.Length; index++)
         {
             if (block[index] != 0 && !values.Add(System.Math.Abs(block[index])))
@@ -555,12 +657,25 @@ public class Grid: IEquatable<Grid>
     }
     #endregion Validity Checking Methods
 
+
     #region Grid Region Accessor Methods
+    public List<int[]> GetRow(int regionIndex)
+    {
+        List<int[]> cellIndices = [];
+        for (int x = 0; x < 9; x++)
+        {
+            int[] coordinates = [x, regionIndex];
+            cellIndices.Add(coordinates);
+        }
+        return cellIndices;
+    }
+
     /// <summary>
     /// Method to get the horizontal slice of a 2D array representing a grid row.
     /// </summary>
-    public int[] GetRow(int rowIndex)
+    public int[] GetRowValues(int rowIndex)
     {
+        // TODO: Replace coordinates logic with GetRow()
         int[] row = new int[9];
         for (int x = 0; x < 9; x++)
         {
@@ -569,11 +684,24 @@ public class Grid: IEquatable<Grid>
         return row;
     }
 
+
+    public List<int[]> GetColumn(int regionIndex)
+    {
+        List<int[]> cellIndices = [];
+        for (int y = 0; y < 9; y++)
+        {
+            int[] coordinates = [regionIndex, y];
+            cellIndices.Add(coordinates);
+        }
+        return cellIndices;
+    }
+
     /// <summary>
     /// Method to get the vertical slice of a 2D array representing a grid column.
     /// </summary>
-    public int[] GetColumn(int columnIndex)
+    public int[] GetColumnValues(int columnIndex)
     {
+        // TODO: Replace coordinates logic with GetColumn()
         // TODO: Handle out of bounds arguments
         int[] column = new int[9];
         for (int y = 0; y < 9; y++)
@@ -582,15 +710,15 @@ public class Grid: IEquatable<Grid>
         }
         return column;
     }
-    
+
     /// <summary>
-    /// Method to get 3x3 vector from a 2D array, transformed to a 1x9 vector.
+    /// Method to get the coordinates of each cell in a given block.
     /// </summary>
-    /// <param name="blockIndex">
+    /// <param name="regionIndex">
     /// The index of a block, where each block is a 3x3 group of vertices numbered left to right, top to bottom.
     /// </param>
     /// <returns>
-    /// The collection of cell indices that are within the block at the provided <paramref name="blockIndex"/>
+    /// A list of the cell coordinates that are within the block at the provided <paramref name="regionIndex"/>
     /// </returns>
     /// <exception cref="System.ArgumentOutOfRangeException"></exception>
     /// <remarks>
@@ -616,7 +744,106 @@ public class Grid: IEquatable<Grid>
     ///     Block 8
     ///     (columns 6, 7, 8) intersect (rows 6, 7, 8)
     /// </remarks>
-    public int[] GetBlock(int blockIndex)
+    public List<int[]> GetBlock(int regionIndex)
+    {
+        List<int[]> cellIndices = [];
+        ImmutableArray<int> columnIndices;
+        ImmutableArray<int> rowIndices;
+        
+        // Only 9x9 grids are supported, so we can hard code these cases instead of calculating them at runtime
+        switch (regionIndex)
+        {
+            // Top row of blocks
+            case 0:
+                columnIndices = FIRST;
+                rowIndices = FIRST;
+                break;
+            case 1:
+                columnIndices = SECOND;
+                rowIndices = FIRST;
+                break;
+            case 2:
+                columnIndices = THIRD;
+                rowIndices = FIRST;
+                break;
+            // Middle row of blocks
+            case 3:
+                columnIndices = FIRST;
+                rowIndices = SECOND;
+                break;
+            case 4:
+                columnIndices = SECOND;
+                rowIndices = SECOND;
+                break;
+            case 5:
+                columnIndices = THIRD;
+                rowIndices = SECOND;
+                break;
+            // Bottom row of blocks
+            case 6:
+                columnIndices = FIRST;
+                rowIndices = THIRD;
+                break;
+            case 7:
+                columnIndices = SECOND;
+                rowIndices = THIRD;
+                break;
+            case 8:
+                columnIndices = THIRD;
+                rowIndices = THIRD;
+                break;
+            default:
+                throw new System.ArgumentOutOfRangeException(nameof(regionIndex), $"regionIndex must be an integer between 0 and 8 (inclusive). Received '{regionIndex}'.");
+        }
+
+        // Iterate through the indices to get the cells in the block, as defined above.
+        for (int columnIndex = 0; columnIndex < columnIndices.Length; columnIndex++)
+        {
+            int x = columnIndices[columnIndex];
+            for (int rowIndex = 0; rowIndex < rowIndices.Length; rowIndex++)
+            {
+                int y = rowIndices[rowIndex];
+                int[] coordinates = [x, y];
+                cellIndices.Add(coordinates);
+            }
+        }
+        return cellIndices;
+    } 
+    
+    /// <summary>
+    /// Method to get 3x3 vector from a 2D array, transformed to a 1x9 vector.
+    /// </summary>
+    /// <param name="blockIndex">
+    /// The index of a block, where each block is a 3x3 group of vertices numbered left to right, top to bottom.
+    /// </param>
+    /// <returns>
+    /// The collection of cell values that are within the block at the provided <paramref name="blockIndex"/>
+    /// </returns>
+    /// <exception cref="System.ArgumentOutOfRangeException"></exception>
+    /// <remarks>
+    /// A block is the intersection of (union of three columns) and (union of three rows)
+    ///     Block 0
+    ///     (columns 0, 1, 2) intersect (rows 0, 1, 2)
+    ///     Block 1
+    ///     (columns 3, 4, 5) intersect (rows 0, 1, 2)
+    ///     Block 2
+    ///     (columns 6, 7, 8) intersect (rows 0, 1, 2)
+    /// 
+    ///     Block 3
+    ///     (columns 0, 1, 2) intersect (rows 3, 4, 5)
+    ///     Block 4
+    ///     (columns 3, 4, 5) intersect (rows 3, 4, 5)
+    ///     Block 5
+    ///     (columns 6, 7, 8) intersect (rows 3, 4, 5)
+    /// 
+    ///     Block 6
+    ///     (columns 0, 1, 2) intersect (rows 6, 7, 8)
+    ///     Block 7
+    ///     (columns 3, 4, 5) intersect (rows 6, 7, 8)
+    ///     Block 8
+    ///     (columns 6, 7, 8) intersect (rows 6, 7, 8)
+    /// </remarks>
+    public int[] GetBlockValues(int blockIndex)
     {
         int[] block = new int[9];
 
@@ -699,7 +926,7 @@ public class Grid: IEquatable<Grid>
         Grid newGrid = new();
         for (int y = 0; y < HEIGHT; y++)
         {
-            Array.Copy(Vertices[y], newGrid.Vertices[y], Grid.WIDTH);
+            Array.Copy(Values[y], newGrid.Values[y], Grid.WIDTH);
         }
         return newGrid;
     }
@@ -719,8 +946,8 @@ public class Grid: IEquatable<Grid>
         {
             for (int x = 0; x < 9; x++)
             {
-                string prefix = Vertices[y][x] < 0 ? "": " ";
-                builder.Append($"{prefix}{Vertices[y][x]} ");
+                string prefix = Values[y][x] < 0 ? "": " ";
+                builder.Append($"{prefix}{Values[y][x]} ");
             }
             builder.AppendLine();
         }
