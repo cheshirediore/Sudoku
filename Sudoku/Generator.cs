@@ -112,6 +112,7 @@ public class Generator
             }
             else
             {
+                // TODO: Re-implement a SetVertex method with an optional clue parameter
                 candidate.CellGrid.GetVertex(index).Value = SudokuPuzzle.CellGrid.GetVertex(index).Value;
                 candidate.CellGrid.GetVertex(index).IsClue = SudokuPuzzle.CellGrid.GetVertex(index).IsClue;
 

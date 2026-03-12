@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 
 namespace Sudoku;
-// TODO: Build out constructor(s)
-// TODO: add regions to puzzle
-// TODO: add grid to puzzle
-// TODO: create all 81 cells and add them to their regionspublic class Puzzle
+// TODO: Re-implement a SetVertex method with an optional clue parameter
+
 public class Puzzle : ICloneable
 {
     private const int REGIONS_PER_TYPE = 9;
