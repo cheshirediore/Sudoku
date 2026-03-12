@@ -62,12 +62,12 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        List<int[]> results = [];
-        // For each region, identify any Naked Single candidates.
-        // Search the Blocks
-        // Search the Columns
-        // Search the Rows
-        return results;
+        // List<int[]> results = [];
+        // // For each region, identify any Naked Single candidates.
+        // // Search the Blocks
+        // // Search the Columns
+        // // Search the Rows
+        // return results;
     }
 
     /// <summary>
@@ -83,8 +83,8 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        List<int[]> results = [];
-        return results;
+        // List<int[]> results = [];
+        // return results;
     }
     
     /// <summary>
@@ -100,8 +100,8 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        List<int[]> results = [];
-        return results;
+        // List<int[]> results = [];
+        // return results;
     }
 
     /// <summary>
@@ -117,8 +117,8 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        List<int[]> results = [];
-        return results;
+        // List<int[]> results = [];
+        // return results;
     }
     #endregion
 }
