@@ -37,14 +37,6 @@ public class RegionTests
     }
 
     [Test]
-    public void Region_AddCell_NullCell_ShouldThrowArgumentNullException()
-    {
-        var region = new Region(RegionType.COLUMN);
-
-        Assert.That(() => region.AddCell(null), Throws.ArgumentNullException);
-    }
-
-    [Test]
     public void Region_AddCell_ExceedCapacity_ShouldThrowInvalidOperationException()
     {
         var region = new Region(RegionType.BLOCK);

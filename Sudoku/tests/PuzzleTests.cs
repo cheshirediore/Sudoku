@@ -7,17 +7,13 @@ namespace Sudoku.Tests
     [TestFixture]
     public class PuzzleTests
     {
-        private Puzzle _puzzle;
 
-        [SetUp]
-        public void SetUp()
-        {
-            _puzzle = new Puzzle();
-        }
 
         [Test]
         public void Puzzle_Constructor_InitializesGridAndRegions()
         {
+            Puzzle _puzzle = new Puzzle();
+
             Assert.That(_puzzle.CellGrid, Is.Not.Null, "CellGrid should not be null.");
             Assert.That(_puzzle.Regions, Is.Not.Null, "Regions dictionary should not be null.");
             Assert.That(_puzzle.Regions.Count, Is.EqualTo(3), "Regions dictionary should contain 3 region types.");
@@ -32,6 +28,8 @@ namespace Sudoku.Tests
         [Test]
         public void Puzzle_GetRegion_ValidInputs_ReturnsCorrectRegion()
         {
+            Puzzle _puzzle = new Puzzle();
+            
             var region = _puzzle.GetRegion(RegionType.BLOCK, 0);
             Assert.That(region, Is.Not.Null, "Region should not be null.");
             Assert.That(region.Type, Is.EqualTo(RegionType.BLOCK), "Region type should match.");
@@ -40,12 +38,16 @@ namespace Sudoku.Tests
         [Test]
         public void Puzzle_GetRegion_InvalidRegionType_ThrowsArgumentOutOfRangeException()
         {
+            Puzzle _puzzle = new Puzzle();
+            
             Assert.That(() => _puzzle.GetRegion((RegionType)999, 0), Throws.TypeOf<ArgumentOutOfRangeException>(), "Invalid RegionType should throw ArgumentOutOfRangeException.");
         }
 
         [Test]
         public void Puzzle_GetRegion_InvalidRegionIndex_ThrowsArgumentOutOfRangeException()
         {
+            Puzzle _puzzle = new Puzzle();
+            
             Assert.That(() => _puzzle.GetRegion(RegionType.BLOCK, -1), Throws.TypeOf<ArgumentOutOfRangeException>(), "Negative region index should throw ArgumentOutOfRangeException.");
             Assert.That(() => _puzzle.GetRegion(RegionType.BLOCK, 10), Throws.TypeOf<ArgumentOutOfRangeException>(), "Out-of-range region index should throw ArgumentOutOfRangeException.");
         }

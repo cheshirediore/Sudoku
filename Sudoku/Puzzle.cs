@@ -230,7 +230,7 @@ public class Puzzle : ICloneable
 
     public bool IsLastUpdateValid()
     {
-        throw new NotImplementedException();
+        return IsConsistent();
     }
 
     public override string ToString()
