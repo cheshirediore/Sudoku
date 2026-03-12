@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
+
 namespace Sudoku;
 
-public class Grid<T>
+public class Grid<T> : ICloneable where T : ICloneable, new()
 {
     // Static Constants //
     // Only a 9x9 grid is supported by this implementation. WIDTH, HEIGHT, and SIZE are provided for clean reference by other objects.
@@ -9,14 +12,16 @@ public class Grid<T>
     public const int REGION_COUNT = 9;
     public static int SIZE { get => WIDTH * HEIGHT; }
 
+    private object _lock = new();
+
     // Instance Attributes //
-    public List<T> Vertices
+    public IReadOnlyList<T> Vertices
     {
         get
         {
             lock (_lock)
             {
-                return _vertices.AsReadOnly();
+                return (IReadOnlyList<T>)_vertices.AsReadOnly();
             }
         }
     } 
@@ -44,9 +49,13 @@ public class Grid<T>
     /// <remarks>
     /// Does not check if the given coordinates (and corresponding index) are valid for a Grid.
     /// </remarks>
-    private static int CoordinatesToIndex(int[] coordinates)
+    public static int CoordinatesToIndex(int[] coordinates)
     {
         return coordinates[1] * WIDTH + coordinates[0];
+    }
+    public static int CoordinatesToIndex(int x, int y)
+    {
+        return y * WIDTH + x;
     }
 
     /// <summary>
@@ -61,7 +70,7 @@ public class Grid<T>
     /// <remarks>
     /// Does not check if the given index (and corresponding pair of coordinates) is valid for a Grid.
     /// </remarks>
-    private static int[] IndexToCoordinates(int index)
+    public static int[] IndexToCoordinates(int index)
     {
         int[] coordinates = [-1, -1];
 
@@ -215,4 +224,18 @@ public class Grid<T>
     }
     #endregion
 
+
+    public object Clone()
+    {
+        var clonedGrid = new Grid<T>();
+
+        
+        // Deep copy each cell
+        for (int i = 0; i < SIZE; i++)
+        {
+            clonedGrid._vertices[i] = (T)_vertices[i].Clone();
+        }
+
+        return clonedGrid;
+    }
 }

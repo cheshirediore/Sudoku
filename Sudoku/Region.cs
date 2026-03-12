@@ -3,13 +3,6 @@ using System.Collections.Generic;
 
 namespace Sudoku;
 
-public enum RegionType
-{
-    BLOCK,
-    COLUMN,
-    ROW
-}
-
 public class Region
 {
     private const int CAPACITY = 9;
@@ -59,5 +52,19 @@ public class Region
             cell.Notifier.Subscribe(_cellObserver); // Register cell with the observer
             return true;
         }
+    }
+
+    public bool IsConsistent()
+    {
+        HashSet<int> values = new();
+
+        for (int index = 0; index < CAPACITY; index++)
+        {
+            if (Cells[index].Value != 0 && !values.Add(System.Math.Abs(Cells[index].Value)))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
