@@ -2,21 +2,20 @@ using System;
 using System.Collections.Generic;
 
 namespace Sudoku;
-// TODO: Re-implement a SetVertex method with an optional clue parameter
 
 public class Puzzle : ICloneable
 {
     private const int REGIONS_PER_TYPE = 9;
 
-    public Grid<Cell> CellGrid; // Models the catesian plane
+    public Grid CellGrid; // Models the catesian plane
     public Dictionary<RegionType, List<Region>> Regions; // Divides the grid into 27 regions
 
-    public Puzzle() : this(new Grid<Cell>())
+    public Puzzle() : this(new Grid())
     {
     }
         
 
-    public Puzzle(Grid<Cell> cellGrid)
+    public Puzzle(Grid cellGrid)
     {
         CellGrid = cellGrid;
 
@@ -34,7 +33,7 @@ public class Puzzle : ICloneable
         }
 
         // Add cell references to regions
-        for (int cellIndex = 0; cellIndex < Grid<Cell>.SIZE; cellIndex++)
+        for (int cellIndex = 0; cellIndex < Grid.SIZE; cellIndex++)
         {
             Cell cell = CellGrid.GetVertex(cellIndex);
             int blockIndex = GetRegionIndex(cellIndex, RegionType.BLOCK);
@@ -78,13 +77,13 @@ public class Puzzle : ICloneable
             throw new ArgumentOutOfRangeException(nameof(regionType), $"Invalid RegionType value {regionType}.");
         }
         // Validate region index
-        if (cellIndex < 0 || cellIndex >= Grid<Cell>.SIZE)
+        if (cellIndex < 0 || cellIndex >= Grid.SIZE)
         {
             throw new ArgumentOutOfRangeException(nameof(cellIndex), $"Invalid regionIndex value {cellIndex}.");
         }
 
         // The region is easier to determine from the coordinates than the index
-        int[] coordinates = Grid<Cell>.IndexToCoordinates(cellIndex);
+        int[] coordinates = Grid.IndexToCoordinates(cellIndex);
         int x = coordinates[0];
         int y = coordinates[1];
 
@@ -183,6 +182,24 @@ public class Puzzle : ICloneable
         return true;
     }
 
+    public bool SetCellValue(int cellIndex, int newValue, bool isClue)
+    {
+        Cell cell = CellGrid.GetVertex(cellIndex);
+        cell.Value = newValue;
+        cell.IsClue = isClue;
+        return true;
+    }
+
+    public int GetCellValue(int x, int y)
+    {
+        return CellGrid.GetVertex(x, y).Value;
+    }
+
+    public int GetCellValue(int cellIndex)
+    {
+        return CellGrid.GetVertex(cellIndex).Value;
+    }
+
     /// <summary>
     /// Checks if there are any duplicate values in any regions
     /// </summary>
@@ -217,7 +234,7 @@ public class Puzzle : ICloneable
     /// <returns>False if any cell retains the default value, and true otherwise.</returns>
     public bool IsComplete()
     {
-        for (int cellIndex = 0; cellIndex < Grid<Cell>.SIZE; cellIndex++)
+        for (int cellIndex = 0; cellIndex < Grid.SIZE; cellIndex++)
         {
             if (CellGrid.GetVertex(cellIndex).Value == 0)
             {
@@ -252,13 +269,13 @@ public class Puzzle : ICloneable
     }
 
     /// <remarks>
-    /// The regions are generated dynamically from the initial Grid<Cell>, so we don't
+    /// The regions are generated dynamically from the initial Grid, so we don't
     /// need to clone those; they will get "cloned" automatically when the new puzzle
     /// is initialized with the cloned grid.
     /// </remarks>
     public object Clone()
     {
-        Grid<Cell> cellGrid = (Grid<Cell>)this.CellGrid.Clone();
+        Grid cellGrid = (Grid)this.CellGrid.Clone();
 
         Puzzle clonedPuzzle = new(cellGrid);
 

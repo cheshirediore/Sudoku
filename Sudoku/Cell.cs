@@ -5,6 +5,7 @@ namespace Sudoku;
 
 public class Cell : ICloneable
 {
+    public int Index {get; init;}
     public int Value
     {
         get
@@ -23,8 +24,12 @@ public class Cell : ICloneable
 
     public CellNotifier Notifier;
 
-    public Cell()
+    public Cell(): this(-1)
+    {}
+
+    public Cell(int index)
     {
+        Index = index;
         _value = 0;
         Candidates = [1, 2, 3, 4, 5, 6, 7, 8, 9];
         IsClue = false;
@@ -54,7 +59,7 @@ public class Cell : ICloneable
 
     public object Clone()
     {
-        Cell clonedCell = new()
+        Cell clonedCell = new(this.Index)
         {
             IsClue = this.IsClue,
             _value = this._value

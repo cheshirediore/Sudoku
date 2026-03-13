@@ -10,9 +10,9 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_Constructor_DefaultGrid_ShouldInitializeEmptyGrid()
         {
-            var grid = new Grid<Cell>();
+            var grid = new Grid();
 
-            for (int index = 0; index < Grid<Cell>.SIZE; index++)
+            for (int index = 0; index < Grid.SIZE; index++)
             {
                 Assert.DoesNotThrow(() => {Cell c = grid.Vertices[index];}); // Verify that the cell exists
                 Assert.That(null != grid.Vertices[index]); // Verify that it isn't null
@@ -37,32 +37,32 @@ namespace Sudoku.Tests
                 7    63 64 65 | 66 67 68 | 69 70 71
                 8    72 73 74 | 75 76 77 | 78 79 80
             */
-            Assert.That(0,  Is.EqualTo(Grid<Cell>.CoordinatesToIndex(0, 0)));
-            Assert.That(11, Is.EqualTo(Grid<Cell>.CoordinatesToIndex(2, 1)));
-            Assert.That(52, Is.EqualTo(Grid<Cell>.CoordinatesToIndex(7, 5)));
-            Assert.That(44, Is.EqualTo(Grid<Cell>.CoordinatesToIndex(8, 4)));
-            Assert.That(40, Is.EqualTo(Grid<Cell>.CoordinatesToIndex(4, 4)));
-            Assert.That(8,  Is.EqualTo(Grid<Cell>.CoordinatesToIndex(8, 0)));
-            Assert.That(72, Is.EqualTo(Grid<Cell>.CoordinatesToIndex(0, 8)));
-            Assert.That(80, Is.EqualTo(Grid<Cell>.CoordinatesToIndex(8, 8)));
+            Assert.That(0,  Is.EqualTo(Grid.CoordinatesToIndex(0, 0)));
+            Assert.That(11, Is.EqualTo(Grid.CoordinatesToIndex(2, 1)));
+            Assert.That(52, Is.EqualTo(Grid.CoordinatesToIndex(7, 5)));
+            Assert.That(44, Is.EqualTo(Grid.CoordinatesToIndex(8, 4)));
+            Assert.That(40, Is.EqualTo(Grid.CoordinatesToIndex(4, 4)));
+            Assert.That(8,  Is.EqualTo(Grid.CoordinatesToIndex(8, 0)));
+            Assert.That(72, Is.EqualTo(Grid.CoordinatesToIndex(0, 8)));
+            Assert.That(80, Is.EqualTo(Grid.CoordinatesToIndex(8, 8)));
         }
 
 
         [Test]
         public void Grid_GetVertex_ShouldThrowExceptionForInvalidCoordinates()
         {
-            var grid = new Grid<Cell>();
+            var grid = new Grid();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => grid.GetVertex(-1, 0));
             Assert.Throws<ArgumentOutOfRangeException>(() => grid.GetVertex(0, -1));
-            Assert.Throws<ArgumentOutOfRangeException>(() => grid.GetVertex(Grid<Cell>.SIZE, 0));
-            Assert.Throws<ArgumentOutOfRangeException>(() => grid.GetVertex(0, Grid<Cell>.SIZE));
+            Assert.Throws<ArgumentOutOfRangeException>(() => grid.GetVertex(Grid.SIZE, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => grid.GetVertex(0, Grid.SIZE));
         }
 
         [Test]
         public void Grid_GetVertex_ShouldNotThrowExceptionForValidCoordinates()
         {
-            var grid = new Grid<Cell>();
+            var grid = new Grid();
 
             // With Index
             Assert.DoesNotThrow(() => grid.GetVertex(0));
@@ -84,7 +84,7 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_GetVertex_ShouldThrowExceptionForInvalidIndex()
         {
-            var grid = new Grid<Cell>();
+            var grid = new Grid();
 
             Assert.Throws<ArgumentOutOfRangeException>(() => grid.GetVertex(-1));
             Assert.Throws<ArgumentOutOfRangeException>(() => grid.GetVertex(81));
@@ -93,7 +93,7 @@ namespace Sudoku.Tests
         [Test]
         public void Grid_GetVertex_ShouldNotThrowExceptionForValidIndex()
         {
-            var grid = new Grid<Cell>();
+            var grid = new Grid();
 
             Assert.DoesNotThrow(() => grid.GetVertex(0));
             Assert.DoesNotThrow(() => grid.GetVertex(1));

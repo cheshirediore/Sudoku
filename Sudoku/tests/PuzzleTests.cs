@@ -8,6 +8,31 @@ namespace Sudoku.Tests
     public class PuzzleTests
     {
 
+        [Test]
+        public void Puzzle_Constructor_CorrectlyInitializesCellIndex()
+        {
+            Puzzle puzzle = new();
+
+            Assert.That(puzzle.CellGrid.GetVertex(28).Index, Is.EqualTo(28));
+            Assert.That(puzzle.CellGrid.GetVertex(56).Index, Is.EqualTo(56));
+            Assert.That(puzzle.CellGrid.GetVertex(13).Index, Is.EqualTo(13));
+            Assert.That(puzzle.CellGrid.GetVertex(25).Index, Is.EqualTo(25));
+        }
+
+        [Test]
+        public void Puzzle_SetCellValue_CorrectlyUpdatesCell()
+        {
+            Puzzle puzzle = new();
+            puzzle.SetCellValue(28, 1); // Second column, fourth block
+            puzzle.SetCellValue(56, 1); // Third column, seventh block
+            puzzle.SetCellValue(13, 1); // Second row, second block
+            puzzle.SetCellValue(25, 1); // Third row, third block
+
+            Assert.That(puzzle.CellGrid.GetVertex(28).Value, Is.EqualTo(1));
+            Assert.That(puzzle.CellGrid.GetVertex(56).Value, Is.EqualTo(1));
+            Assert.That(puzzle.CellGrid.GetVertex(13).Value, Is.EqualTo(1));
+            Assert.That(puzzle.CellGrid.GetVertex(25).Value, Is.EqualTo(1));
+        }
 
         [Test]
         public void Puzzle_Constructor_InitializesGridAndRegions()

@@ -125,7 +125,7 @@ public class Backtracker(Puzzle sudokuGrid) : Solver
         {
             for (int x = 0; x < 9; x++)
             {
-                if (candidate.CellGrid.GetVertex(x, y).Value == 0)
+                if (candidate.GetCellValue(x, y) == 0)
                 {
                     return false;
                 }
@@ -151,16 +151,18 @@ public class Backtracker(Puzzle sudokuGrid) : Solver
         Puzzle puzzle = (Puzzle)candidate.Clone();
 
         // Update the copy
-        for (int y = 0; y < Grid<Cell>.HEIGHT; y++)
+        for (int y = 0; y < Grid.HEIGHT; y++)
         {
-            for (int x = 0; x < Grid<Cell>.WIDTH; x++)
+            for (int x = 0; x < Grid.WIDTH; x++)
             {
-                if (candidate.CellGrid.GetVertex(x, y).Value == 0) // Find the first cell with an unset value in the partial candidate
+                if (candidate.GetCellValue(x, y) == 0) // Find the first cell with an unset value in the partial candidate
                 {
                     // If the value is less than 9, increment it. Otherwise, continue to the next cell.
-                    if (puzzle.CellGrid.GetVertex(x, y).Value < 9)
+                    if (puzzle.GetCellValue(x, y) < 9)
                     {
-                        puzzle.CellGrid.GetVertex(x, y).Value = candidate.CellGrid.GetVertex(x, y).Value + 1;
+                        int newCellValue = candidate.CellGrid.GetVertex(x, y).Value + 1;
+                        int cellIndex = Grid.CoordinatesToIndex(x, y);
+                        puzzle.SetCellValue(cellIndex, newCellValue);
                         return puzzle;
                     }
                     else
@@ -191,16 +193,18 @@ public class Backtracker(Puzzle sudokuGrid) : Solver
         Puzzle puzzle = (Puzzle)candidate.Clone();
 
         // Update the copy
-        for (int y = 0; y < Grid<Cell>.HEIGHT; y++)
+        for (int y = 0; y < Grid.HEIGHT; y++)
         {
-            for (int x = 0; x < Grid<Cell>.WIDTH; x++)
+            for (int x = 0; x < Grid.WIDTH; x++)
             {
                 if (data.CellGrid.GetVertex(x, y).Value == 0) // Find first cell with an unset value in the parent of the partial candidate
                 {
                     // If the value is less than 9, increment it. Otherwise, continue to the next cell.
                     if (puzzle.CellGrid.GetVertex(x, y).Value < 9)
                     {
-                        puzzle.CellGrid.GetVertex(x, y).Value = candidate.CellGrid.GetVertex(x, y).Value + 1;
+                        int newCellValue = candidate.CellGrid.GetVertex(x, y).Value + 1;
+                        int cellIndex = Grid.CoordinatesToIndex(x, y);
+                        puzzle.SetCellValue(cellIndex, newCellValue);
                         return puzzle;
                     }
                     else

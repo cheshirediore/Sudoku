@@ -67,4 +67,7 @@ public class Region
         }
         return true;
     }
+    
+    // TODO: Implement a method to count candidates of cells in a region, to replace the repetitive code in
+    //       TechniqueSolver
 }

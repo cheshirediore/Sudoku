@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Sudoku;
 
-public class Grid<T> : ICloneable where T : ICloneable, new()
+public class Grid : ICloneable
 {
     // Static Constants //
     // Only a 9x9 grid is supported by this implementation. WIDTH, HEIGHT, and SIZE are provided for clean reference by other objects.
@@ -15,24 +15,24 @@ public class Grid<T> : ICloneable where T : ICloneable, new()
     private object _lock = new();
 
     // Instance Attributes //
-    public IReadOnlyList<T> Vertices
+    public IReadOnlyList<Cell> Vertices
     {
         get
         {
             lock (_lock)
             {
-                return (IReadOnlyList<T>)_vertices.AsReadOnly();
+                return (IReadOnlyList<Cell>)_vertices.AsReadOnly();
             }
         }
     } 
-    private List<T> _vertices;
+    private List<Cell> _vertices;
 
     public Grid()
     {
-        _vertices = new List<T>();
+        _vertices = new List<Cell>();
         for (int i = 0; i < SIZE; i++)
         {
-            _vertices.Add(new T());
+            _vertices.Add(new Cell(i));
         }
     }
 
@@ -206,7 +206,7 @@ public class Grid<T> : ICloneable where T : ICloneable, new()
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="index"/> is less than 0 or greater than SIZE.
     /// </exception>
-    public T GetVertex(int index)
+    public Cell GetVertex(int index)
     {
         // int[] coords = IndexToCoordinates(index);
         // return GetVertex(coords[0], coords[1]);
@@ -217,7 +217,7 @@ public class Grid<T> : ICloneable where T : ICloneable, new()
         return Vertices[index];
     }
 
-    public T GetVertex(int x, int y)
+    public Cell GetVertex(int x, int y)
     {
         int index = CoordinatesToIndex(x, y);
         return GetVertex(index);
@@ -227,13 +227,13 @@ public class Grid<T> : ICloneable where T : ICloneable, new()
 
     public object Clone()
     {
-        var clonedGrid = new Grid<T>();
+        var clonedGrid = new Grid();
 
         
         // Deep copy each cell
         for (int i = 0; i < SIZE; i++)
         {
-            clonedGrid._vertices[i] = (T)_vertices[i].Clone();
+            clonedGrid._vertices[i] = (Cell)_vertices[i].Clone();
         }
 
         return clonedGrid;

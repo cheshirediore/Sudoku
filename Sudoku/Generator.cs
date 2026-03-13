@@ -75,7 +75,7 @@ public class Generator
         {
             SudokuPuzzle = candidate;
             // Set all cells as clues
-            for (int index = 0; index < Grid<Cell>.SIZE; index++)
+            for (int index = 0; index < Grid.SIZE; index++)
             {
                 SudokuPuzzle.CellGrid.GetVertex(index).IsClue = true;
             }
@@ -95,16 +95,14 @@ public class Generator
 
         int[] randomIndices = GetRandomIndices();
 
-        candidate.CellGrid.GetVertex(0).Value =  random.Next(1, 10);
-        candidate.CellGrid.GetVertex(0).IsClue = true;
+        candidate.SetCellValue(0, random.Next(1, 10), true);
 
         int populatedCells = 1;
 
         foreach (int index in randomIndices)
         {
             // Set cell value to a random value
-            candidate.CellGrid.GetVertex(index).Value =  random.Next(1, 10);
-            candidate.CellGrid.GetVertex(index).IsClue = true;
+            candidate.SetCellValue(index, random.Next(1, 10), true);
             // Check consistency. If consistent, increment populated cell count. Otherwise, restore the original value.
             if (candidate.IsConsistent())
             {
@@ -112,11 +110,8 @@ public class Generator
             }
             else
             {
-                // TODO: Re-implement a SetVertex method with an optional clue parameter
-                candidate.CellGrid.GetVertex(index).Value = SudokuPuzzle.CellGrid.GetVertex(index).Value;
-                candidate.CellGrid.GetVertex(index).IsClue = SudokuPuzzle.CellGrid.GetVertex(index).IsClue;
-
-
+                int newCellValue = SudokuPuzzle.GetCellValue(index) + 1;
+                candidate.SetCellValue(index, newCellValue, true);
             }
 
             // If populated cell count is at least the targeted amount, break loop
@@ -143,7 +138,7 @@ public class Generator
         {
             SudokuPuzzle = solutions[0];
             // Set all cells as clues
-            for (int index = 0; index < Grid<Cell>.SIZE; index++)
+            for (int index = 0; index < Grid.SIZE; index++)
             {
                 SudokuPuzzle.CellGrid.GetVertex(index).IsClue = true;
             }
@@ -161,9 +156,9 @@ public class Generator
     /// </returns>
     private int[] GetRandomIndices()
     {
-        int[] vertIndices = new int[Grid<Cell>.SIZE];
+        int[] vertIndices = new int[Grid.SIZE];
 
-        for (int i = 0; i < Grid<Cell>.SIZE; i++)
+        for (int i = 0; i < Grid.SIZE; i++)
         {
             vertIndices[i] = i;
         }

@@ -11,6 +11,21 @@ namespace SudokuTests
     public class CellTests
     {
         [Test]
+        public void Cell_DefaultConstructor_InitializesIndexToDefault()
+        {
+            Cell cell = new Cell();
+            Assert.That(cell.Index, Is.EqualTo(-1));
+        }
+
+        [Test]
+        public void Cell_Constructor_InitializesIndex()
+        {
+            int indexValue = 1;
+            Cell cell = new Cell(indexValue);
+            Assert.That(cell.Index, Is.EqualTo(indexValue));
+        }
+
+        [Test]
         public void Cell_RemoveCandidate_RemovesSpecifiedCandidate()
         {
             // Arrange
