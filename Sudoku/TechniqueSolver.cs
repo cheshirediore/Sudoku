@@ -90,7 +90,7 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
         return null;
     }
     
-    #region Techniques
+    #region Easy
     /// <summary>
     /// Identify Naked Single candidates, if they exists.
     /// </summary>
@@ -197,11 +197,11 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// <returns>
     /// 
     /// </returns>
-    internal List<int[]> NakedPair()
+    internal List<Result> NakedPair()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<int[]> results = [];
+        // List<Result> results = [];
         // Search the Blocks
         // Search the Columns
         // Search the Rows
@@ -214,14 +214,120 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// <returns>
     /// 
     /// </returns>
-    internal List<int[]> HiddenPair()
+    internal List<Result> HiddenPair()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<int[]> results = [];
+        // List<Result> results = [];
         // Search the Blocks
         // Search the Columns
         // Search the Rows
+        // return results;
+    }
+
+    #endregion
+
+    #region Medium
+
+    internal List<Result> NakedTriple()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
+        // return results;
+    }
+
+    internal List<Result> HiddenTriple()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
+        // return results;
+    }
+
+    internal List<Result> PointingPair()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
+        // return results;
+    }
+
+    internal List<Result> BoxLineReduction()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
+        // return results;
+    }
+    #endregion
+
+    #region Hard
+    internal List<Result> XWing()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
+        // return results;
+    }
+
+    internal List<Result> Swordfish()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
+        // return results;
+    }
+
+    internal List<Result> YWing()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
+        // return results;
+    }
+    #endregion
+
+    #region VeryHard
+    internal List<Result> Jellyfish()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
+        // return results;
+    }
+
+    internal List<Result> XYZWing()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
+        // return results;
+    }
+
+    internal List<Result> Coloring()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
+        // return results;
+    }
+    #endregion
+
+    #region Expert
+    internal List<Result> ForcingChain()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
+        // return results;
+    }
+
+    internal List<Result> Backtracking()
+    {
+        throw new System.NotImplementedException();
+        // Initialize the empty list for the return
+        // List<Result> results = [];
         // return results;
     }
     #endregion
