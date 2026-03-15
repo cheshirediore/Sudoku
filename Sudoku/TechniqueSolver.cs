@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Sudoku.Technique;
 
 namespace Sudoku;
 
@@ -33,19 +33,24 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
         //       no valid moves are determined by applying rules.
         
         Technique? technique = GetNextTechnique(null);
-
-        // Techniques that set values:
-        if (technique == NakedSingle || technique == HiddenSingle)
+        if (technique != null)
         {
-            List<int[]> singles = technique();
-            foreach (var item in singles)
+            List<Result> results = technique();
+
+            foreach (var result in results)
             {
-                SudokuPuzzle.SetCellValue(item[0], item[1]);
+                // Techniques that set values:
+                if (result.Type == ResultType.SET)
+                {
+                    SudokuPuzzle.SetCellValue(result.CellIndex, result.CellValue);
+                }
+                // Techniques that remove candidates:
+                else if (result.Type == ResultType.REMOVE)
+                {
+                    SudokuPuzzle.RemoveCellCandidate(result.CellIndex, result.CellValue);
+                }
             }
         }
-        // Techniques that remove candidates:
-
-
         //// Disabled for testing
         // // Verify that the solution is valid, and only return it if it is.
         // if (!SudokuPuzzle.IsComplete() || !SudokuPuzzle.IsConsistent())
@@ -61,7 +66,7 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     // TODO: Create a class to handle the technique results, and use that as the return value instead of a List
     //       Additional nuance is needed to handle different technique types, but we still want to use one delegate
     //       as the entry point.
-    private delegate List<int[]> Technique();
+    private delegate List<Result> Technique();
 
     /// <summary>
     /// Get the next rule to apply, based on the previous rule.
@@ -101,18 +106,17 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// 
     /// A Naked Single is when only one possible candidate exists for a given cell.
     /// </remarks>
-    internal List<int[]> NakedSingle()
+    internal List<Result> NakedSingle()
     {
         // Initialize the empty list for the return
-        List<int[]> results = [];
+        List<Result> results = [];
         // For each cell, identify any Naked Single candidates.
         for (int cellIndex = 0; cellIndex < Grid.SIZE; cellIndex++)
         {
             Cell cell = SudokuPuzzle.CellGrid.GetVertex(cellIndex);
             if (cell.Candidates.Count == 1)
             {
-                int[] result = [cellIndex, cell.Candidates[0]];
-                results.Add(result);
+                results.Add(new Result(ResultType.SET, cellIndex, cell.Candidates[0]));
             }
         }
         return results;
@@ -127,10 +131,10 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// 
     /// If no such candidates exist, returns an empty list.
     /// </returns>
-    internal List<int[]> HiddenSingle()
+    internal List<Result> HiddenSingle()
     {
         // Initialize the empty list for the return
-        List<int[]> results = [];
+        List<Result> results = [];
         
         // Search the Blocks
         // For each of the block
@@ -153,9 +157,9 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
         return results;
     }
     
-    private static List<int[]> FindHiddenSinglesInRegion(Region region)
+    private static List<Result> FindHiddenSinglesInRegion(Region region)
     {
-        List<int[]> results = [];
+        List<Result> results = [];
 
         // Create and initialize the dictionary with keys 1 through 9 (inclusive)
         Dictionary<int, List<Cell>> candidateCellMap = [];
@@ -180,8 +184,7 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
             {
                 // Add the cell index and candidate to the result list. Three steps are used for readability.
                 Cell cell = candidateCellMap[candidate][0];
-                int[] result = [cell.Index, candidate];
-                results.Add(result);
+                results.Add(new Result(ResultType.SET, cell.Index, candidate));
             }
         }
 

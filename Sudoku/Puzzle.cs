@@ -200,6 +200,12 @@ public class Puzzle : ICloneable
         return CellGrid.GetVertex(cellIndex).Value;
     }
 
+    internal bool RemoveCellCandidate(int cellIndex, int candidate)
+    {
+        Cell cell = CellGrid.GetVertex(cellIndex);
+        return cell.RemoveCandidate(candidate); 
+    }
+
     /// <summary>
     /// Checks if there are any duplicate values in any regions
     /// </summary>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Sudoku.Technique;
 
 namespace Sudoku.Tests;
 
@@ -106,10 +107,10 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Hidden Singles are checked
-        List<int[]> hiddenSingles = solver.NakedSingle();
+        List<Result> nakedSingles = solver.NakedSingle();
 
         // Then: Hidden Singles are found
-        Assert.That(hiddenSingles, Is.Not.Empty);
+        Assert.That(nakedSingles, Is.Not.Empty);
     }
 
     [Test]
@@ -142,7 +143,7 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Hidden Singles are checked
-        List<int[]> hiddenSingles = solver.HiddenSingle();
+        List<Result> hiddenSingles = solver.HiddenSingle();
 
         // Then: Hidden Singles are found
         Assert.That(hiddenSingles, Is.Not.Empty);
@@ -178,13 +179,13 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Hidden Singles are checked
-        List<int[]> hiddenSingles = solver.HiddenSingle();
+        List<Result> hiddenSingles = solver.HiddenSingle();
 
         // Then:
         if (hiddenSingles.Count > 0)
         {
-            Assert.That(hiddenSingles[0][0], Is.EqualTo(0)); // Index of hidden single is 0
-            Assert.That(hiddenSingles[0][1], Is.EqualTo(1)); // Value of hidden single is 1
+            Assert.That(hiddenSingles[0].CellIndex, Is.EqualTo(0)); // Index of hidden single is 0
+            Assert.That(hiddenSingles[0].CellValue, Is.EqualTo(1)); // Value of hidden single is 1
         } else
         {
             Assert.That(false, Is.True, "HiddenSingle returned an empty list.");
