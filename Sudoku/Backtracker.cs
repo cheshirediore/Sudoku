@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Sudoku;
 
-public class Backtracker(Grid sudokuGrid) : Solver
+public class Backtracker(Puzzle sudokuGrid) : Solver
 {
     /// <summary>
     /// The puzzle the Backtracker will solve. It is updated with the solution.
@@ -11,7 +11,7 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// <remarks>
     /// Overrides the property for the Solver abstract class.
     /// </remarks>
-    public override Grid Puzzle { get; init; } = sudokuGrid;
+    public override Puzzle SudokuPuzzle { get; init; } = sudokuGrid;
     /// <summary>
     /// The maximum number of solutions the Backtracker will search for. Once this number is reached, it will return the results without looking further.
     /// </summary>
@@ -27,9 +27,9 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// <remarks>
     /// Implements the method for the Solver abstract class.
     /// </remarks>
-    public override List<Grid> Solve()
+    public override List<Puzzle> Solve()
     {
-        return Backtrack(Puzzle, []);
+        return Backtrack(SudokuPuzzle, []);
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// <returns>
     /// The provided list of solutions, extended by any solutions found in this branch of the search tree.
     /// </returns>
-    private List<Grid> Backtrack(Grid candidate, List<Grid> solutions)
+    private List<Puzzle> Backtrack(Puzzle candidate, List<Puzzle> solutions)
     {
         // Stop looking if more than one solution has been found. We only care about valid sudoku puzzles.
         if (MaxSolutions > 0 && solutions.Count >= MaxSolutions)
@@ -60,7 +60,7 @@ public class Backtracker(Grid sudokuGrid) : Solver
             return Output(candidate, solutions);
         }
 
-        Grid? nextCandidate = First(candidate);
+        Puzzle? nextCandidate = First(candidate);
         while (nextCandidate != null)
         {
             solutions = Backtrack(nextCandidate, solutions);
@@ -83,7 +83,7 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// This method exists more for its conceptual role in the algorithm than out of necessity. 
     /// It continues to exist in case additional action should be desired when a solution is registered, such as an event trigger.
     /// </remarks>
-    private static List<Grid> Output(Grid solution, List<Grid> solutions)
+    private static List<Puzzle> Output(Puzzle solution, List<Puzzle> solutions)
     {
         solutions.Add(solution);
         return solutions;
@@ -99,7 +99,7 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// <returns>
     /// Returns true if and only if the <paramref name="candidate"/> is an invalid state (i.e. not worth completing).
     /// </returns>
-    private static bool Reject(Grid candidate)
+    private static bool Reject(Puzzle candidate)
     {
         // Only check the last updated cell's row, column, and block.
         return !candidate.IsLastUpdateValid();
@@ -114,7 +114,7 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// <returns>
     /// Returns true if and only if <paramref name="candidate"/> is a solution to <see cref="Puzzle"/>
     /// </returns>
-    private static bool Accept(Grid candidate)
+    private static bool Accept(Puzzle candidate)
     {
         if (Reject(candidate))
         {
@@ -125,7 +125,7 @@ public class Backtracker(Grid sudokuGrid) : Solver
         {
             for (int x = 0; x < 9; x++)
             {
-                if (candidate.GetVertex(x, y) == 0)
+                if (candidate.GetCellValue(x, y) == 0)
                 {
                     return false;
                 }
@@ -145,23 +145,25 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// <returns>
     /// Returns the first extension of the <paramref name="candidate"/> if a valid extension exists. Otherwise, returns null.
     /// </returns>
-    private static Grid? First(Grid candidate)
+    private static Puzzle? First(Puzzle candidate)
     {
         // Make a shallow copy of the candidate
-        Grid grid = candidate.ShallowCopy();
+        Puzzle puzzle = (Puzzle)candidate.Clone();
 
         // Update the copy
         for (int y = 0; y < Grid.HEIGHT; y++)
         {
             for (int x = 0; x < Grid.WIDTH; x++)
             {
-                if (candidate.GetVertex(x, y) == 0) // Find the first cell with an unset value in the partial candidate
+                if (candidate.GetCellValue(x, y) == 0) // Find the first cell with an unset value in the partial candidate
                 {
                     // If the value is less than 9, increment it. Otherwise, continue to the next cell.
-                    if (grid.GetVertex(x, y) < 9)
+                    if (puzzle.GetCellValue(x, y) < 9)
                     {
-                        grid.SetVertex(x, y, candidate.GetVertex(x, y) + 1);
-                        return grid;
+                        int newCellValue = candidate.CellGrid.GetVertex(x, y).Value + 1;
+                        int cellIndex = Grid.CoordinatesToIndex(x, y);
+                        puzzle.SetCellValue(cellIndex, newCellValue);
+                        return puzzle;
                     }
                     else
                     {
@@ -185,23 +187,25 @@ public class Backtracker(Grid sudokuGrid) : Solver
     /// <returns>
     /// Returns the next extension of the <paramref name="candidate"/> if a valid extension exists. Otherwise, returns null.
     /// </returns>
-    private static Grid? Next(Grid data, Grid candidate)
+    private static Puzzle? Next(Puzzle data, Puzzle candidate)
     {
         // Make a shallow copy of the candidate
-        Grid grid = candidate.ShallowCopy();
+        Puzzle puzzle = (Puzzle)candidate.Clone();
 
         // Update the copy
         for (int y = 0; y < Grid.HEIGHT; y++)
         {
             for (int x = 0; x < Grid.WIDTH; x++)
             {
-                if (data.GetVertex(x, y) == 0) // Find first cell with an unset value in the parent of the partial candidate
+                if (data.CellGrid.GetVertex(x, y).Value == 0) // Find first cell with an unset value in the parent of the partial candidate
                 {
                     // If the value is less than 9, increment it. Otherwise, continue to the next cell.
-                    if (grid.GetVertex(x, y) < 9)
+                    if (puzzle.CellGrid.GetVertex(x, y).Value < 9)
                     {
-                        grid.SetVertex(x, y, candidate.GetVertex(x, y) + 1);
-                        return grid;
+                        int newCellValue = candidate.CellGrid.GetVertex(x, y).Value + 1;
+                        int cellIndex = Grid.CoordinatesToIndex(x, y);
+                        puzzle.SetCellValue(cellIndex, newCellValue);
+                        return puzzle;
                     }
                     else
                     {

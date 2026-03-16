@@ -7,7 +7,7 @@ public class Generator
 {
     public const int TargetSeedAmount = 10;
     private readonly Random random;
-    public Grid Puzzle {get; private set;}
+    public Puzzle SudokuPuzzle {get; private set;}
 
     /// <summary>
     /// Primary constructor for Generator objects.
@@ -17,12 +17,12 @@ public class Generator
     /// </param>
     public Generator(int? randomSeed=null)
     {
-        Puzzle = new Grid();
+        SudokuPuzzle = new Puzzle();
         random = randomSeed != null? new((int)randomSeed): new();
     }
 
     /// <summary>
-    /// Fills an empty Grid object with consistent values, then removes values while ensuring the puzzle is still valid.
+    /// Fills an empty Puzzle object with consistent values, then removes values while ensuring the puzzle is still valid.
     /// </summary>
     /// <returns>
     /// Returns true if and only if a valid puzzle is successfully generated.
@@ -46,16 +46,16 @@ public class Generator
     /// </returns>
     private bool Erode()
     {
-        Grid candidate = Puzzle.ShallowCopy();
+        Puzzle candidate = (Puzzle)SudokuPuzzle.Clone();
 
         int[] clueIndices = GetRandomIndices();
         
         // For each clue value, try removing it and see if it's still a valid puzzle
         foreach (int index in clueIndices)
         {
-            if (candidate.GetVertex(index) < 0)
+            if (candidate.CellGrid.GetVertex(index).Value < 0)
             {
-                candidate.SetVertex(index, 0);
+                candidate.CellGrid.GetVertex(index).Value = 0;
                 Solver solver = new Backtracker(candidate)
                 {
                     MaxSolutions = 2
@@ -64,20 +64,20 @@ public class Generator
                 if (solver.Solve().Count != 1)
                 {
                     // Reset the clue
-                    candidate.SetVertex(index, Puzzle.GetVertex(index));
+                    candidate.CellGrid.GetVertex(index).Value = SudokuPuzzle.CellGrid.GetVertex(index).Value;
                 }
             }
         }
 
-        bool success = candidate != Puzzle;
+        bool success = candidate != SudokuPuzzle;
 
         if (success)
         {
-            Puzzle = candidate;
+            SudokuPuzzle = candidate;
             // Set all cells as clues
             for (int index = 0; index < Grid.SIZE; index++)
             {
-                Puzzle.SetVertex(index, Puzzle.GetVertex(index), true);
+                SudokuPuzzle.CellGrid.GetVertex(index).IsClue = true;
             }
         }
         return success;
@@ -91,26 +91,27 @@ public class Generator
     /// </returns>
     private bool StochasticFill()
     {
-        Grid candidate = Puzzle.ShallowCopy();
+        Puzzle candidate = (Puzzle)SudokuPuzzle.Clone();
 
         int[] randomIndices = GetRandomIndices();
 
-        candidate.SetVertex(0, random.Next(1, 10), true);
+        candidate.SetCellValue(0, random.Next(1, 10), true);
+
         int populatedCells = 1;
 
         foreach (int index in randomIndices)
         {
             // Set cell value to a random value
-            candidate.SetVertex(index, random.Next(1, 10), true);
-
+            candidate.SetCellValue(index, random.Next(1, 10), true);
             // Check consistency. If consistent, increment populated cell count. Otherwise, restore the original value.
-            if (candidate.IsGridConsistent())
+            if (candidate.IsConsistent())
             {
                 populatedCells++;
             }
             else
             {
-                candidate.SetVertex(index, Puzzle.GetVertex(index), true);
+                int newCellValue = SudokuPuzzle.GetCellValue(index) + 1;
+                candidate.SetCellValue(index, newCellValue, true);
             }
 
             // If populated cell count is at least the targeted amount, break loop
@@ -129,17 +130,17 @@ public class Generator
 
 
         // Solve the sudoku puzzle
-        List<Grid> solutions = solver.Solve();
+        List<Puzzle> solutions = solver.Solve();
 
         bool success = solutions.Count >= 1;
 
         if (success)
         {
-            Puzzle = solutions[0];
+            SudokuPuzzle = solutions[0];
             // Set all cells as clues
             for (int index = 0; index < Grid.SIZE; index++)
             {
-                Puzzle.SetVertex(index, Puzzle.GetVertex(index), true);
+                SudokuPuzzle.CellGrid.GetVertex(index).IsClue = true;
             }
         }
 
