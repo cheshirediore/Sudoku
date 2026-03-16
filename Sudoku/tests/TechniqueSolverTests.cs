@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Sudoku.Technique;
+using Sudoku;
 
 namespace Sudoku.Tests;
 
@@ -107,7 +107,7 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Hidden Singles are checked
-        List<Result> nakedSingles = solver.NakedSingle();
+        List<Action> nakedSingles = solver.NakedSingle();
 
         // Then: Hidden Singles are found
         Assert.That(nakedSingles, Is.Not.Empty);
@@ -143,7 +143,7 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Hidden Singles are checked
-        List<Result> hiddenSingles = solver.HiddenSingle();
+        List<Action> hiddenSingles = solver.HiddenSingle();
 
         // Then: Hidden Singles are found
         Assert.That(hiddenSingles, Is.Not.Empty);
@@ -179,7 +179,7 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Hidden Singles are checked
-        List<Result> hiddenSingles = solver.HiddenSingle();
+        List<Action> hiddenSingles = solver.HiddenSingle();
 
         // Then:
         if (hiddenSingles.Count > 0)

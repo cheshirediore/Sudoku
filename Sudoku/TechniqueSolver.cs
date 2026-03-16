@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Sudoku.Technique;
 
 namespace Sudoku;
 
@@ -35,17 +34,17 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
         Technique? technique = GetNextTechnique(null);
         if (technique != null)
         {
-            List<Result> results = technique();
+            List<Action> results = technique();
 
             foreach (var result in results)
             {
                 // Techniques that set values:
-                if (result.Type == ResultType.SET)
+                if (result.Type == ActionType.SET)
                 {
                     SudokuPuzzle.SetCellValue(result.CellIndex, result.CellValue);
                 }
                 // Techniques that remove candidates:
-                else if (result.Type == ResultType.REMOVE)
+                else if (result.Type == ActionType.REMOVE)
                 {
                     SudokuPuzzle.RemoveCellCandidate(result.CellIndex, result.CellValue);
                 }
@@ -66,7 +65,7 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     // TODO: Create a class to handle the technique results, and use that as the return value instead of a List
     //       Additional nuance is needed to handle different technique types, but we still want to use one delegate
     //       as the entry point.
-    private delegate List<Result> Technique();
+    private delegate List<Action> Technique();
 
     /// <summary>
     /// Get the next rule to apply, based on the previous rule.
@@ -106,17 +105,17 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// 
     /// A Naked Single is when only one possible candidate exists for a given cell.
     /// </remarks>
-    internal List<Result> NakedSingle()
+    internal List<Action> NakedSingle()
     {
         // Initialize the empty list for the return
-        List<Result> results = [];
+        List<Action> results = [];
         // For each cell, identify any Naked Single candidates.
         for (int cellIndex = 0; cellIndex < Grid.SIZE; cellIndex++)
         {
             Cell cell = SudokuPuzzle.CellGrid.GetVertex(cellIndex);
             if (cell.Candidates.Count == 1)
             {
-                results.Add(new Result(ResultType.SET, cellIndex, cell.Candidates[0]));
+                results.Add(new Action(ActionType.SET, cellIndex, cell.Candidates[0]));
             }
         }
         return results;
@@ -131,10 +130,10 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// 
     /// If no such candidates exist, returns an empty list.
     /// </returns>
-    internal List<Result> HiddenSingle()
+    internal List<Action> HiddenSingle()
     {
         // Initialize the empty list for the return
-        List<Result> results = [];
+        List<Action> results = [];
         
         // Search the Blocks
         // For each of the block
@@ -157,9 +156,9 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
         return results;
     }
     
-    private static List<Result> FindHiddenSinglesInRegion(Region region)
+    private static List<Action> FindHiddenSinglesInRegion(Region region)
     {
-        List<Result> results = [];
+        List<Action> results = [];
 
         // Create and initialize the dictionary with keys 1 through 9 (inclusive)
         Dictionary<int, List<Cell>> candidateCellMap = [];
@@ -184,7 +183,7 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
             {
                 // Add the cell index and candidate to the result list. Three steps are used for readability.
                 Cell cell = candidateCellMap[candidate][0];
-                results.Add(new Result(ResultType.SET, cell.Index, candidate));
+                results.Add(new Action(ActionType.SET, cell.Index, candidate));
             }
         }
 
@@ -197,11 +196,11 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// <returns>
     /// 
     /// </returns>
-    internal List<Result> NakedPair()
+    internal List<Action> NakedPair()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // Search the Blocks
         // Search the Columns
         // Search the Rows
@@ -214,11 +213,11 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// <returns>
     /// 
     /// </returns>
-    internal List<Result> HiddenPair()
+    internal List<Action> HiddenPair()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // Search the Blocks
         // Search the Columns
         // Search the Rows
@@ -229,105 +228,105 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
 
     #region Medium
 
-    internal List<Result> NakedTriple()
+    internal List<Action> NakedTriple()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
 
-    internal List<Result> HiddenTriple()
+    internal List<Action> HiddenTriple()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
 
-    internal List<Result> PointingPair()
+    internal List<Action> PointingPair()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
 
-    internal List<Result> BoxLineReduction()
+    internal List<Action> BoxLineReduction()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
     #endregion
 
     #region Hard
-    internal List<Result> XWing()
+    internal List<Action> XWing()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
 
-    internal List<Result> Swordfish()
+    internal List<Action> Swordfish()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
 
-    internal List<Result> YWing()
+    internal List<Action> YWing()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
     #endregion
 
     #region VeryHard
-    internal List<Result> Jellyfish()
+    internal List<Action> Jellyfish()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
 
-    internal List<Result> XYZWing()
+    internal List<Action> XYZWing()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
 
-    internal List<Result> Coloring()
+    internal List<Action> Coloring()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
     #endregion
 
     #region Expert
-    internal List<Result> ForcingChain()
+    internal List<Action> ForcingChain()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
 
-    internal List<Result> Backtracking()
+    internal List<Action> Backtracking()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Result> results = [];
+        // List<Action> results = [];
         // return results;
     }
     #endregion
