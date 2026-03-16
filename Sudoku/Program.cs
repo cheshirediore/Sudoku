@@ -62,7 +62,7 @@ class Program
     
     private static string GetAsciiReprGrid(int[][] grid)
     {
-        return new AsciiGrid(grid).ToString();
+        return new Sudoku.Utility.AsciiGrid(grid).ToString();
     }
 
 }
