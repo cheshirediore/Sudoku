@@ -4,6 +4,7 @@
 # MacOS Ignores
 .DS_Store
 */*.zsh
+*/*.numbers
 # Godot 4+ specific ignores
 .godot/
 /android/

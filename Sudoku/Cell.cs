@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Sudoku;
 
-public class Cell : ICloneable
+public class Cell : ICloneable, IEquatable<Cell>
 {
     public int Index {get; init;}
     public int Value
@@ -41,10 +41,22 @@ public class Cell : ICloneable
     /// </summary>
     /// <param name="candidate"></param>
     /// <returns>True if the given candidate was removed. False otherwise.</returns>
-    public bool RemoveCandidate(int candidate)
+    internal bool RemoveCandidate(int candidate)
     {
         int removedCount = Candidates.RemoveAll(c => c == candidate);
+        Candidates.Sort();
         return removedCount > 0;
+    }
+
+    /// <summary>
+    /// Adds a given candidate to the list of candidates.
+    /// </summary>
+    /// <param name="candidate"></param>
+    /// <returns>True if the given candidate was removed. False otherwise.</returns>
+    internal void AddCandidate(int candidate)
+    {
+        Candidates.Add(candidate);
+        Candidates.Sort();
     }
 
     /// <summary>
@@ -71,5 +83,43 @@ public class Cell : ICloneable
             clonedCell.Candidates.Add(c);
         }
         return clonedCell;
+    }
+    
+    // override object.GetHashCode
+    public override int GetHashCode()
+    {
+        return Index + Value + Candidates.GetHashCode() + Notifier.GetHashCode();
+    }
+
+    public bool Equals(Cell? other)
+    {
+        if (other == null)
+        {
+            return false;
+        }
+        
+        return GetHashCode() == other.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        string output = "";
+        string? baseString = base.ToString();
+        if (baseString != null)
+        {
+            output = baseString;
+        }
+        string candidates = "";
+        foreach (var item in Candidates)
+        {
+            candidates += $"{item}, ";
+        }
+
+        output += $"   Index={Index}";
+        output += $"   Value={Value}";
+        output += $"   IsClue={IsClue}";
+        output += $"   Candidates={candidates}";
+
+        return output;
     }
 }

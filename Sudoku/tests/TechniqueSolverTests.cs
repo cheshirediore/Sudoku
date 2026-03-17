@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Sudoku;
+using Sudoku.Utility;
 
 namespace Sudoku.Tests;
 
@@ -9,25 +10,120 @@ namespace Sudoku.Tests;
 public class TechniqueSolverTests
 {
 
+    [Test]
+    public void TechniqueSolver_Solve_ValidEasyPuzzle_ReturnIsNotEmpty()
+    {
+        Console.WriteLine("Running test 'TechniqueSolver_Solve_ValidPuzzle_ReturnIsNotEmpty'...");
+        // Given: A valid sudoku puzzle
+        string filePath = System.IO.Path.GetFullPath("resources/EasyPuzzleSeed.csv");
+        Puzzle puzzle = Importer.PuzzleFromCSV(filePath);
+
+        // Given: A new TechniqueSolver is created for the puzzle
+        TechniqueSolver solver = new(puzzle);
+
+        // When: Techniques are used to solve it
+        List<Puzzle> solutions = solver.Solve();
+
+        // DEBUG
+        if (solutions.Count > 0) Console.WriteLine(solutions[0]);
+        // END DEBUG
+
+        // Then: Solutions are found
+        Assert.That(solutions, Is.Not.Empty);
+    }
+
+    [Test]
+    public void TechniqueSolver_Solve_ValidMediumPuzzle_ReturnIsNotEmpty()
+    {
+        Console.WriteLine("Running test 'TechniqueSolver_Solve_ValidMediumPuzzle_ReturnIsNotEmpty'...");
+        // Given: A valid sudoku puzzle
+        string filePath = System.IO.Path.GetFullPath("resources/MediumPuzzleSeed.csv");
+        Puzzle puzzle = Importer.PuzzleFromCSV(filePath);
+
+        // Given: A new TechniqueSolver is created for the puzzle
+        TechniqueSolver solver = new(puzzle);
+
+        // When: Techniques are used to solve it
+        List<Puzzle> solutions = solver.Solve();
+
+        // DEBUG
+        if (solutions.Count > 0) Console.WriteLine(solutions[0]);
+        // END DEBUG
+
+        // Then: Solutions are found
+        Assert.That(solutions, Is.Not.Empty);
+    }
+
     // [Test]
-    // public void TechniqueSolver_Solve_ValidPuzzle_ReturnIsNotEmpty()
+    // public void TechniqueSolver_Solve_ValidHardPuzzle_ReturnIsNotEmpty()
     // {
-    //     // Given: The first row of the puzzle has values 1-8 set, with 9 as the only candidate for the last cell.
-    //     Puzzle puzzle = new();
-    //     // TODO: set up a valid puzzle seed
+    //     Console.WriteLine("Running test 'TechniqueSolver_Solve_ValidHardPuzzle_ReturnIsNotEmpty'...");
+    //     // Given: A valid sudoku puzzle
+    //     string filePath = System.IO.Path.GetFullPath("resources/HardPuzzleSeed.csv");
+    //     Puzzle puzzle = Importer.PuzzleFromCSV(filePath);
 
     //     // Given: A new TechniqueSolver is created for the puzzle
     //     TechniqueSolver solver = new(puzzle);
 
-    //     // When: Hidden Singles are checked and applied
+    //     // When: Techniques are used to solve it
     //     List<Puzzle> solutions = solver.Solve();
 
-    //     // Then: Cell index 8 is set to 9
+    //     // DEBUG
+    //     if (solutions.Count > 0) Console.WriteLine(solutions[0]);
+    //     // END DEBUG
+
+    //     // Then: Solutions are found
     //     Assert.That(solutions, Is.Not.Empty);
     // }
 
+    // [Test]
+    // public void TechniqueSolver_Solve_ValidVeryHardPuzzle_ReturnIsNotEmpty()
+    // {
+    //     Console.WriteLine("Running test 'TechniqueSolver_Solve_ValidVeryHardPuzzle_ReturnIsNotEmpty'...");
+    //     // Given: A valid sudoku puzzle
+    //     string filePath = System.IO.Path.GetFullPath("resources/VeryHardPuzzleSeed.csv");
+    //     Puzzle puzzle = Importer.PuzzleFromCSV(filePath);
+
+    //     // Given: A new TechniqueSolver is created for the puzzle
+    //     TechniqueSolver solver = new(puzzle);
+
+    //     // When: Techniques are used to solve it
+    //     List<Puzzle> solutions = solver.Solve();
+
+    //     // DEBUG
+    //     if (solutions.Count > 0) Console.WriteLine(solutions[0]);
+    //     // END DEBUG
+
+    //     // Then: Solutions are found
+    //     Assert.That(solutions, Is.Not.Empty);
+    // }
+
+    // [Test]
+    // public void TechniqueSolver_Solve_ValidExpertPuzzle_ReturnIsNotEmpty()
+    // {
+    //     Console.WriteLine("Running test 'TechniqueSolver_Solve_ValidExpertPuzzle_ReturnIsNotEmpty'...");
+    //     // Given: A valid sudoku puzzle
+    //     string filePath = System.IO.Path.GetFullPath("resources/ExpertPuzzleSeed.csv");
+    //     Puzzle puzzle = Importer.PuzzleFromCSV(filePath);
+
+    //     // Given: A new TechniqueSolver is created for the puzzle
+    //     TechniqueSolver solver = new(puzzle);
+
+    //     // When: Techniques are used to solve it
+    //     List<Puzzle> solutions = solver.Solve();
+
+    //     // DEBUG
+    //     if (solutions.Count > 0) Console.WriteLine(solutions[0]);
+    //     // END DEBUG
+
+    //     // Then: Solutions are found
+    //     Assert.That(solutions, Is.Not.Empty);
+    // }
+
+
     // public void TechniqueSolver_Solve_InValidPuzzle_ReturnIsEmpty()
     // {
+    //     Console.WriteLine("Running test 'TechniqueSolver_Solve_InValidPuzzle_ReturnIsEmpty'...");
     //     // Given: The first row of the puzzle has values 1-8 set, with 9 as the only candidate for the last cell.
     //     Puzzle puzzle = new();
     //     puzzle.SetCellValue(0, 1, true);
@@ -43,9 +139,11 @@ public class TechniqueSolverTests
     //     Assert.That(solutions, Is.Empty);
     // }
 
+    #region NakedSingle
     [Test]
     public void TechniqueSolver_Solve_NakedSingle_Clues_ShouldUpdateValues()
     {
+        Console.WriteLine("Running test 'TechniqueSolver_Solve_NakedSingle_Clues_ShouldUpdateValues'...");
         // Given: The first row of the puzzle has values 1-8 set as clues, with 9 as the only candidate for the last cell.
         Puzzle puzzle = new();
         puzzle.SetCellValue(0, 1, true);
@@ -69,6 +167,7 @@ public class TechniqueSolverTests
     [Test]
     public void TechniqueSolver_Solve_NakedSingle_NonClues_ShouldUpdateValues()
     {
+        Console.WriteLine("Running test 'TechniqueSolver_Solve_NakedSingle_NonClues_ShouldUpdateValues'...");
         // Given: The first row of the puzzle has values 1-8 set (NOT clues), with 9 as the only candidate for the last cell.
         Puzzle puzzle = new();
         puzzle.SetCellValue(0, 1, false);
@@ -93,6 +192,7 @@ public class TechniqueSolverTests
     [Test]
     public void TechniqueSolver_NakedSingle_ShouldReturnValues()
     {
+        Console.WriteLine("Running test 'TechniqueSolver_NakedSingle_ShouldReturnValues'...");
         // Given: The first row of the puzzle has values 1-8 set, with 9 as the only candidate for the last cell.
         Puzzle puzzle = new();
         puzzle.SetCellValue(0, 1);
@@ -108,14 +208,18 @@ public class TechniqueSolverTests
 
         // When: Hidden Singles are checked
         List<Action> nakedSingles = solver.NakedSingle();
-
+        Console.WriteLine($"Found {nakedSingles.Count} results");
         // Then: Hidden Singles are found
         Assert.That(nakedSingles, Is.Not.Empty);
-    }
+        Console.WriteLine("Finished test 'TechniqueSolver_NakedSingle_ShouldReturnValues'.");
 
+    }
+    #endregion
+    #region HiddenSingle
     [Test]
     public void TechniqueSolver_HiddenSingle_ShouldReturnValues()
     {
+        Console.WriteLine("Running test 'TechniqueSolver_HiddenSingle_ShouldReturnValues'...");
         /* Index structure reference
 
               0  1  2    3  4  5    6  7  8
@@ -152,6 +256,7 @@ public class TechniqueSolverTests
     [Test]
     public void TechniqueSolver_HiddenSingle_ShouldReturnCorrectValues()
     {
+        Console.WriteLine("Running test 'TechniqueSolver_HiddenSingle_ShouldReturnCorrectValues'...");
         /* Index structure reference
 
               0  1  2    3  4  5    6  7  8
@@ -190,6 +295,85 @@ public class TechniqueSolverTests
         {
             Assert.That(false, Is.True, "HiddenSingle returned an empty list.");
         }
-        
+
+        Console.WriteLine();
+        string hiddenSingleTestSeed = System.IO.Path.GetFullPath("resources/SamplePuzzleSeed.csv");
+        Puzzle puzzle2 = Importer.PuzzleFromCSV(hiddenSingleTestSeed);
+        TechniqueSolver solver2 = new(puzzle2);
+
+        List<Action> hiddenSingles2 = solver2.HiddenSingle();
+
+        Assert.That(hiddenSingles2.Contains(new(ActionType.SET, 24, 8)));
+        Assert.That(hiddenSingles2.Contains(new(ActionType.SET, 29, 8)));
+        Assert.That(hiddenSingles2.Contains(new(ActionType.SET, 35, 5)));
+        Assert.That(hiddenSingles2.Contains(new(ActionType.SET, 64, 6)));
     }
+    #endregion
+    #region NakedPair
+    [Test]
+    public void TechniqueSolver_FindNakedPairCellsInRegion_ShouldReturnCorrectValues()
+    {
+        Console.WriteLine("Running test 'TechniqueSolver_FindNakedPairCellsInRegion_ShouldReturnCorrectValues'...");
+        string nakedPairTestSeedFilePath = System.IO.Path.GetFullPath("resources/NakedPairSeed.csv");
+        Puzzle puzzle = Importer.PuzzleFromCSV(nakedPairTestSeedFilePath);
+        TechniqueSolver solver = new(puzzle);
+        Console.WriteLine(puzzle);
+
+        List<Cell[]> nakedPairs = solver.FindNakedPairCellsInRegion(puzzle.GetRegion(RegionType.COLUMN, 5));
+
+        foreach (var pair in nakedPairs)
+        {
+            Console.WriteLine($"{pair[0]} | {pair[1]}");
+        }
+
+        Assert.That(nakedPairs[0][0], Is.EqualTo(puzzle.CellGrid.GetVertex(5)));
+        Assert.That(nakedPairs[0][1], Is.EqualTo(puzzle.CellGrid.GetVertex(23)));
+    }
+
+    [Test]
+    public void TechniqueSolver_NakedPair_ShouldReturnCorrectValues()
+    {
+        /* Index structure reference
+
+              0  1  2    3  4  5    6  7  8
+
+        0     0  1  2 |  3  4  5 |  6  7  8
+        1     9 10 11 | 12 13 14 | 15 16 17
+        2    18 19 20 | 21 22 23 | 24 25 26
+             ------------------------------
+        3    27 28 29 | 30 31 32 | 33 34 35
+        4    36 37 38 | 39 40 41 | 42 43 44
+        5    45 46 47 | 48 49 50 | 51 52 53
+             ------------------------------
+        6    54 55 56 | 57 58 59 | 60 61 62
+        7    63 64 65 | 66 67 68 | 69 70 71
+        8    72 73 74 | 75 76 77 | 78 79 80
+        */
+        Console.WriteLine("Running test 'TechniqueSolver_NakedPair_ShouldReturnCorrectValues'...");
+        string nakedPairTestSeedFilePath = System.IO.Path.GetFullPath("resources/NakedPairSeed.csv");
+        Puzzle puzzle = Importer.PuzzleFromCSV(nakedPairTestSeedFilePath);
+        TechniqueSolver solver = new(puzzle);
+        Console.WriteLine(puzzle);
+
+        List<Action> actions = solver.NakedPair();
+
+        foreach (var action in actions)
+        {
+            Console.WriteLine($"{action}");
+        }
+
+        Assert.That(actions.Contains(new Action(ActionType.REMOVE, 54, 2)));
+        Assert.That(actions.Contains(new Action(ActionType.REMOVE, 54, 7)));
+
+        Assert.That(actions.Contains(new Action(ActionType.REMOVE, 55, 2)));
+        Assert.That(actions.Contains(new Action(ActionType.REMOVE, 55, 7)));
+
+
+        Assert.That(actions.Contains(new Action(ActionType.REMOVE, 56, 2)));
+        Assert.That(actions.Contains(new Action(ActionType.REMOVE, 56, 7)));
+        
+        Assert.That(actions.Contains(new Action(ActionType.REMOVE, 71, 1)));
+        Assert.That(actions.Contains(new Action(ActionType.REMOVE, 71, 2)));
+    }
+    #endregion
 }
