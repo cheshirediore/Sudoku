@@ -207,7 +207,7 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Hidden Singles are checked
-        List<Action> nakedSingles = solver.NakedSingle();
+        HashSet<Action> nakedSingles = solver.NakedSingle();
         Console.WriteLine($"Found {nakedSingles.Count} results");
         // Then: Hidden Singles are found
         Assert.That(nakedSingles, Is.Not.Empty);
@@ -247,7 +247,7 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Hidden Singles are checked
-        List<Action> hiddenSingles = solver.HiddenSingle();
+        HashSet<Action> hiddenSingles = solver.HiddenSingle();
 
         // Then: Hidden Singles are found
         Assert.That(hiddenSingles, Is.Not.Empty);
@@ -284,24 +284,18 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Hidden Singles are checked
-        List<Action> hiddenSingles = solver.HiddenSingle();
+        HashSet<Action> hiddenSingles = solver.HiddenSingle();
 
         // Then:
-        if (hiddenSingles.Count > 0)
-        {
-            Assert.That(hiddenSingles[0].CellIndex, Is.EqualTo(0)); // Index of hidden single is 0
-            Assert.That(hiddenSingles[0].CellValue, Is.EqualTo(1)); // Value of hidden single is 1
-        } else
-        {
-            Assert.That(false, Is.True, "HiddenSingle returned an empty list.");
-        }
+        Assert.That(hiddenSingles.Contains(new(ActionType.SET, 0, 1)));
 
-        Console.WriteLine();
+
+        // Second test with a different seed
         string hiddenSingleTestSeed = System.IO.Path.GetFullPath("resources/SamplePuzzleSeed.csv");
         Puzzle puzzle2 = Importer.PuzzleFromCSV(hiddenSingleTestSeed);
         TechniqueSolver solver2 = new(puzzle2);
 
-        List<Action> hiddenSingles2 = solver2.HiddenSingle();
+        HashSet<Action> hiddenSingles2 = solver2.HiddenSingle();
 
         Assert.That(hiddenSingles2.Contains(new(ActionType.SET, 24, 8)));
         Assert.That(hiddenSingles2.Contains(new(ActionType.SET, 29, 8)));
@@ -355,7 +349,7 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
         Console.WriteLine(puzzle);
 
-        List<Action> actions = solver.NakedPair();
+        HashSet<Action> actions = solver.NakedPair();
 
         foreach (var action in actions)
         {

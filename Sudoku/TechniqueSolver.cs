@@ -39,7 +39,7 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
             return solutions;
         }
         
-        List<Action> results = technique();
+        HashSet<Action> results = technique();
 
         // Debug Iteration Count
         int interation_count = 0;
@@ -86,7 +86,7 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     // TODO: Create a class to handle the technique results, and use that as the return value instead of a List
     //       Additional nuance is needed to handle different technique types, but we still want to use one delegate
     //       as the entry point.
-    private delegate List<Action> Technique();
+    private delegate HashSet<Action> Technique();
 
     /// <summary>
     /// Get the next rule to apply, based on the previous rule.
@@ -126,11 +126,11 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// 
     /// A Naked Single is when only one possible candidate exists for a given cell.
     /// </remarks>
-    internal List<Action> NakedSingle()
+    internal HashSet<Action> NakedSingle()
     {
         Console.WriteLine("NakedSingle()");
         // Initialize the empty list for the return
-        List<Action> results = [];
+        HashSet<Action> results = [];
         // For each cell, identify any Naked Single candidates.
         for (int cellIndex = 0; cellIndex < Grid.SIZE; cellIndex++)
         {
@@ -152,11 +152,11 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// 
     /// If no such candidates exist, returns an empty list.
     /// </returns>
-    internal List<Action> HiddenSingle()
+    internal HashSet<Action> HiddenSingle()
     {
         Console.WriteLine("HiddenSingle()");
         // Initialize the empty list for the return
-        List<Action> results = [];
+        HashSet<Action> results = [];
         
         // Search the Blocks
         // For each of the block
@@ -165,10 +165,7 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
             // results.AddRange(FindHiddenSinglesInRegion(region));
             foreach (var item in FindHiddenSinglesInRegion(region))
             {
-                if (!results.Contains(item))
-                {
-                    results.Add(item);
-                }
+                results.Add(item);
             }
         }
 
@@ -178,10 +175,7 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
             // results.AddRange(FindHiddenSinglesInRegion(region));
             foreach (var item in FindHiddenSinglesInRegion(region))
             {
-                if (!results.Contains(item))
-                {
-                    results.Add(item);
-                }
+                results.Add(item);
             }
         }
 
@@ -191,18 +185,15 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
             // results.AddRange(FindHiddenSinglesInRegion(region));
             foreach (var item in FindHiddenSinglesInRegion(region))
             {
-                if (!results.Contains(item))
-                {
-                    results.Add(item);
-                }
+                results.Add(item);
             }
         }
         return results;
     }
     
-    private static List<Action> FindHiddenSinglesInRegion(Region region)
+    private static HashSet<Action> FindHiddenSinglesInRegion(Region region)
     {
-        List<Action> results = [];
+        HashSet<Action> results = [];
 
         // Create and initialize the dictionary with keys 1 through 9 (inclusive)
         Dictionary<int, List<Cell>> candidateCellMap = [];
@@ -288,11 +279,11 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// <returns>
     /// 
     /// </returns>
-    internal List<Action> NakedPair()
+    internal HashSet<Action> NakedPair()
     {
         Console.WriteLine("NakedPair()");
         // Initialize the empty list for the return
-        List<Action> results = [];
+        HashSet<Action> results = [];
         // Search the Blocks
         foreach (Region region in SudokuPuzzle.Regions[RegionType.BLOCK])
         {
@@ -311,10 +302,7 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
                         foreach (int candidate in pair[0].Candidates)
                         {
                             Action action = new(ActionType.REMOVE, cell.Index, candidate);
-                            if (!results.Contains(action))
-                            {
-                                results.Add(action);
-                            }
+                            results.Add(action);
                         }
                     }
                 }
@@ -339,10 +327,8 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
                         foreach (int candidate in pair[0].Candidates)
                         {
                             Action action = new(ActionType.REMOVE, cell.Index, candidate);
-                            if (!results.Contains(action))
-                            {
-                                results.Add(action);
-                            }
+                            results.Add(action);
+                            
                         }
                     }
                 }
@@ -367,10 +353,7 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
                         foreach (int candidate in pair[0].Candidates)
                         {
                             Action action = new(ActionType.REMOVE, cell.Index, candidate);
-                            if (!results.Contains(action))
-                            {
                                 results.Add(action);
-                            }
                         }
                     }
                 }
@@ -400,12 +383,12 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// <returns>
     /// 
     /// </returns>
-    internal List<Action> HiddenPair()
+    internal HashSet<Action> HiddenPair()
     {
         Console.WriteLine("HiddenPair()");
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // Search the Blocks
         // Search the Columns
         // Search the Rows
@@ -456,108 +439,108 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
 
         return nakedTriples;
     }
-    internal List<Action> NakedTriple()
+    internal HashSet<Action> NakedTriple()
     {
         Console.WriteLine("NakedTriple()");
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> HiddenTriple()
+    internal HashSet<Action> HiddenTriple()
     {
         Console.WriteLine("HiddenTriple()");
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> PointingPair()
+    internal HashSet<Action> PointingPair()
     {
         Console.WriteLine("PointingPair()");
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> BoxLineReduction()
+    internal HashSet<Action> BoxLineReduction()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
     #endregion
 
     #region Hard
-    internal List<Action> XWing()
+    internal HashSet<Action> XWing()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> Swordfish()
+    internal HashSet<Action> Swordfish()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> YWing()
+    internal HashSet<Action> YWing()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
     #endregion
 
     #region VeryHard
-    internal List<Action> Jellyfish()
+    internal HashSet<Action> Jellyfish()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> XYZWing()
+    internal HashSet<Action> XYZWing()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> Coloring()
+    internal HashSet<Action> Coloring()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
     #endregion
 
     #region Expert
-    internal List<Action> ForcingChain()
+    internal HashSet<Action> ForcingChain()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> Backtracking()
+    internal HashSet<Action> Backtracking()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
     #endregion
