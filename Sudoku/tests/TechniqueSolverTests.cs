@@ -11,9 +11,9 @@ public class TechniqueSolverTests
 {
 
     [Test]
-    public void TechniqueSolver_Solve_ValidEasyPuzzle_ReturnIsNotEmpty()
+    public void TechniqueSolver_Solve_ValidEasyPuzzle_ReturnIsNotNull()
     {
-        Console.WriteLine("Running test 'TechniqueSolver_Solve_ValidPuzzle_ReturnIsNotEmpty'...");
+        Console.WriteLine("Running test 'TechniqueSolver_Solve_ValidEasyPuzzle_ReturnIsNotNull'...");
         // Given: A valid sudoku puzzle
         string filePath = System.IO.Path.GetFullPath("resources/EasyPuzzleSeed.csv");
         Puzzle puzzle = Importer.PuzzleFromCSV(filePath);
@@ -22,18 +22,14 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Techniques are used to solve it
-        List<Puzzle> solutions = solver.Solve();
+        Puzzle? solution = solver.Solve();
 
-        // DEBUG
-        if (solutions.Count > 0) Console.WriteLine(solutions[0]);
-        // END DEBUG
-
-        // Then: Solutions are found
-        Assert.That(solutions, Is.Not.Empty);
+        // Then: Solution is found
+        Assert.That(solution, Is.Not.Null);
     }
 
     [Test]
-    public void TechniqueSolver_Solve_ValidMediumPuzzle_ReturnIsNotEmpty()
+    public void TechniqueSolver_Solve_ValidMediumPuzzle_ReturnIsNotNull()
     {
         Console.WriteLine("Running test 'TechniqueSolver_Solve_ValidMediumPuzzle_ReturnIsNotEmpty'...");
         // Given: A valid sudoku puzzle
@@ -44,14 +40,10 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Techniques are used to solve it
-        List<Puzzle> solutions = solver.Solve();
+        Puzzle? solution = solver.Solve();
 
-        // DEBUG
-        if (solutions.Count > 0) Console.WriteLine(solutions[0]);
-        // END DEBUG
-
-        // Then: Solutions are found
-        Assert.That(solutions, Is.Not.Empty);
+        // Then: Solution is found
+        Assert.That(solution, Is.Not.Null);
     }
 
     // [Test]
@@ -66,7 +58,7 @@ public class TechniqueSolverTests
     //     TechniqueSolver solver = new(puzzle);
 
     //     // When: Techniques are used to solve it
-    //     List<Puzzle> solutions = solver.Solve();
+    //     Puzzle? solution = solver.Solve();
 
     //     // DEBUG
     //     if (solutions.Count > 0) Console.WriteLine(solutions[0]);
@@ -88,7 +80,7 @@ public class TechniqueSolverTests
     //     TechniqueSolver solver = new(puzzle);
 
     //     // When: Techniques are used to solve it
-    //     List<Puzzle> solutions = solver.Solve();
+    //     Puzzle? solution = solver.Solve();
 
     //     // DEBUG
     //     if (solutions.Count > 0) Console.WriteLine(solutions[0]);
@@ -110,7 +102,7 @@ public class TechniqueSolverTests
     //     TechniqueSolver solver = new(puzzle);
 
     //     // When: Techniques are used to solve it
-    //     List<Puzzle> solutions = solver.Solve();
+    //     Puzzle? solution = solver.Solve();
 
     //     // DEBUG
     //     if (solutions.Count > 0) Console.WriteLine(solutions[0]);
@@ -133,7 +125,7 @@ public class TechniqueSolverTests
     //     TechniqueSolver solver = new(puzzle);
 
     //     // When: Hidden Singles are checked and applied
-    //     List<Puzzle> solutions = solver.Solve();
+    //     Puzzle? solution = solver.Solve();
 
     //     // Then: Cell index 8 is set to 9
     //     Assert.That(solutions, Is.Empty);
@@ -158,10 +150,13 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Naked Singles are checked and applied
-        List<Puzzle> solutions = solver.Solve();
+        Puzzle? solution = solver.Solve();
 
         // Then: Cell index 8 is set to 9
-        Assert.That(9, Is.EqualTo(solutions[0].GetCellValue(8)));
+        Assert.That(solution, Is.Not.Null);
+        #pragma warning disable CS8602
+        Assert.That(9, Is.EqualTo(solution.GetCellValue(8)));
+        #pragma warning restore CS8602
     }
 
     [Test]
@@ -182,10 +177,13 @@ public class TechniqueSolverTests
         TechniqueSolver solver = new(puzzle);
 
         // When: Naked Singles are checked and applied
-        List<Puzzle> solutions = solver.Solve();
+        Puzzle? solution = solver.Solve();
 
         // Then: Cell index 8 is set to 9
-        Assert.That(9, Is.EqualTo(solutions[0].GetCellValue(8)));
+        Assert.That(solution, Is.Not.Null);
+        #pragma warning disable CS8602
+        Assert.That(9, Is.EqualTo(solution.GetCellValue(8)));
+        #pragma warning restore CS8602
 
     }
 

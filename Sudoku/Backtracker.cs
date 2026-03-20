@@ -18,7 +18,7 @@ public class Backtracker(Puzzle sudokuGrid) : Solver
     /// <remarks>
     /// Overrides the property for the Solver abstract class.
     /// </remarks>
-    public override int MaxSolutions { get; set; } = -1;
+    public int MaxSolutions { get; set; } = -1;
 
     /// <summary>
     /// Invokes the top-level call of Backtrack to begin the recursive algorithm.
@@ -27,7 +27,14 @@ public class Backtracker(Puzzle sudokuGrid) : Solver
     /// <remarks>
     /// Implements the method for the Solver abstract class.
     /// </remarks>
-    public override List<Puzzle> Solve()
+    public override Puzzle? Solve()
+    {
+        List<Puzzle> solutions = FindAllSolutions();
+        if (solutions.Count > 0) return solutions[0];
+        else return null;
+    }
+
+    public override List<Puzzle> FindAllSolutions()
     {
         return Backtrack(SudokuPuzzle, []);
     }

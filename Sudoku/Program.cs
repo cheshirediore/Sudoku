@@ -12,14 +12,14 @@ class Program
     public static void Main(string[] args)
     {
         // RunTests();
-        // string nakedPairTestSeedFilePath = System.IO.Path.GetFullPath("resources/NakedPairSeed.csv");
-        string nakedPairTestSeedFilePath = System.IO.Path.GetFullPath("resources/MediumPuzzleSeed.csv");
-        Puzzle puzzle = Importer.PuzzleFromCSV(nakedPairTestSeedFilePath);
+        // string seedFilePath = System.IO.Path.GetFullPath("resources/NakedPairSeed.csv");
+        string seedFilePath = System.IO.Path.GetFullPath("resources/MediumPuzzleSeed.csv");
+        Puzzle puzzle = Importer.PuzzleFromCSV(seedFilePath);
         // SolvePuzzle(puzzle);
         TechniqueSolver solver = new(puzzle);
         Console.WriteLine(puzzle);
-        List<Puzzle> solutions = solver.Solve();
-        if (solutions.Count > 0) Console.WriteLine(solutions[0]);
+        Puzzle? solution = solver.Solve();
+        if (solution is not null) Console.WriteLine(solution);
         // List<Action> actions = solver.NakedPair();
         // foreach (var action in actions)
         // {
@@ -41,12 +41,12 @@ class Program
     private static void SolvePuzzle(Puzzle grid)
     {
         // Create a Solver to process the imported seed file
-        Solver solver = new Backtracker(grid)
+        Backtracker solver = new Backtracker(grid)
         {
             MaxSolutions = 2
         };
         // Solve the sudoku puzzle
-        List<Puzzle> solutions = solver.Solve();
+        List<Puzzle> solutions = solver.FindAllSolutions();
 
         // Distill the list of solutions to filter out the duplicates
         // Ideally, this step is redundant. However, if there is something wrong in the solving process,

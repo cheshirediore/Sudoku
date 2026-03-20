@@ -20,20 +20,9 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// Overrides the property for the Solver abstract class.
     /// </remarks>
     public override Puzzle SudokuPuzzle { get; init; } = (Puzzle)sudokuGrid.Clone();
-    /// <summary>
-    /// The maximum number of solutions to search for. Once this number is reached, 
-    /// it will return the results without looking further.
-    /// </summary>
-    /// <remarks>
-    /// Overrides the property for the Solver abstract class.
-    /// </remarks>
-    public override int MaxSolutions { get; set; } = -1;
 
-
-    public override List<Puzzle> Solve()
+    public override Puzzle? Solve()
     {
-        List<Puzzle> solutions = [];
-
         Technique? technique = GetNextTechnique();
 
         // Iteration counter to prevent infinite loops
@@ -73,15 +62,22 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
         // Verify that the solution is valid, and only return it if it is.
         if (SudokuPuzzle.IsComplete() || SudokuPuzzle.IsConsistent())
         {
-            solutions.Add(SudokuPuzzle); 
+            return SudokuPuzzle;
         }
-        return solutions;
+        return null;
     }
 
+    // Technique-based solutions require a valid puzzle, and so they should only return one solution.
+    // This exists for compliance with the interface.
+    public override List<Puzzle> FindAllSolutions()
+    {
+        List<Puzzle> solutions = [];
+        Puzzle? solution = Solve();
+        if (solution is not null) solutions.Add(solution);
+        return solutions;
+    }
     #endregion
 
-
-    
 
     /// <summary>
     /// Get the next rule to apply, based on the previous rule.
