@@ -13,6 +13,9 @@ internal class Action : IEquatable<Action>
 
     internal Action(ActionType resultType, int cellIndex, int cellValue)
     {
+        // Validate the resultType before creating the object
+        if (!Enum.IsDefined(resultType)) throw new ArgumentOutOfRangeException(nameof(resultType), $"The value '{resultType}' is not defined in the ActionType enum.");
+        
         Type = resultType;
         CellIndex = cellIndex;
         CellValue = cellValue;

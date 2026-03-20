@@ -15,6 +15,7 @@ public class Cell : ICloneable, IEquatable<Cell>
         set
         {
             _value = value;
+            if (_value != 0) Candidates.Clear(); // Clear the candidates list iff we set it to a legit value
             Notifier.Notify(this);
         }
     }
@@ -43,9 +44,10 @@ public class Cell : ICloneable, IEquatable<Cell>
     /// <returns>True if the given candidate was removed. False otherwise.</returns>
     internal bool RemoveCandidate(int candidate)
     {
-        int removedCount = Candidates.RemoveAll(c => c == candidate);
-        Candidates.Sort();
-        return removedCount > 0;
+        // if (Index == 79) Console.WriteLine($"Removing candidate '{candidate}' from cell #{Index}");
+        bool removedCount = Candidates.Remove(candidate);
+        //Candidates.Sort();
+        return removedCount;
     }
 
     /// <summary>
@@ -66,6 +68,9 @@ public class Cell : ICloneable, IEquatable<Cell>
     /// <returns>True if the given candidate was removed. False otherwise.</returns>
     public bool UpdateBasedOn(Cell neighborCell)
     {
+        // if (Index == 79 || neighborCell.Index == 79) Console.WriteLine($"[Cell.UpdateBasedOn] Updating ({this}) based on ({neighborCell})");
+        if (neighborCell.Value == 0) return false; // don't bother trying to remove invalid value
+
         return RemoveCandidate(neighborCell.Value);
     }
 

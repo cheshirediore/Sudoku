@@ -1,11 +1,17 @@
 using System;
 using System.Collections.Generic;
-using NUnit.Framework.Internal;
 
 namespace Sudoku;
 
 public class TechniqueSolver(Puzzle sudokuGrid) : Solver
 {
+    private delegate HashSet<Action> Technique();
+    private Technique? lastTechnique = null;
+
+    private int failStreak = 0; // Keeps track of consecutive technique failures
+    private const int MAX_SOLVE_ITERATIONS = Int32.MaxValue;
+    private const int MAX_FAIL_STREAK = 30;
+
     #region SolverInterface
     /// <summary>
     /// The puzzle to be solved. It is updated with the solution.
@@ -23,76 +29,67 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// </remarks>
     public override int MaxSolutions { get; set; } = -1;
 
-    private const int MAX_SOLVE_ITERATIONS = 256;
 
     public override List<Puzzle> Solve()
     {
         List<Puzzle> solutions = [];
-        
-        // TODO: loop through applying rules to the current board state to determine
-        //       the next valid move. Terminate and hand off to the Backtracker if 
-        //       no valid moves are determined by applying rules.
-        
-        Technique? technique = GetNextTechnique(null);
-        if (technique is null)
-        {
-            return solutions;
-        }
-        
-        HashSet<Action> results = technique();
 
-        // Debug Iteration Count
-        int interation_count = 0;
-        while (results.Count > 0)
+        Technique? technique = GetNextTechnique();
+
+        // Iteration counter to prevent infinite loops
+        int iterations_completed = 0;
+        while (!SudokuPuzzle.IsComplete()) // Loop until all cells are filled
         {
-            Console.WriteLine($"Iteration #{interation_count}");
-            Console.WriteLine(SudokuPuzzle);
-            foreach (var result in results)
+            // Try to apply the technique
+            bool techniqueSuccess = ApplyTechnique(technique);
+            
+            if (techniqueSuccess) // On success, reset the fail streak counter
             {
-                // Console.WriteLine($"Executing Action {result}");
-                // Techniques that set values:
-                if (result.Type == ActionType.SET)
-                {
-                    SudokuPuzzle.SetCellValue(result.CellIndex, result.CellValue);
-                }
-                // Techniques that remove candidates:
-                else if (result.Type == ActionType.REMOVE)
-                {
-                    SudokuPuzzle.RemoveCellCandidate(result.CellIndex, result.CellValue);
-                }
+                failStreak = 0;
+            } 
+            else // If the technique failed, move on to the next one
+            {
+                failStreak++;
+                technique = GetNextTechnique();
+                break; // debug
             }
 
-            technique = GetNextTechnique(technique);
-            if (technique is null) continue;
-            results = technique();
+            // DEBUG
+            Console.WriteLine(SudokuPuzzle);
+            Console.WriteLine();
 
-            // Terminate loop if it ran too long
-            interation_count++;
-            if (interation_count > MAX_SOLVE_ITERATIONS) break;
+            // Give up if it's iterated through the techniques several times and still hasn't solved it.
+            if (failStreak > MAX_FAIL_STREAK)
+            {
+                Console.WriteLine($"[TechniqueSolver.Solve()] Failed {failStreak} times in a row. Giving up.");
+                break;
+            }
+
+            // Infinite loop failsafe check
+            iterations_completed++;
+            if (iterations_completed > MAX_SOLVE_ITERATIONS) break;
         }
-        //// Disabled for testing
-        // // Verify that the solution is valid, and only return it if it is.
-        // if (SudokuPuzzle.IsComplete() || SudokuPuzzle.IsConsistent())
-        // {
-            solutions.Add(SudokuPuzzle); 
 
-        // }
+        // Verify that the solution is valid, and only return it if it is.
+        if (SudokuPuzzle.IsComplete() || SudokuPuzzle.IsConsistent())
+        {
+            solutions.Add(SudokuPuzzle); 
+        }
         return solutions;
     }
 
     #endregion
 
 
-    // TODO: Create a class to handle the technique results, and use that as the return value instead of a List
-    //       Additional nuance is needed to handle different technique types, but we still want to use one delegate
-    //       as the entry point.
-    private delegate HashSet<Action> Technique();
+    
 
     /// <summary>
     /// Get the next rule to apply, based on the previous rule.
     /// </summary>
-    private Technique? GetNextTechnique(Technique? lastTechnique)
+    private Technique? GetNextTechnique()
     {
+        // TODO: replace this with a more efficient (or at least cleaner) looping mechanic, like a list to loop over
+
         // First, look for Naked Single candidates
         if (lastTechnique == null)
         {
@@ -104,12 +101,67 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
             return HiddenSingle;
         }
         // Next, look for Naken Pair candidates
+        if (lastTechnique == HiddenSingle)
+        {
+            return NakedPair;
+        }
         // Next, look for Hidden Pair candidates
+        // if (lastTechnique == NakedPair)
+        // {
+        //     return HiddenPair;
+        // }
         // ...
         // TODO: Add the rest of the rule orders
+        
+        // Returning null after all other techniques causes it to loop back to NakedSingle
         return null;
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="technique"></param>
+    /// <returns>
+    /// False if any of the following occurs:
+    ///     - Technique is null, or
+    ///     - Technique does not return any actions, or
+    ///     - Any action returned by the technique failed
+    /// True iff:
+    ///     - A non-zero amount of actions was returned by the technique
+    ///     - All actions returned by the technique executed successfully
+    /// </returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    private bool ApplyTechnique(Technique? technique)
+    {
+        // We want to updarte the lastTechnique even if this technique is null.
+        lastTechnique = technique;
+
+        if (technique is null) return false;
+
+        HashSet<Action> actions = technique();
+
+        if (actions.Count == 0) return false;
+
+        // return value is the conjunction of the results of resolving each action; i.e. true iff all return true
+        bool success = true;
+
+        foreach (var action in actions)
+        {
+            switch (action.Type)
+            {
+                case ActionType.SET:
+                    success = success && SudokuPuzzle.SetCellValue(action.CellIndex, action.CellValue);
+                    break;
+                case ActionType.REMOVE:
+                    success = success && SudokuPuzzle.RemoveCellCandidate(action.CellIndex, action.CellValue);
+                    break;
+                default:
+                    throw new InvalidOperationException(); // TODO: Find a better exception to throw here
+            }
+        }
+        return success;
+    }
+
     #region Easy
     /// <summary>
     /// Identify Naked Single candidates, if they exists.
@@ -128,7 +180,6 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// </remarks>
     internal HashSet<Action> NakedSingle()
     {
-        Console.WriteLine("NakedSingle()");
         // Initialize the empty list for the return
         HashSet<Action> results = [];
         // For each cell, identify any Naked Single candidates.
@@ -154,7 +205,6 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// </returns>
     internal HashSet<Action> HiddenSingle()
     {
-        Console.WriteLine("HiddenSingle()");
         // Initialize the empty list for the return
         HashSet<Action> results = [];
         
@@ -281,7 +331,6 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// </returns>
     internal HashSet<Action> NakedPair()
     {
-        Console.WriteLine("NakedPair()");
         // Initialize the empty list for the return
         HashSet<Action> results = [];
         // Search the Blocks
@@ -385,7 +434,6 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// </returns>
     internal HashSet<Action> HiddenPair()
     {
-        Console.WriteLine("HiddenPair()");
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
         // HashSet<Action> results = [];
@@ -441,7 +489,6 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     }
     internal HashSet<Action> NakedTriple()
     {
-        Console.WriteLine("NakedTriple()");
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
         // HashSet<Action> results = [];
@@ -450,7 +497,6 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
 
     internal HashSet<Action> HiddenTriple()
     {
-        Console.WriteLine("HiddenTriple()");
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
         // HashSet<Action> results = [];
@@ -459,7 +505,6 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
 
     internal HashSet<Action> PointingPair()
     {
-        Console.WriteLine("PointingPair()");
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
         // HashSet<Action> results = [];

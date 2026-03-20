@@ -12,11 +12,14 @@ class Program
     public static void Main(string[] args)
     {
         // RunTests();
-        string nakedPairTestSeedFilePath = System.IO.Path.GetFullPath("resources/NakedPairSeed.csv");
+        // string nakedPairTestSeedFilePath = System.IO.Path.GetFullPath("resources/NakedPairSeed.csv");
+        string nakedPairTestSeedFilePath = System.IO.Path.GetFullPath("resources/MediumPuzzleSeed.csv");
         Puzzle puzzle = Importer.PuzzleFromCSV(nakedPairTestSeedFilePath);
-        SolvePuzzle(puzzle);
-        // TechniqueSolver solver = new(puzzle);
-        // Console.WriteLine(puzzle);
+        // SolvePuzzle(puzzle);
+        TechniqueSolver solver = new(puzzle);
+        Console.WriteLine(puzzle);
+        List<Puzzle> solutions = solver.Solve();
+        if (solutions.Count > 0) Console.WriteLine(solutions[0]);
         // List<Action> actions = solver.NakedPair();
         // foreach (var action in actions)
         // {
