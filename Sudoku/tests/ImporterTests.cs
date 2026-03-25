@@ -57,4 +57,23 @@ class ImporterTests
             Assert.That(emptyPuzzle.GetCellValue(cellIndex), Is.EqualTo(0));
         }
     }
+
+    [Test]
+    public void Importer_PuzzleFromCSV_NonZeroCells_SetAsClue()
+    {
+        string filePath = System.IO.Path.GetFullPath("resources/SamplePuzzleSeed.csv");
+        
+        Puzzle puzzle = Importer.PuzzleFromCSV(filePath);
+
+        Assert.That(puzzle.CellGrid.GetVertex(0).IsClue, Is.True);
+    }
+
+    [Test]
+    public void Importer_PuzzleFromCSV_ZeroValuedCells_NotSetAsClue()
+    {
+        string filePath = System.IO.Path.GetFullPath("resources/SamplePuzzleSeed.csv");
+        
+        Puzzle puzzle = Importer.PuzzleFromCSV(filePath);
+        Assert.That(puzzle.CellGrid.GetVertex(1).IsClue, Is.False);
+    }
 }

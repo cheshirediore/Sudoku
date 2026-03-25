@@ -11,16 +11,13 @@ public static class Importer
     /// <param name="filePath">
     /// File path should indicate a csv file with 9 lines, and 9 columns. Each column must contain an integer
     /// value between 0 and 9 (inclusive), where 0 indicates an unset value.
-    /// <param name="valuesAsClues">
-    /// Flag to determine if the values imported from the file should be set as clues. Default is true. 
-    /// </param>
     /// <exception cref="System.ArgumentOutOfRangeException">
     /// Thrown when the input file is not the appropriate width, height, or when it contains non-numeric values.
     /// </exception>
     /// <exception cref="System.ArgumentException">
     /// Thrown when the file path provided does not exist or is not a CSV.
     /// </exception>
-    public static Puzzle PuzzleFromCSV(string filePath, bool valuesAsClues=true)
+    public static Puzzle PuzzleFromCSV(string filePath)
     {
         // Verify that the file exists
         if (!System.IO.File.Exists(filePath))
@@ -79,6 +76,7 @@ public static class Importer
         Puzzle puzzle = new();
         for (int cellIndex = 0; cellIndex < Grid.SIZE; cellIndex++)
         {
+            bool valuesAsClues = cellValues[cellIndex] > 0;
             puzzle.SetCellValue(cellIndex, cellValues[cellIndex], valuesAsClues);
         }
 

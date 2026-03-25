@@ -61,7 +61,7 @@ public class Generator
                     MaxSolutions = 2
                 };
                 // If the puzzle is valid, add it to the list
-                if (solver.Solve().Count != 1)
+                if (solver.FindAllSolutions().Count != 1)
                 {
                     // Reset the clue
                     candidate.CellGrid.GetVertex(index).Value = SudokuPuzzle.CellGrid.GetVertex(index).Value;
@@ -130,7 +130,7 @@ public class Generator
 
 
         // Solve the sudoku puzzle
-        List<Puzzle> solutions = solver.Solve();
+        List<Puzzle> solutions = solver.FindAllSolutions();
 
         bool success = solutions.Count >= 1;
 

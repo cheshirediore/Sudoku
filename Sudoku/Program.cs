@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sudoku.Utility;
 
 namespace Sudoku;
 
@@ -10,7 +11,23 @@ class Program
 
     public static void Main(string[] args)
     {
-        RunTests();
+        // RunTests();
+        // string seedFilePath = System.IO.Path.GetFullPath("resources/NakedPairSeed.csv");
+        string seedFilePath = System.IO.Path.GetFullPath("resources/MediumPuzzleSeed.csv");
+        Puzzle puzzle = Importer.PuzzleFromCSV(seedFilePath);
+        // SolvePuzzle(puzzle);
+        TechniqueSolver solver = new(puzzle);
+        Console.WriteLine(puzzle);
+        Puzzle? solution = solver.Solve();
+        if (solution is not null) Console.WriteLine(solution);
+        // List<Action> actions = solver.NakedPair();
+        // foreach (var action in actions)
+        // {
+        //     Console.WriteLine(action);
+        // }
+        // Console.WriteLine(puzzle.CellGrid.GetVertex(54));
+        // Console.WriteLine(puzzle.CellGrid.GetVertex(55));
+        // Console.WriteLine(puzzle.CellGrid.GetVertex(56));
     }
 
     public static void RunTests()
@@ -21,15 +38,15 @@ class Program
         Console.WriteLine($"Generator.Generate() runtime: {watch.Elapsed.TotalSeconds} seconds");
     }
 
-    private static void TestSolver(Puzzle grid)
+    private static void SolvePuzzle(Puzzle grid)
     {
         // Create a Solver to process the imported seed file
-        Solver solver = new Backtracker(grid)
+        Backtracker solver = new Backtracker(grid)
         {
             MaxSolutions = 2
         };
         // Solve the sudoku puzzle
-        List<Puzzle> solutions = solver.Solve();
+        List<Puzzle> solutions = solver.FindAllSolutions();
 
         // Distill the list of solutions to filter out the duplicates
         // Ideally, this step is redundant. However, if there is something wrong in the solving process,
@@ -49,6 +66,10 @@ class Program
         {
             System.Console.WriteLine("Solution found!");
             System.Console.WriteLine(solutions[0]);
+        } 
+        else
+        {
+            System.Console.WriteLine("No solutions found.");
         }
     }
 

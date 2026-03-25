@@ -5,6 +5,13 @@ namespace Sudoku;
 
 public class TechniqueSolver(Puzzle sudokuGrid) : Solver
 {
+    private delegate HashSet<Action> Technique();
+    private Technique? lastTechnique = null;
+
+    private int failStreak = 0; // Keeps track of consecutive technique failures
+    private const int MAX_SOLVE_ITERATIONS = Int32.MaxValue;
+    private const int MAX_FAIL_STREAK = 30;
+
     #region SolverInterface
     /// <summary>
     /// The puzzle to be solved. It is updated with the solution.
@@ -13,65 +20,72 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// Overrides the property for the Solver abstract class.
     /// </remarks>
     public override Puzzle SudokuPuzzle { get; init; } = (Puzzle)sudokuGrid.Clone();
-    /// <summary>
-    /// The maximum number of solutions to search for. Once this number is reached, 
-    /// it will return the results without looking further.
-    /// </summary>
-    /// <remarks>
-    /// Overrides the property for the Solver abstract class.
-    /// </remarks>
-    public override int MaxSolutions { get; set; } = -1;
 
-    public override List<Puzzle> Solve()
+    public override Puzzle? Solve()
     {
-        List<Puzzle> solutions = [];
-        // Technique-based solvers always result in a solution as long as the puzzle is valid.
-        solutions.Add(SudokuPuzzle); 
-        // TODO: loop through applying rules to the current board state to determine
-        //       the next valid move. Terminate and hand off to the Backtracker if 
-        //       no valid moves are determined by applying rules.
-        
-        Technique? technique = GetNextTechnique(null);
-        if (technique != null)
-        {
-            List<Action> results = technique();
+        Technique? technique = GetNextTechnique();
 
-            foreach (var result in results)
+        // Iteration counter to prevent infinite loops
+        int iterations_completed = 0;
+        while (!SudokuPuzzle.IsComplete()) // Loop until all cells are filled
+        {
+            // Try to apply the technique
+            bool techniqueSuccess = ApplyTechnique(technique);
+            
+            if (techniqueSuccess) // On success, reset the fail streak counter
             {
-                // Techniques that set values:
-                if (result.Type == ActionType.SET)
-                {
-                    SudokuPuzzle.SetCellValue(result.CellIndex, result.CellValue);
-                }
-                // Techniques that remove candidates:
-                else if (result.Type == ActionType.REMOVE)
-                {
-                    SudokuPuzzle.RemoveCellCandidate(result.CellIndex, result.CellValue);
-                }
+                failStreak = 0;
+            } 
+            else // If the technique failed, move on to the next one
+            {
+                failStreak++;
+                technique = GetNextTechnique();
+                break; // debug
             }
+
+            // DEBUG
+            Console.WriteLine(SudokuPuzzle);
+            Console.WriteLine();
+
+            // Give up if it's iterated through the techniques several times and still hasn't solved it.
+            if (failStreak > MAX_FAIL_STREAK)
+            {
+                Console.WriteLine($"[TechniqueSolver.Solve()] Failed {failStreak} times in a row. Giving up.");
+                break;
+            }
+
+            // Infinite loop failsafe check
+            iterations_completed++;
+            if (iterations_completed > MAX_SOLVE_ITERATIONS) break;
         }
-        //// Disabled for testing
-        // // Verify that the solution is valid, and only return it if it is.
-        // if (!SudokuPuzzle.IsComplete() || !SudokuPuzzle.IsConsistent())
-        // {
-        //     solutions.Clear();
-        // }
-        return solutions;
+
+        // Verify that the solution is valid, and only return it if it is.
+        if (SudokuPuzzle.IsComplete() || SudokuPuzzle.IsConsistent())
+        {
+            return SudokuPuzzle;
+        }
+        return null;
     }
 
+    // Technique-based solutions require a valid puzzle, and so they should only return one solution.
+    // This exists for compliance with the interface.
+    public override List<Puzzle> FindAllSolutions()
+    {
+        List<Puzzle> solutions = [];
+        Puzzle? solution = Solve();
+        if (solution is not null) solutions.Add(solution);
+        return solutions;
+    }
     #endregion
 
-
-    // TODO: Create a class to handle the technique results, and use that as the return value instead of a List
-    //       Additional nuance is needed to handle different technique types, but we still want to use one delegate
-    //       as the entry point.
-    private delegate List<Action> Technique();
 
     /// <summary>
     /// Get the next rule to apply, based on the previous rule.
     /// </summary>
-    private Technique? GetNextTechnique(Technique? lastTechnique)
+    private Technique? GetNextTechnique()
     {
+        // TODO: replace this with a more efficient (or at least cleaner) looping mechanic, like a list to loop over
+
         // First, look for Naked Single candidates
         if (lastTechnique == null)
         {
@@ -83,12 +97,67 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
             return HiddenSingle;
         }
         // Next, look for Naken Pair candidates
+        if (lastTechnique == HiddenSingle)
+        {
+            return NakedPair;
+        }
         // Next, look for Hidden Pair candidates
+        // if (lastTechnique == NakedPair)
+        // {
+        //     return HiddenPair;
+        // }
         // ...
         // TODO: Add the rest of the rule orders
+        
+        // Returning null after all other techniques causes it to loop back to NakedSingle
         return null;
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="technique"></param>
+    /// <returns>
+    /// False if any of the following occurs:
+    ///     - Technique is null, or
+    ///     - Technique does not return any actions, or
+    ///     - Any action returned by the technique failed
+    /// True iff:
+    ///     - A non-zero amount of actions was returned by the technique
+    ///     - All actions returned by the technique executed successfully
+    /// </returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    private bool ApplyTechnique(Technique? technique)
+    {
+        // We want to updarte the lastTechnique even if this technique is null.
+        lastTechnique = technique;
+
+        if (technique is null) return false;
+
+        HashSet<Action> actions = technique();
+
+        if (actions.Count == 0) return false;
+
+        // return value is the conjunction of the results of resolving each action; i.e. true iff all return true
+        bool success = true;
+
+        foreach (var action in actions)
+        {
+            switch (action.Type)
+            {
+                case ActionType.SET:
+                    success = success && SudokuPuzzle.SetCellValue(action.CellIndex, action.CellValue);
+                    break;
+                case ActionType.REMOVE:
+                    success = success && SudokuPuzzle.RemoveCellCandidate(action.CellIndex, action.CellValue);
+                    break;
+                default:
+                    throw new InvalidOperationException(); // TODO: Find a better exception to throw here
+            }
+        }
+        return success;
+    }
+
     #region Easy
     /// <summary>
     /// Identify Naked Single candidates, if they exists.
@@ -105,10 +174,10 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// 
     /// A Naked Single is when only one possible candidate exists for a given cell.
     /// </remarks>
-    internal List<Action> NakedSingle()
+    internal HashSet<Action> NakedSingle()
     {
         // Initialize the empty list for the return
-        List<Action> results = [];
+        HashSet<Action> results = [];
         // For each cell, identify any Naked Single candidates.
         for (int cellIndex = 0; cellIndex < Grid.SIZE; cellIndex++)
         {
@@ -130,35 +199,47 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// 
     /// If no such candidates exist, returns an empty list.
     /// </returns>
-    internal List<Action> HiddenSingle()
+    internal HashSet<Action> HiddenSingle()
     {
         // Initialize the empty list for the return
-        List<Action> results = [];
+        HashSet<Action> results = [];
         
         // Search the Blocks
         // For each of the block
         foreach (Region region in SudokuPuzzle.Regions[RegionType.BLOCK])
         {
-            results.AddRange(FindHiddenSinglesInRegion(region));
+            // results.AddRange(FindHiddenSinglesInRegion(region));
+            foreach (var item in FindHiddenSinglesInRegion(region))
+            {
+                results.Add(item);
+            }
         }
 
         // Search the Columns
         foreach (Region region in SudokuPuzzle.Regions[RegionType.COLUMN])
         {
-            results.AddRange(FindHiddenSinglesInRegion(region));
+            // results.AddRange(FindHiddenSinglesInRegion(region));
+            foreach (var item in FindHiddenSinglesInRegion(region))
+            {
+                results.Add(item);
+            }
         }
 
         // Search the Rows
         foreach (Region region in SudokuPuzzle.Regions[RegionType.ROW])
         {
-            results.AddRange(FindHiddenSinglesInRegion(region));
+            // results.AddRange(FindHiddenSinglesInRegion(region));
+            foreach (var item in FindHiddenSinglesInRegion(region))
+            {
+                results.Add(item);
+            }
         }
         return results;
     }
     
-    private static List<Action> FindHiddenSinglesInRegion(Region region)
+    private static HashSet<Action> FindHiddenSinglesInRegion(Region region)
     {
-        List<Action> results = [];
+        HashSet<Action> results = [];
 
         // Create and initialize the dictionary with keys 1 through 9 (inclusive)
         Dictionary<int, List<Cell>> candidateCellMap = [];
@@ -170,6 +251,11 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
         // Check each cell
         foreach (Cell cell in region.Cells)
         {
+            // Skip cells that already have a set value
+            if (cell.Value != 0)
+            {
+                continue;
+            }
             // For each candidate that cell could be, add the cell to the map for that candidate
             foreach (int candidate in cell.Candidates)
             {
@@ -181,13 +267,56 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
         {
             if (candidateCellMap[candidate].Count == 1)
             {
-                // Add the cell index and candidate to the result list. Three steps are used for readability.
+                // Add the cell index and candidate to the result list, unless it's already in the list
                 Cell cell = candidateCellMap[candidate][0];
-                results.Add(new Action(ActionType.SET, cell.Index, candidate));
+                Action action = new Action(ActionType.SET, cell.Index, candidate);
+                results.Add(action);
             }
         }
 
         return results;
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="region"></param>
+    /// <returns>
+    /// A list of cell arrays, each of which contains the a pair of cells consistuting a naked pair.
+    /// </returns>
+    internal List<Cell[]> FindNakedPairCellsInRegion(Region region)
+    {
+        List<Cell[]> nakedPairs = [];
+        // Find all cells that have only two candidates
+        List<Cell> pairCandidates = [];
+        foreach (Cell cell in region.Cells)
+        {
+            if (cell.Candidates.Count == 2)
+            {
+                pairCandidates.Add(cell);
+            }
+        }
+
+        // Compare each cell to each other cell. If they have the same two candidates, pair them off.
+        // TODO: rewrite this more efficiently to not double every pair
+        foreach (Cell cell in pairCandidates)
+        {
+            foreach (Cell other in pairCandidates)
+            {
+                if (cell == other)
+                {
+                    continue;
+                }
+                // Candidates is assumed to be sorted
+                if (cell.Candidates[0] == other.Candidates[0] && cell.Candidates[1] == other.Candidates[1])
+                {
+                    nakedPairs.Add([cell, other]);
+                }
+            }
+        }
+
+        return nakedPairs;
     }
 
     /// <summary>
@@ -196,16 +325,102 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// <returns>
     /// 
     /// </returns>
-    internal List<Action> NakedPair()
+    internal HashSet<Action> NakedPair()
     {
-        throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        HashSet<Action> results = [];
         // Search the Blocks
+        foreach (Region region in SudokuPuzzle.Regions[RegionType.BLOCK])
+        {
+            List<Cell[]> nakedPairs = FindNakedPairCellsInRegion(region);
+            foreach (Cell[] pair in nakedPairs)
+            {
+                foreach (Cell cell in region.Cells)
+                {
+                    // Skip clue cells
+                    if (cell.IsClue) continue;
+
+                    // If the cell isn't one of the naked pair cells, remove those candidates from the cell
+                    if (cell.Index != pair[0].Index && cell.Index != pair[1].Index)
+                    {
+                        // The naked pair share the same candidates by definition, so we just check one
+                        foreach (int candidate in pair[0].Candidates)
+                        {
+                            Action action = new(ActionType.REMOVE, cell.Index, candidate);
+                            results.Add(action);
+                        }
+                    }
+                }
+            }
+        }
+
         // Search the Columns
+        foreach (Region region in SudokuPuzzle.Regions[RegionType.COLUMN])
+        {
+            List<Cell[]> nakedPairs = FindNakedPairCellsInRegion(region);
+            foreach (Cell[] pair in nakedPairs)
+            {
+                foreach (Cell cell in region.Cells)
+                {
+                    // Skip clue cells
+                    if (cell.IsClue) continue;
+                    
+                    // If the cell isn't one of the naked pair cells, remove those candidates from the cell
+                    if (cell.Index != pair[0].Index && cell.Index != pair[1].Index)
+                    {
+                        // The naked pair share the same candidates by definition, so we just check one
+                        foreach (int candidate in pair[0].Candidates)
+                        {
+                            Action action = new(ActionType.REMOVE, cell.Index, candidate);
+                            results.Add(action);
+                            
+                        }
+                    }
+                }
+            }
+        }
+
         // Search the Rows
-        // return results;
+        foreach (Region region in SudokuPuzzle.Regions[RegionType.ROW])
+        {
+            List<Cell[]> nakedPairs = FindNakedPairCellsInRegion(region);
+            foreach (Cell[] pair in nakedPairs)
+            {
+                foreach (Cell cell in region.Cells)
+                {
+                    // Skip clue cells
+                    if (cell.IsClue) continue;
+                    
+                    // If the cell isn't one of the naked pair cells, remove those candidates from the cell
+                    if (cell.Index != pair[0].Index && cell.Index != pair[1].Index)
+                    {
+                        // The naked pair share the same candidates by definition, so we just check one
+                        foreach (int candidate in pair[0].Candidates)
+                        {
+                            Action action = new(ActionType.REMOVE, cell.Index, candidate);
+                                results.Add(action);
+                        }
+                    }
+                }
+            }
+        }
+
+        return results;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="region"></param>
+    /// <returns>
+    /// A list of cell arrays, each of which contains the a pair of cells consistuting a hidden pair.
+    /// </returns>
+    internal List<Cell[]> FindHiddenPairCellsInRegion(Region region)
+    {
+        List<Cell[]> hiddenPairs = [];
+        return hiddenPairs;
+    }
+
 
     /// <summary>
     /// Identify Hidden Pairs of candidates, if they exists.
@@ -213,11 +428,11 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     /// <returns>
     /// 
     /// </returns>
-    internal List<Action> HiddenPair()
+    internal HashSet<Action> HiddenPair()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // Search the Blocks
         // Search the Columns
         // Search the Rows
@@ -227,106 +442,146 @@ public class TechniqueSolver(Puzzle sudokuGrid) : Solver
     #endregion
 
     #region Medium
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="region"></param>
+    /// <returns>
+    /// A list of cell arrays, each of which contains the a pair of cells consistuting a naked pair.
+    /// </returns>
+    internal List<Cell[]> FindNakedTripleCellsInRegion(Region region)
+    {
+        List<Cell[]> nakedTriples = [];
+        // Find all cells that have only two candidates
+        List<Cell> tripleCandidates = [];
+        foreach (Cell cell in region.Cells)
+        {
+            if (cell.Candidates.Count == 3)
+            {
+                tripleCandidates.Add(cell);
+            }
+        }
 
-    internal List<Action> NakedTriple()
+        // Compare each cell to each other cell. If they have the same two candidates, pair them off.
+        // In theory, a cell can be paired with more than one cell, but this would only happen in an invalid puzzle.
+        // This will, however, double every pair.
+        foreach (Cell cell in tripleCandidates)
+        {
+            foreach (Cell other in tripleCandidates)
+            {
+                if (cell == other)
+                {
+                    continue;
+                }
+                // Candidates is assumed to be sorted
+                if (cell.Candidates[0] == other.Candidates[0] && cell.Candidates[1] == other.Candidates[1])
+                {
+                    nakedTriples.Add([cell, other]);
+                }
+            }
+        }
+
+        return nakedTriples;
+    }
+    internal HashSet<Action> NakedTriple()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> HiddenTriple()
+    internal HashSet<Action> HiddenTriple()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> PointingPair()
+    internal HashSet<Action> PointingPair()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> BoxLineReduction()
+    internal HashSet<Action> BoxLineReduction()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
     #endregion
 
     #region Hard
-    internal List<Action> XWing()
+    internal HashSet<Action> XWing()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> Swordfish()
+    internal HashSet<Action> Swordfish()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> YWing()
+    internal HashSet<Action> YWing()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
     #endregion
 
     #region VeryHard
-    internal List<Action> Jellyfish()
+    internal HashSet<Action> Jellyfish()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> XYZWing()
+    internal HashSet<Action> XYZWing()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> Coloring()
+    internal HashSet<Action> Coloring()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
     #endregion
 
     #region Expert
-    internal List<Action> ForcingChain()
+    internal HashSet<Action> ForcingChain()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
 
-    internal List<Action> Backtracking()
+    internal HashSet<Action> Backtracking()
     {
         throw new System.NotImplementedException();
         // Initialize the empty list for the return
-        // List<Action> results = [];
+        // HashSet<Action> results = [];
         // return results;
     }
     #endregion
